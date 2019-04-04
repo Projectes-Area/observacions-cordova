@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+    <head>
+      <meta name="format-detection" content="telephone=no">
+      <meta name="msapplication-tap-highlight" content="no">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+      <link rel="stylesheet" type="text/css" href="css/index.css">
+      <title>Observacions</title>
+    </head>
+    <body >
+      <div id="capsalera">
+          <img id="logo-edumet" src="img/edumet.png">
+      </div>
+      <div id="menu-botons">
+        <button class="boto-sup" style="background: url(img/foto.png);" onClick="fesFoto();"></button>
+        <button class="boto-sup" style="background: url(img/rotate.png);"></button>
+        <button class="boto-sup" style="background: url(img/send.png);"></button>
+        <button class="boto-sup" style="background: url(img/place.png);"></button>
+        <button class="boto-sup" style="background: url(img/llibreta.png);"></button>
+      </div>
+      <div id="contingut">
+        <img id="foto" src="img/estacions.png">
+        <select id="fenomen"></select> 
+        <div>
+          <textarea id="descripcio" placeholder="Escriu en aquest espai una breu descripció del fenomen observat.";></textarea>
+        </div>
+      </div>      
+      <div id="menu-inferior">
+        <button class="boto-inf" style="background: url(img/router.png);"></button>
+        <button class="boto-inf" style="background: url(img/cloud.png);"></button>
+        <button class="boto-inf" style="background: url(img/rss.png);"></button>
+        <button class="boto-inf" style="background: url(img/camera.png);"></button>
+      </div>     
+      <script type="text/javascript" src="cordova.js"></script>
+      <script type="text/javascript" src="js/index.js"></script>
+    </body>
+</html> 

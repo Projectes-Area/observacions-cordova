@@ -1,0 +1,57 @@
+body {
+    font-size:12px;
+    font-family: Arial;
+    margin: 0px;
+}
+#logo-edumet {
+    align-self: center;
+    height:10vh;
+    width:40vh;
+}
+#capsalera {
+    height:10vh;
+    display: flex;
+    justify-content: center;
+}
+#menu-botons {
+    display:flex;
+    width:100%;
+    height:10vh;
+}
+.boto-sup {
+    width:20%;
+    background-repeat: no-repeat !important;
+    background-position:center !important;
+    background-size: 10vh !important;
+}
+#contingut {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    height:70vh;
+}
+#foto {
+    width:36vh;
+    height:36vh;
+    margin:1vh;
+}
+#fenomen {
+    width:80vw;
+    height:10vh;
+}
+#descripcio {
+    width:80vw;
+    height:20vh;
+    margin:1vh;    
+}
+#menu-inferior {
+    display:flex;
+    height:10vh;
+}
+.boto-inf {
+    width:25%;
+    background-repeat: no-repeat !important;
+    background-position:center !important;
+    background-size: 10vh !important;
+}
+
