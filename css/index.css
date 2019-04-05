@@ -8,10 +8,50 @@ body {
     height:10vh;
     width:40vh;
 }
+#nom_estacio {
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    margin:10px;
+}
+#header {
+    display:flex;
+    height:10vh;
+}
+#map {
+    width:100vw;
+    height:80vh;
+}
+#logoEstacio {
+    height:10vh;
+    display:flex;
+    margin-left:auto;
+    margin-right:0
+}
+#est_logo {
+    height:10vh;
+}
+#mesurat {
+    display:flex;
+    flex-direction:column;
+    text-align:center;
+    justify-content: space-evenly;
+    height:10vh;
+}
+.mesures {
+    display:flex; 
+    justify-content: center;
+}
+.icones {
+    height:16px;
+}
 #capsalera {
     height:10vh;
     display: flex;
     justify-content: center;
+}
+#content {
+    height:80vh;
 }
 #menu-botons {
     display:flex;
@@ -24,11 +64,16 @@ body {
     background-position:center !important;
     background-size: 10vh !important;
 }
-#contingut {
-    display:flex;
+#fenologia {
+    display:none;
     flex-direction:column;
     align-items:center;
-    height:70vh;
+    height:80vh;
+}
+#estacions {
+    display:flex;
+    flex-direction:column;
+    height:80vh;
 }
 #foto {
     width:36vh;

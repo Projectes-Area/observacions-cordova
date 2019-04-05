@@ -64,6 +64,19 @@ fetch(url)
   }
 });
 
+function fenologia() {
+  document.getElementById('fenologia').style.display='flex';
+  document.getElementById('estacions').style.display='none';
+}
+
+function estacio() {
+  document.getElementById('fenologia').style.display='none';
+  document.getElementById('estacions').style.display='flex';
+  if(latitudActual==undefined) {
+    geolocalitza();
+  }
+}
+
 //ESTACIONS
 var estacions;
 var url = url_servidor + "?tab=cnjEstApp&xarxaEst=D";
@@ -75,7 +88,16 @@ fetch(url)
   estacions=response;
   for(i=0;i<estacions.length;i++){
     console.log(estacions[i]["Codi_estacio"] + ", " + estacions[i]["Nom_centre"]);
+    L.marker(new L.LatLng(estacions[i]["Latitud"], estacions[i]["Longitud"])).addTo(map);
+    
   }
+  document.getElementById('est_nom').innerHTML = estacions[0]["Nom_centre"];
+  document.getElementById('est_poblacio').innerHTML = estacions[0]["Poblacio"];
+  document.getElementById('est_altitud').innerHTML = "Altitud: " + estacions[0]["Altitud"] + " m";
+  var URLlogo = "https://edumet.cat/edumet-data/" + estacions[0]["Codi_estacio"] + "/estacio/profile1/imatges/fotocentre.jpg";
+  console.log(URLlogo);
+  document.getElementById('est_logo').src = URLlogo;
+  getMesures();
 });
 
 //OBSERVACIONS
@@ -98,6 +120,29 @@ function getObservacions() {
 
 getObservacions();
 
+var map = L.map('map').setView([41.7292826, 1.8225154], 7);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+var latitudActual;
+var longitudActual;
+
+function geoFail() {
+  console.log("GEOFAIL");
+}
+function geoSuccess(position){
+  console.log("GEOSUCCESS");
+  latitudActual = position.coords.latitude;
+  longitudActual = position.coords.longitude;
+  map.setView(new L.LatLng(latitudActual, longitudActual),15);
+  L.marker(new L.LatLng(latitudActual, longitudActual)).addTo(map);
+}
+function geolocalitza() {
+  navigator.geolocation.getCurrentPosition(geoSuccess, geoFail, {});
+}
+
+geolocalitza();
 
 function fesFoto() {
   var options = {
@@ -119,4 +164,20 @@ function fesFoto() {
   function onFail(message) {
       alert('Failed because: ' + message);
   }
+}
+
+var mesures;
+
+function getMesures() {
+  var url = url_servidor + "?tab=mobilApp&codEst=" + estacions[0]["Codi_estacio"];
+  console.log(url);
+  fetch(url)
+  .then(response => response.text())
+  .then(response => JSON.parse(response))
+  .then(response => {
+    console.log("MESURES");
+    mesures=response;
+    document.getElementById('data_mesura').innerHTML = mesures[0]["Data_UTC"];
+    console.log(mesures[0]["Data_UTC"]);
+  });
 }

@@ -6,31 +6,60 @@
       <meta name="msapplication-tap-highlight" content="no">
       <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
       <link rel="stylesheet" type="text/css" href="css/index.css">
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+        integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+        crossorigin=""/>
+      <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+        integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+        crossorigin=""></script>
       <title>Observacions</title>
     </head>
     <body >
       <div id="capsalera">
           <img id="logo-edumet" src="img/edumet.png">
       </div>
-      <div id="menu-botons">
-        <button class="boto-sup" style="background: url(img/foto.png);" onClick="fesFoto();"></button>
-        <button class="boto-sup" style="background: url(img/rotate.png);"></button>
-        <button class="boto-sup" style="background: url(img/send.png);"></button>
-        <button class="boto-sup" style="background: url(img/place.png);"></button>
-        <button class="boto-sup" style="background: url(img/llibreta.png);"></button>
-      </div>
-      <div id="contingut">
+      <div id="fenologia">
+        <div id="menu-botons">
+          <button class="boto-sup" style="background: url(img/foto.png);" onClick="fesFoto();"></button>
+          <button class="boto-sup" style="background: url(img/rotate.png);"></button>
+          <button class="boto-sup" style="background: url(img/send.png);"></button>
+          <button class="boto-sup" style="background: url(img/place.png);"></button>
+          <button class="boto-sup" style="background: url(img/llibreta.png);"></button>
+        </div>
         <img id="foto" src="img/estacions.png">
         <select id="fenomen"></select> 
         <div>
           <textarea id="descripcio" placeholder="Escriu en aquest espai una breu descripció del fenomen observat.";></textarea>
         </div>
-      </div>      
+      </div>
+      <div id="estacions">
+        <div id="header">
+          <img src="">
+          <div id="nom_estacio">
+            <div id="est_nom">Nom de l'Estació</div>
+            <div id="est_poblacio">Població</div>
+            <div id="est_altitud">Altitud</div>
+          </div>
+          <div id="logoEstacio">
+            <img id=est_logo src=""></img>        
+          </div>
+        </div>
+        <div id="map"></div>
+        <div id="mesurat">
+          <div id="data_mesura">Valors mesurats a 1-1-2001</div>
+          <div class="mesures">
+            <img class="icones" src="img/termometre.png" /><label>24º 22º 18º</label> <img class="icones" src="img/humitat.png" /> 34 % <img class="icones" src="img/barometre.png" /> 1024 HPa 
+          </div>
+          <div class="mesures">
+            <img class="icones" src="img/sunrise.png" /> 6:00 <img class="icones" src="img/sunset.png" /> 17:34 <img class="icones" src="img/pluja.png" /> 2 mm 
+          </div>
+        </div>  
+      </div>
       <div id="menu-inferior">
-        <button class="boto-inf" style="background: url(img/router.png);"></button>
+        <button class="boto-inf" style="background: url(img/router.png);" onClick="estacio();"></button>
         <button class="boto-inf" style="background: url(img/cloud.png);"></button>
         <button class="boto-inf" style="background: url(img/rss.png);"></button>
-        <button class="boto-inf" style="background: url(img/camera.png);"></button>
+        <button class="boto-inf" style="background: url(img/camera.png);" onClick="fenologia();"></button>
       </div>     
       <script type="text/javascript" src="cordova.js"></script>
       <script type="text/javascript" src="js/index.js"></script>
