@@ -18,13 +18,22 @@
       <div id="capsalera">
           <img id="logo-edumet" src="img/edumet.png">
       </div>
+      <div id="login">
+        <form>
+          Usuari:<br>
+          <input class="bigFont" id="usuari" type="text" name="usuari"><br>
+          Contrasenya:<br>
+          <input class="bigFont" id="password" type="password" name="contrasenya"><br>
+        </form>
+        <button class="bigFont" id="valida" onClick="valida();" style="margin-top:6px">ENTRA</button>
+      </div>
       <div id="fenologia">
         <div id="menu-botons">
-          <button class="boto-sup" style="background: url(img/foto.png);" onClick="fesFoto();"></button>
-          <button class="boto-sup" style="background: url(img/rotate.png);"></button>
-          <button class="boto-sup" style="background: url(img/send.png);"></button>
-          <button class="boto-sup" style="background: url(img/place.png);"></button>
-          <button class="boto-sup" style="background: url(img/llibreta.png);"></button>
+          <button class="boto-sup" style="background: url(img/foto-edumet.png);" onClick="fesFoto();"></button>
+          <button class="boto-sup" style="background: url(img/rotate-edumet.png);"></button>
+          <button class="boto-sup" style="background: url(img/send-edumet.png);"></button>
+          <button class="boto-sup" style="background: url(img/place-edumet.png);"></button>
+          <button class="boto-sup" style="background: url(img/llibreta-edumet.png);" onClick="observa();"></button>
         </div>
         <img id="foto" src="img/estacions.png">
         <select id="fenomen"></select> 
@@ -32,13 +41,23 @@
           <textarea id="descripcio" placeholder="Escriu en aquest espai una breu descripció del fenomen observat.";></textarea>
         </div>
       </div>
+      <div id="previsio" style="display:none; width:100%; height:80vh">
+        <iframe src='http://m.meteo.cat/?codi=080193' height='100%' width='100%' hspace='0' marginheight='0' marginwidth='0' vspace='0' frameborder='0' scrolling='yes' style='font-size:0.8em'></iframe>
+      </div>
+      <div id="observacions">
+        <div style="height:5vh; display:flex; text-align: center; align-items:center;">
+          <label style="width:25%"><b>FOTO</b></label><label style="width:25%"><b>DATA</b></label><label style="width:25%"><b>OBSERVACIÓ</b></label><label style="width:25%"><b>ENVIADA</b></label>          
+        </div>
+        <div id="llistat" style="height:75vh; overflow-y:scroll; text-align: center">
+        </div>
+      </div>
       <div id="estacions">
         <div id="header">
           <img src="">
           <div id="nom_estacio">
-            <div id="est_nom">Nom de l'Estació</div>
-            <div id="est_poblacio">Població</div>
-            <div id="est_altitud">Altitud</div>
+            <div id="est_nom"></div>
+            <div id="est_poblacio"></div>
+            <div id="est_altitud"></div>
           </div>
           <div id="logoEstacio">
             <img id=est_logo src=""></img>        
@@ -46,20 +65,23 @@
         </div>
         <div id="map"></div>
         <div id="mesurat">
-          <div id="data_mesura">Valors mesurats a 1-1-2001</div>
+          <div id="data_mesura"></div>
           <div class="mesures">
-            <img class="icones" src="img/termometre.png" /><label>24º 22º 18º</label> <img class="icones" src="img/humitat.png" /> 34 % <img class="icones" src="img/barometre.png" /> 1024 HPa 
+            <img class="icones" src="img/termometre.png" /><label id="temperatura"></label><img class="icones" src="img/humitat.png" /><label id="humitat"></label><img class="icones" src="img/barometre.png" /><label id="pressio"></label>
           </div>
           <div class="mesures">
-            <img class="icones" src="img/sunrise.png" /> 6:00 <img class="icones" src="img/sunset.png" /> 17:34 <img class="icones" src="img/pluja.png" /> 2 mm 
+            <img class="icones" src="img/sunrise.png" /><label id="sunrise"></label><img class="icones" src="img/sunset.png" /><label id="sunset"></label><img class="icones" src="img/pluja.png" /><label id="pluja"></label><img class="icones" src="img/vent.png" /><label id="vent"></label>
           </div>
         </div>  
       </div>
+      <div id="radar" style="display:none; width:100%; height:75vh; margin-top:5vh;">
+        <iframe src='https://edumet.cat/edumet/meteo_proves/00_radar_app.php' style='height: 100%; width: 100%; margin: 0 auto ' hspace='0' marginheight='0' marginwidth='0' vspace='0' frameborder='0' scrolling='yes'></iframe>
+      </div>
       <div id="menu-inferior">
-        <button class="boto-inf" style="background: url(img/router.png);" onClick="estacio();"></button>
-        <button class="boto-inf" style="background: url(img/cloud.png);"></button>
-        <button class="boto-inf" style="background: url(img/rss.png);"></button>
-        <button class="boto-inf" style="background: url(img/camera.png);" onClick="fenologia();"></button>
+        <button class="boto-inf" style="background: url(img/router-edumet.png);" onClick="estacio();"></button>
+        <button class="boto-inf" style="background: url(img/cloud-edumet.png);" onClick="previsio();"></button>
+        <button class="boto-inf" style="background: url(img/rss-edumet.png);" onClick="radar();"></button>
+        <button class="boto-inf" style="background: url(img/camera-edumet.png);" onClick="login();"></button>
       </div>     
       <script type="text/javascript" src="cordova.js"></script>
       <script type="text/javascript" src="js/index.js"></script>
