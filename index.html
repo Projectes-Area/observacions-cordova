@@ -19,20 +19,19 @@
           <img id="logo-edumet" src="img/edumet.png">
       </div>
       <div id="login">
-        <form>
-          Usuari:<br>
-          <input class="bigFont" id="usuari" type="text" name="usuari"><br>
-          Contrasenya:<br>
+        <h3>Identifica't</h3>
+        <div>
+          <h4>Usuari:</h4>
+          <input class="bigFont" id="usuari" type="text" name="usuari">
+          <h4>Contrasenya:</h4>
           <input class="bigFont" id="password" type="password" name="contrasenya"><br>
-        </form>
-        <button class="bigFont" id="valida" onClick="valida();" style="margin-top:6px">ENTRA</button>
+        </div>
+        <button style="padding:12px" class="bigFont" id="valida" onClick="valida();" style="margin-top:6px">ENTRA</button>
       </div>
       <div id="fenologia">
         <div id="menu-botons">
           <button class="boto-sup" style="background: url(img/foto-edumet.png);" onClick="fesFoto();"></button>
-          <button class="boto-sup" style="background: url(img/rotate-edumet.png);"></button>
           <button class="boto-sup" style="background: url(img/send-edumet.png);"></button>
-          <button class="boto-sup" style="background: url(img/place-edumet.png);"></button>
           <button class="boto-sup" style="background: url(img/llibreta-edumet.png);" onClick="observa();"></button>
         </div>
         <img id="foto" src="img/estacions.png">
@@ -41,23 +40,25 @@
           <textarea id="descripcio" placeholder="Escriu en aquest espai una breu descripció del fenomen observat.";></textarea>
         </div>
       </div>
-      <div id="previsio" style="display:none; width:100%; height:80vh">
-        <iframe src='http://m.meteo.cat/?codi=080193' height='100%' width='100%' hspace='0' marginheight='0' marginwidth='0' vspace='0' frameborder='0' scrolling='yes' style='font-size:0.8em'></iframe>
+      <div id="previsio">
+          <iframe id='frame' src='' height='100%' width='100%' hspace='0' marginheight='0' marginwidth='0' vspace='0' frameborder='0' scrolling='yes' style='font-size:0.8em'></iframe>
       </div>
       <div id="observacions">
-        <div style="height:5vh; display:flex; text-align: center; align-items:center;">
-          <label style="width:25%"><b>FOTO</b></label><label style="width:25%"><b>DATA</b></label><label style="width:25%"><b>OBSERVACIÓ</b></label><label style="width:25%"><b>ENVIADA</b></label>          
+        <div id="fila">
+          <label style="width:25%"><b>FOTO</b></label>
+          <label style="width:25%"><b>DATA</b></label>
+          <label style="width:25%"><b>OBSERVACIÓ</b></label>
+          <label style="width:25%"><b>ENVIADA</b></label>          
         </div>
-        <div id="llistat" style="height:75vh; overflow-y:scroll; text-align: center">
+        <div id="llistat">
         </div>
       </div>
       <div id="estacions">
+        <div style="display:flex; align-items:center;"><img id= "star" src="img/star-yellow.png" style="height:6vh;" onClick="desaPreferida();"><select id="est_nom" style="height:4vh; width:100%; margin-right:5px;" onchange="selectEstacio()"></select></div>
         <div id="header">
-          <img src="">
-          <div id="nom_estacio">
-            <div id="est_nom"></div>
-            <div id="est_poblacio"></div>
-            <div id="est_altitud"></div>
+          <div id="nom_estacio" style="margin:6px; width:100%; height:4vh;">
+            <div id="est_poblacio" style="margin-left: 5vh;"></div>
+            <div id="est_altitud" style="margin-left: 5vh;"></div>
           </div>
           <div id="logoEstacio">
             <img id=est_logo src=""></img>        
@@ -74,8 +75,21 @@
           </div>
         </div>  
       </div>
-      <div id="radar" style="display:none; width:100%; height:75vh; margin-top:5vh;">
+      <div id="radar">
         <iframe src='https://edumet.cat/edumet/meteo_proves/00_radar_app.php' style='height: 100%; width: 100%; margin: 0 auto ' hspace='0' marginheight='0' marginwidth='0' vspace='0' frameborder='0' scrolling='yes'></iframe>
+      </div>
+      <div id="fitxa">
+        <div id="nomFenomen" style="display:flex; height:3vh; justify-content:center; align-items:center;">Orenetes</div>
+        <div id="dataHora" style="display:flex; height:3vh; justify-content:center;  align-items:center;">2019</div>
+        <div style="display:flex; height:34vh; justify-content: space-around;">
+          <img src="img/termometre.png" style="height:25vh; align-self:center">
+          <div style="display:flex; flex-direction:column; justify-content:space-around;">
+            <button class="boto-edit" style="background: url(img/send-edumet.png);"></button>
+            <button class="boto-edit" style="background: url(img/edit-edumet.png);"></button>
+            <button class="boto-edit" style="background: url(img/trash-edumet.png);"></button>
+          </div>
+        </div>
+        <div id="mapaFitxa"></div>  
       </div>
       <div id="menu-inferior">
         <button class="boto-inf" style="background: url(img/router-edumet.png);" onClick="estacio();"></button>

@@ -16,11 +16,15 @@ body {
 }
 #header {
     display:flex;
-    height:10vh;
+    height:6vh;
 }
 #map {
     width:100vw;
     height:80vh;
+}
+#mapaFitxa {
+    width:100vw;
+    height:40vh;
 }
 #logoEstacio {
     height:10vh;
@@ -29,7 +33,8 @@ body {
     margin-right:0
 }
 #est_logo {
-    height:10vh;
+    height:6vh;
+    margin-right:5px;
 }
 #mesurat {
     display:flex;
@@ -49,6 +54,7 @@ body {
 }
 #capsalera {
     height:10vh;
+    background-color: #418ac8;
     display: flex;
     justify-content: center;
 }
@@ -61,10 +67,17 @@ body {
     height:10vh;
 }
 .boto-sup {
-    width:20%;
+    width:33.33%;
     background-repeat: no-repeat !important;
     background-position:center !important;
     background-size: 10vh !important;
+}
+.boto-edit {
+    width:8vh;
+    height:8vh;
+    background-repeat: no-repeat !important;
+    background-position:center !important;
+    background-size: 8vh !important; 
 }
 .bigFont {
     font-size:16px;
@@ -72,7 +85,7 @@ body {
 #login {
     display:none;
     flex-direction:column;
-    justify-content:center;
+    justify-content:space-evenly;
     align-items:center;
     font-size:16px;
     height: 80vh;
@@ -80,6 +93,7 @@ body {
 #previsio {
     display:none;
     height: 80vh;
+    width:100%;
 }
 #fenologia {
     display:none;
@@ -87,10 +101,32 @@ body {
     align-items:center;
     height:80vh;
 }
+#radar {
+    display:none;
+    width:100%;
+    height:75vh;
+    margin-top:5vh;
+}
 #observacions {
     display:none;
     flex-direction:column;
-    height:80vh;
+    height:80vh;    
+}
+#fitxa {
+    display:none;
+    flex-direction:column;
+    height:80vh;    
+}
+#fila {
+    height:5vh;
+    display:flex;
+    text-align: center;
+    align-items:center;
+}
+#llistat {
+    height:75vh;
+    overflow-y:scroll;
+    text-align: center;
 }
 #estacions {
     display:flex;
@@ -98,7 +134,7 @@ body {
     height:80vh;
 }
 #foto {
-    width:36vh;
+    width:auto;
     height:36vh;
     margin:1vh;
 }
