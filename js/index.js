@@ -187,7 +187,7 @@ function baixaObservacions() {
 
 function baixaFotos() {
 
-  var dl = new download();
+/*  var dl = new download();
  
 dl.Initialize({
     fileSystem : cordova.file.externalRootDirectory,
