@@ -181,36 +181,57 @@ function baixaObservacions() {
         tx.executeSql(query);    
       }
     });
+    baixaFotos();
   });
-  baixaFotos();
+  
 }
+
+var fotoActual;
+var fileSystem;
 
 function baixaFotos() {
+  window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+    console.log('File system open: ' + fs.name);
+    fileSystem = fs;
+    fotoActual = 0;
+    baixaFoto(fotoActual);
+  });    
+} 
 
-  var dl = new download();
+function baixaFoto(i) {
+  var nom = i + '.png';
+  fileSystem.root.getFile(nom, { create: true, exclusive: false }, function (fileEntry) {
+    var url = 'https://edumet.cat/edumet/meteo_proves/imatges/fenologia/' + observacions[fotoActual]["Fotografia_observacio"];
+    console.log(url);
+    fetch(url)
+    .then(response => response.blob())
+    .then(response => {
+      var blob = new Blob([response], { type: 'image/jpeg' });
+      var path = fileEntry.toURL();
+      console.log("Path: " + path);
+      writeFile(fileEntry, blob);
+    });        
+  }, onFSError);
+}
  
-dl.Initialize({
-    fileSystem : cordova.file.externalRootDirectory,
-    folder: "observacions",
-    unzip: false,
-    remove: false,
-    timeout: 0,
-    success: DownloaderSuccess,
-    error: DownloaderError,
-});
- 
- 
-dl.Get("https://edumet.cat/edumet/meteo_proves/imatges/fenologia/43900018_20190321105127.jpg");
-  /*for(i=0;i<observacions.length;i++){
-    'https://edumet.cat/edumet/meteo_proves/imatges/fenologia/' + observacions[i]["Fotografia_observacio"]
-  }*/
+function onFSError(error) {
+  console.log(JSON.stringify(error));
 }
 
-function DownloaderError(err) {
-  console.log("download error: " + err);
-}
-
-function DownloaderSuccess() {
+function writeFile(fileEntry, dataObj) {
+  fileEntry.createWriter(function (fileWriter) {
+    fileWriter.onwriteend = function() {
+      //console.log("Successful file write...");
+      fotoActual++;
+      if(fotoActual<observacions.length) {
+        baixaFoto(fotoActual);
+      }
+    };
+    fileWriter.onerror = function (e) {
+      console.log("Failed file write: " + e.toString());
+    };
+    fileWriter.write(dataObj);
+  });
 }
 
 function enviaObservacio(i) {
