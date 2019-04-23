@@ -189,7 +189,6 @@ function baixaObservacions() {
 var fotoActual;
 var fileSystem;
 
-<<<<<<< HEAD
 function baixaFotos() {
   window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
     console.log('File system open: ' + fs.name);
@@ -213,25 +212,6 @@ function baixaFoto(i) {
       writeFile(fileEntry, blob);
     });        
   }, onFSError);
-=======
-/*  var dl = new download();
- 
-dl.Initialize({
-    fileSystem : cordova.file.externalRootDirectory,
-    folder: "observacions",
-    unzip: false,
-    remove: false,
-    timeout: 0,
-    success: DownloaderSuccess,
-    error: DownloaderError,
-});
- 
- 
-dl.Get("https://edumet.cat/edumet/meteo_proves/imatges/fenologia/43900018_20190321105127.jpg");
-  /*for(i=0;i<observacions.length;i++){
-    'https://edumet.cat/edumet/meteo_proves/imatges/fenologia/' + observacions[i]["Fotografia_observacio"]
-  }*/
->>>>>>> cc694d013d7243860d162f531ab473600fbaef33
 }
  
 function onFSError(error) {
