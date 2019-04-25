@@ -5,6 +5,10 @@ var app = {
   onDeviceReady: function() {
     this.receivedEvent('deviceready');
     db = window.openDatabase('Edumet', '', 'Base de dades Edumet', 10000);
+    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+      console.log('File system open: ' + fs.name);
+      fileSystem = fs;
+    });
     geolocalitza();
     if (checkConnection() == 'No network connection') {   
       navigator.notification.alert(
@@ -52,6 +56,8 @@ var url_servidor = "https://edumet.cat/edumet/meteo_2/dades_recarregar.php";
 var INEactual = "081234";
 var online;
 var localitzat;
+var fotoActual;
+var fileSystem;
 
 var input = document.getElementById('password');
 input.addEventListener("keyup", function(event) {
@@ -181,22 +187,11 @@ function baixaObservacions() {
         tx.executeSql(query);    
       }
     });
-    baixaFotos();
+    fotoActual = 0;
+    baixaFoto(fotoActual);
   });
   
 }
-
-var fotoActual;
-var fileSystem;
-
-function baixaFotos() {
-  window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
-    console.log('File system open: ' + fs.name);
-    fileSystem = fs;
-    fotoActual = 0;
-    baixaFoto(fotoActual);
-  });    
-} 
 
 function baixaFoto(i) {
   var nom = observacions[fotoActual]["Fotografia_observacio"];
@@ -435,8 +430,9 @@ function fesFoto() {
   function onSuccess(imageURI) {
     var obs = document.getElementById('foto');
     obs.src = imageURI;
-    getFileEntry(imageURI);
-    
+    window.resolveLocalFileSystemURL(imageURI, function success(fileEntry) {   
+      fileEntry.copyTo(fileSystem.root,"", desa, fail);    
+    }, fail);    
   }  
   function onFail(message) {
     navigator.notification.alert(
@@ -480,58 +476,39 @@ function llistaObservacions() {
   document.getElementById('llistat').innerHTML = llista;
 }
 
-function getFileEntry(imgUri) {
-  window.resolveLocalFileSystemURL(imgUri, function success(fileEntry) {
-    // Do something with the FileEntry object, like write to it, upload it, etc.
-    // writeFile(fileEntry, imgUri);
+function desa(entry){  
+  // DESA OBSERVACIÓ
+  var ara = new Date(Date.now());
+  var any = ara.getFullYear();
+  var mes = ara.getMonth();
+  var dia = ara.getDate();
+  var hora = ara.getHours();
+  var minut = ara.getMinutes();
+  var segon = ara.getSeconds();
+  var Data_observacio = any + '-' + mes + '-' + dia;
+  var Hora_observacio = hora + ':' + minut + ':' + segon;
+  var Id_feno = document.getElementById('fenomen').value;
+  var Descripcio_observacio = document.getElementById('descripcio').value;
 
-    // DESA OBSERVACIÓ
-    var ara = new Date(Date.now());
-    var any = ara.getFullYear();
-    var mes = ara.getMonth();
-    var dia = ara.getDate();
-    var hora = ara.getHours();
-    var minut = ara.getMinutes();
-    var segon = ara.getSeconds();
-    var Data_observacio = any + '-' + mes + '-' + dia;
-    var Hora_observacio = hora + ':' + minut + ':' + segon;
-    var Id_feno = document.getElementById('fenomen').value;
-    var Descripcio_observacio = document.getElementById('descripcio').value;
-
-    var query = 'INSERT INTO Observacions (ID, Data_observacio, Hora_observacio, Latitud, Longitud, Id_feno, Descripcio_observacio, Fotografia_observacio, Local_path, Enviat) VALUES ("';
-    query += '0' + '","';
-    query += Data_observacio + '","';
-    query += Hora_observacio + '","';
-    query += latitudActual + '","';
-    query += longitudActual + '","';
-    query += Id_feno + '","';
-    query += Descripcio_observacio + '","';
-    query += '0' + '","';
-    //query += fileEntry.fullPath + '","';
-    query += fileEntry.toURL() + '","';
-    query += '0' + '")';
-    console.log(query);
-    db.transaction(function (tx) {
-      tx.executeSql(query);         
-    });
-    
-    // displayFileData(fileEntry.nativeURL, "Native URL");
-  }, function () {
-    // If don't get the FileEntry (which may happen when testing
-    // on some emulators), copy to a new FileEntry.
-    createNewFileEntry(imgUri);
+  var query = 'INSERT INTO Observacions (ID, Data_observacio, Hora_observacio, Latitud, Longitud, Id_feno, Descripcio_observacio, Fotografia_observacio, Local_path, Enviat) VALUES ("';
+  query += '0' + '","';
+  query += Data_observacio + '","';
+  query += Hora_observacio + '","';
+  query += latitudActual + '","';
+  query += longitudActual + '","';
+  query += Id_feno + '","';
+  query += Descripcio_observacio + '","';
+  query += '0' + '","';
+  //query += fileEntry.fullPath + '","';
+  query += entry.toURL() + '","';
+  query += '0' + '")';
+  console.log(query);
+  db.transaction(function (tx) {
+    tx.executeSql(query);         
   });
 }
 
-function createNewFileEntry(imgUri) {
-  window.resolveLocalFileSystemURL(cordova.file.cacheDirectory, function success(dirEntry) {
-      dirEntry.getFile("tempFile.jpeg", { create: true, exclusive: false }, function (fileEntry) {
-          // Do something with it, like write to it, upload it, etc.
-          // writeFile(fileEntry, imgUri);
-          console.log("created file: " + fileEntry.fullPath);
-          // displayFileData(fileEntry.fullPath, "File copied to");
-      }, onErrorCreateFile);
-  }, onErrorResolveUrl);
+function fail() {  
 }
 
 function checkConnection() {
@@ -567,12 +544,10 @@ function deg2rad(deg) {
 }
 
 function getFileContentAsBase64(path,callback){
-  window.resolveLocalFileSystemURL(path, gotFile, fail);
-          
+  window.resolveLocalFileSystemURL(path, gotFile, fail);          
   function fail(e) {
         alert('Cannot found requested file');
   }
-
   function gotFile(fileEntry) {
          fileEntry.file(function(file) {
             var reader = new FileReader();
