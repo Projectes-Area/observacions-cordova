@@ -3,46 +3,6 @@ body {
     font-family: Arial;
     margin: 0px;
 }
-#logo-edumet {
-    align-self: center;
-    height:10vh;
-    width:40vh;
-}
-#nom_estacio {
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    margin:10px;
-}
-#header {
-    display:flex;
-    height:6vh;
-}
-#map {
-    width:100vw;
-    height:80vh;
-}
-#mapaFitxa {
-    width:100vw;
-    height:40vh;
-}
-#logoEstacio {
-    height:10vh;
-    display:flex;
-    margin-left:auto;
-    margin-right:0
-}
-#est_logo {
-    height:6vh;
-    margin-right:5px;
-}
-#mesurat {
-    display:flex;
-    flex-direction:column;
-    text-align:center;
-    justify-content: space-evenly;
-    height:10vh;
-}
 .mesures {
     display:flex; 
     justify-content: center;
@@ -51,6 +11,34 @@ body {
     height:16px;
     margin-right:2px;
     margin-left:2px;
+}
+.boto-sup {
+    width:33.33%;
+    background-repeat: no-repeat !important;
+    background-position-x: center !important;
+    background-position-y: 0.5vh !important;
+    background-size: 6vh !important;
+    padding-top: 6vh;
+    color: #418ac8;
+}
+.boto-inf {
+    width:25%;
+    background-repeat: no-repeat !important;
+    background-position-x: center !important;
+    background-position-y: 0.5vh !important;
+    background-size: 6vh !important;
+    padding-top: 6vh;
+    color: #418ac8;
+}
+.boto-edit {
+    width:8vh;
+    height:8vh;
+    background-repeat: no-repeat !important;
+    background-position:center !important;
+    background-size: 8vh !important; 
+}
+.bigFont {
+    font-size:16px;
 }
 #capsalera {
     height:10vh;
@@ -65,22 +53,6 @@ body {
     display:flex;
     width:100%;
     height:10vh;
-}
-.boto-sup {
-    width:33.33%;
-    background-repeat: no-repeat !important;
-    background-position:center !important;
-    background-size: 10vh !important;
-}
-.boto-edit {
-    width:8vh;
-    height:8vh;
-    background-repeat: no-repeat !important;
-    background-position:center !important;
-    background-size: 8vh !important; 
-}
-.bigFont {
-    font-size:16px;
 }
 #login {
     display:none;
@@ -106,6 +78,8 @@ body {
     width:100%;
     height:75vh;
     margin-top:5vh;
+    flex-direction:column;
+    text-align:center;
 }
 #observacions {
     display:none;
@@ -152,10 +126,43 @@ body {
     display:flex;
     height:10vh;
 }
-.boto-inf {
-    width:25%;
-    background-repeat: no-repeat !important;
-    background-position:center !important;
-    background-size: 10vh !important;
+#logo-edumet {
+    align-self: center;
+    height:10vh;
+    width:40vh;
 }
-
+#nom_estacio {
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    margin:10px;
+}
+#header {
+    display:flex;
+    height:6vh;
+}
+#map {
+    width:100vw;
+    height:80vh;
+}
+#mapaFitxa {
+    width:100vw;
+    height:40vh;
+}
+#logoEstacio {
+    height:10vh;
+    display:flex;
+    margin-left:auto;
+    margin-right:0
+}
+#est_logo {
+    height:6vh;
+    margin-right:5px;
+}
+#mesurat {
+    display:flex;
+    flex-direction:column;
+    text-align:center;
+    justify-content: space-evenly;
+    height:10vh;
+}
