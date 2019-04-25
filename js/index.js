@@ -199,17 +199,25 @@ function baixaFotos() {
 } 
 
 function baixaFoto(i) {
-  var nom = i + '.png';
+  var nom = observacions[fotoActual]["Fotografia_observacio"];
   fileSystem.root.getFile(nom, { create: true, exclusive: false }, function (fileEntry) {
-    var url = 'https://edumet.cat/edumet/meteo_proves/imatges/fenologia/' + observacions[fotoActual]["Fotografia_observacio"];
-    console.log(url);
+    var url = 'https://edumet.cat/edumet/meteo_proves/imatges/fenologia/' + nom;
+    //console.log(url);
     fetch(url)
     .then(response => response.blob())
     .then(response => {
       var blob = new Blob([response], { type: 'image/jpeg' });
-      var path = fileEntry.toURL();
-      console.log("Path: " + path);
+      observacions[i]["Local_path"] = fileEntry.toURL();
       writeFile(fileEntry, blob);
+      db.transaction(function (tx) {
+          var query = 'UPDATE Observacions SET Local_path="';
+          query += observacions[i]["Local_path"];
+          query += '" WHERE ID="';
+          query += observacions[i]["ID"];
+          query += '"';
+          console.log(query);
+          tx.executeSql(query);   
+      });
     });        
   }, onFSError);
 }
@@ -462,7 +470,8 @@ function llistaObservacions() {
   var llista='';
   for(i=0;i<observacions.length;i++){
     llista+= '<div style="display:flex; align-items:center;">';
-    llista+= '<div style="width:25%"><img src="' + 'https://edumet.cat/edumet/meteo_proves/imatges/fenologia/' + observacions[i]["Fotografia_observacio"] + '" style="width:10vh; height:10vh" onClick="fitxa();" /></div>';
+    //llista+= '<div style="width:25%"><img src="' + 'https://edumet.cat/edumet/meteo_proves/imatges/fenologia/' + observacions[i]["Fotografia_observacio"] + '" style="width:10vh; height:10vh" onClick="fitxa();" /></div>';
+    llista+= '<div style="width:25%"><img src="' + observacions[i]["Local_path"] + '" style="width:10vh; height:10vh" onClick="fitxa();" /></div>';
     llista+= '<label style="width:25%">' + observacions[i]["Data_observacio"] + '</label>';
     llista+= '<label style="width:25%">' + fenomens[observacions[i]["Id_feno"]]["Titol_feno"] + '</label>';
     llista+= '<label style="width:25%">' + 'SI' + '</label>';
@@ -498,7 +507,8 @@ function getFileEntry(imgUri) {
     query += Id_feno + '","';
     query += Descripcio_observacio + '","';
     query += '0' + '","';
-    query += fileEntry.fullPath + '","';
+    //query += fileEntry.fullPath + '","';
+    query += fileEntry.toURL() + '","';
     query += '0' + '")';
     console.log(query);
     db.transaction(function (tx) {

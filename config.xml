@@ -27,7 +27,7 @@
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
-        <icon src="www/img/logo.png" />
+        <icon src="img/logo.png" />
     </platform>
     <platform name="windows">
     </platform>
