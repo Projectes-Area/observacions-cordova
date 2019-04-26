@@ -13,7 +13,7 @@ var app = {
     if (checkConnection() == 'No network connection') {   
       navigator.notification.alert(
           "No es pot connectar a Internet. Algunes característiques de l'App no estaran disponibles",  // message
-          tancaDialeg,           // callback
+          empty,           // callback
           'Sense connexió',      // title
           "D'acord"              // buttonName
       );
@@ -36,9 +36,6 @@ var app = {
   }
 };
 
-function tancaDialeg() {
-}
-
 app.initialize();
 
 var storage = window.localStorage;
@@ -58,8 +55,10 @@ var online;
 var localitzat;
 var fotoBaixada;
 var fileSystem;
-var rowidActual;
 var observacioActual;
+
+function empty() {  
+}
 
 var input = document.getElementById('password');
 input.addEventListener("keyup", function(event) {
@@ -162,8 +161,8 @@ function baixaEstacions() {
   });
 }
 
-// BAIXA OBSERVACIONS
-function baixaObservacions() {
+// BAIXA OBSERVACIONS INICIAL
+function baixaObsInicial() {
   var url = url_servidor + "?usuari=" + usuari + "&tab=visuFenoApp";
   fetch(url)
   .then(response => response.text())
@@ -172,9 +171,9 @@ function baixaObservacions() {
     console.log("OBSERVACIONS: Baixades");
     observacions=response;
     db.transaction(function (tx) {
-      //tx.executeSql('DROP TABLE IF EXISTS Observacions'); 
       tx.executeSql('CREATE TABLE Observacions (ID, Data_observacio, Hora_observacio, Latitud, Longitud, Id_feno, Descripcio_observacio, Fotografia_observacio, Local_path, Enviat)');   
       for(i=0;i<observacions.length;i++){
+        observacions[i]["Enviat"] = "1";
         var query = 'INSERT INTO Observacions (ID, Data_observacio, Hora_observacio, Latitud, Longitud, Id_feno, Descripcio_observacio, Fotografia_observacio, Local_path, Enviat) VALUES ("';
         query += observacions[i]["ID"] + '","';
         query += observacions[i]["Data_observacio"] + '","';
@@ -185,8 +184,8 @@ function baixaObservacions() {
         query += observacions[i]["Descripcio_observacio"] + '","';
         query += observacions[i]["Fotografia_observacio"] + '","';
         query += '0' + '","';
-        query += '1' + '")';
-        tx.executeSql(query);    
+        query += '1' + '")';       
+        tx.executeSql(query);
       }
     });
     fotoBaixada = 0;
@@ -194,7 +193,8 @@ function baixaObservacions() {
   });  
 }
 
-function actualitzaObservacions() {
+// BAIXA OBSERVACIONS AFEGIDES
+function baixaObsAfegides() {
   var url = url_servidor + "?usuari=" + usuari + "&tab=visuFenoApp";
   fetch(url)
   .then(response => response.text())
@@ -212,6 +212,7 @@ function actualitzaObservacions() {
         if(nova) {
           var numObs = observacions.length;
           observacions[numObs] = response[i];
+          observacions[numObs]["Enviat"] = "1";
           var query = 'INSERT INTO Observacions (ID, Data_observacio, Hora_observacio, Latitud, Longitud, Id_feno, Descripcio_observacio, Fotografia_observacio, Local_path, Enviat) VALUES ("';
           query += observacions[numObs]["ID"] + '","';
           query += observacions[numObs]["Data_observacio"] + '","';
@@ -223,7 +224,12 @@ function actualitzaObservacions() {
           query += observacions[numObs]["Fotografia_observacio"] + '","';
           query += '0' + '","';
           query += '1' + '")';
-          tx.executeSql(query);  
+          
+          tx.executeSql(query, [], function(tx, results){
+            observacions[numObs]["rowid"] = results.insertId;
+          },
+          empty);
+
           baixaFoto(numObs); 
           console.log("Nova observació: " + observacions[numObs]["ID"]);
         } 
@@ -253,13 +259,9 @@ function baixaFoto(i) {
         tx.executeSql(query);   
       });
     });        
-  }, onFSError);
+  }, empty);
 }
  
-function onFSError(error) {
-  console.log(JSON.stringify(error));
-}
-
 function writeFile(fileEntry, dataObj) {
   fileEntry.createWriter(function (fileWriter) {
     fileWriter.onwriteend = function() {
@@ -336,12 +338,10 @@ function fenologia() {
       for(var i=0; i<rs.rows.length; i++) {
         observacions[i] = rs.rows.item(i);
       }
-    }, errorHandler) 
+    }, empty) 
   });
 }
 
-function errorHandler(){
-}
 function estacio() {
   activa('estacions');
 }
@@ -377,14 +377,14 @@ function valida() {
       usuari = "";
       navigator.notification.alert(
         "Usuari i/o contrasenya incorrectes. Si us plau, torna-ho a provar.",
-        tancaDialeg,
+        empty,
         "Identificació",
         "D'acord"
       );
     } else {
       console.log("Auth OK " + usuari);
       storage.setItem("user", usuari);
-      baixaObservacions();
+      baixaObsInicial();
       fenologia();
     }
   });
@@ -428,6 +428,7 @@ function geoFail() {
   console.log("GEOFAIL");
   localitzat = false;
 }
+
 function geoSuccess(position){
   console.log("GEOSUCCESS");
   latitudActual = position.coords.latitude;
@@ -461,6 +462,7 @@ function geoSuccess(position){
     }
   }
 }
+
 function geolocalitza() {
   navigator.geolocation.getCurrentPosition(geoSuccess, geoFail, {});
 }
@@ -482,8 +484,8 @@ function fesFoto() {
     var obs = document.getElementById('foto');
     obs.src = imageURI;
     window.resolveLocalFileSystemURL(imageURI, function success(fileEntry) {   
-      fileEntry.copyTo(fileSystem.root,"", desaObservacio, fail);    
-    }, fail);    
+      fileEntry.copyTo(fileSystem.root,"", desaObservacio, empty);    
+    }, empty);    
   }  
   function onFail(message) {
     navigator.notification.alert(
@@ -507,7 +509,7 @@ function actualitzaObservacio() {
     query += '", Descripcio_observacio="';
     query += Descripcio_observacio;
     query += '" WHERE rowid="';
-    query += rowidActual;
+    query += observacions[observacioActual]["rowid"];
     query += '"';
     console.log(query);
     tx.executeSql(query);   
@@ -586,20 +588,15 @@ function desaObservacio(entry){
   query += '0' + '","';
   query += '0' + '","';
   query += '0' + '","';
-  //query += fileEntry.fullPath + '","';
   query += entry.toURL() + '","';
   query += '0' + '")';
   console.log(query);
   db.transaction(function (tx) {
     tx.executeSql(query, [], function(tx, results){
-        rowidActual = results.insertId;
-        console.log("rowidActual :" + rowidActual);
+      observacions[observacioActual]["rowid"] = results.insertId;
     },
-    fail);         
+    empty);         
   });
-}
-
-function fail() {  
 }
 
 function checkConnection() {
