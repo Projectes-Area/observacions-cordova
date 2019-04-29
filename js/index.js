@@ -4,6 +4,7 @@ var app = {
   },
   onDeviceReady: function() {
     this.receivedEvent('deviceready');
+    document.addEventListener("backbutton", onBackKeyDown, false);
     db = window.openDatabase('Edumet', '', 'Base de dades Edumet', 10000);
     window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
       console.log('File system open: ' + fs.name);
@@ -36,8 +37,6 @@ var app = {
   }
 };
 
-app.initialize();
-
 var storage = window.localStorage;
 var db;
 var usuari = "";
@@ -57,7 +56,19 @@ var fotoBaixada;
 var fileSystem;
 var observacioActual;
 
+app.initialize();
+
 function empty() {  
+}
+
+function onBackKeyDown() {
+  navigator.notification.confirm("Vols sortir de l'App?", sortir, "EDUMET", ["Cancel·lar","Sortir"]);
+}
+
+function sortir(buttonIndex) {
+  if(buttonIndex == 2) {
+    navigator.app.exitApp();
+  }
 }
 
 var input = document.getElementById('password');
@@ -302,6 +313,13 @@ function enviaObservacio(i) {
     .then(response => {    
       console.log(response);
     });
+
+    navigator.notification.alert(
+      "S'ha penjat l'observació al servidor Edumet.",
+      empty,
+      'Enviar',
+      "D'acord"
+    );
 }
 
 function activa(fragment) {
@@ -512,7 +530,15 @@ function actualitzaObservacio() {
     query += observacions[observacioActual]["rowid"];
     query += '"';
     console.log(query);
-    tx.executeSql(query);   
+    tx.executeSql(query, [], function(tx, results){
+      navigator.notification.alert(
+        "S'ha desat el tipus d'observació i la descripció del fenomen.",
+        empty,
+        'Desar',
+        "D'acord"
+      );
+    },
+    empty);
   });
 }
 
@@ -537,17 +563,22 @@ function getMesures() {
 function llistaObservacions() {
   var llista='';
   for(i=0;i<observacions.length;i++){
-    llista+= '<div style="display:flex; align-items:center;">';
+    llista+= '<div style="display:flex; align-items:center;" onClick="fitxa();">';
     //llista+= '<div style="width:25%"><img src="' + 'https://edumet.cat/edumet/meteo_proves/imatges/fenologia/' + observacions[i]["Fotografia_observacio"] + '" style="width:10vh; height:10vh" onClick="fitxa();" /></div>';
-    llista+= '<div style="width:25%"><img src="' + observacions[i]["Local_path"] + '" style="width:10vh; height:10vh" onClick="fitxa();" /></div>';
-    llista+= '<label style="width:25%">' + observacions[i]["Data_observacio"] + '</label>';
+    llista+= '<div style="width:25%"><img src="' + observacions[i]["Local_path"] + '" style="width:10vh; height:10vh" /></div>';
+    llista+= '<label style="width:25%">' + observacions[i]["Data_observacio"] + '<br>' + observacions[i]["Hora_observacio"] +'</label>';
     if(observacions[i]["Id_feno"]!="0") {
       llista+= '<label style="width:25%">' + fenomens[observacions[i]["Id_feno"]]["Titol_feno"] + '</label>';
     } else {
-      llista+= '<label style="width:25%">' + "Indefinit" + '</label>';
+      llista+= '<label style="width:25%">' + "Sense identificar" + '</label>';
     }
-    llista+= '<label style="width:25%">' + observacions[i]["Enviat"] + '</label>';
-    llista+= '</div>';
+    llista+= '<div style="width:25%">';
+    if(observacions[i]["Enviat"] == "1") {
+      llista+= '<img src="img/check-verd.png" style="width:8vh; height:8vh" />';
+    } else {
+      llista+= '<img src="img/check-gris.png" style="width:8vh; height:8vh" />';
+    }
+    llista+= '</div></div>';
   }
   document.getElementById('llistat').innerHTML = llista;
 }

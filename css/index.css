@@ -20,6 +20,8 @@ body {
     background-size: 6vh !important;
     padding-top: 6vh;
     color: #418ac8;
+    border:none;
+    outline:none;
 }
 .boto-inf {
     width:25%;
@@ -29,6 +31,9 @@ body {
     background-size: 6vh !important;
     padding-top: 6vh;
     color: #418ac8;
+    border:0;
+    border:none;
+    outline:none;
 }
 .boto-edit {
     width:8vh;
@@ -39,6 +44,13 @@ body {
 }
 .bigFont {
     font-size:16px;
+}
+.obs-div {
+    display:flex;
+    align-items:center;
+}
+.obs-icon {
+    height:5vh;
 }
 #capsalera {
     height:10vh;
@@ -94,7 +106,7 @@ body {
 #fila {
     height:5vh;
     display:flex;
-    text-align: center;
+    text-align:center;
     align-items:center;
 }
 #llistat {
@@ -113,14 +125,15 @@ body {
     margin:1vh;
 }
 #fenomen {
-    width:80vw;
+    width:88vw;
     height:10vh;
     font-size: 16px;
 }
 #descripcio {
-    width:80vw;
+    width:88vw;
     height:20vh;
-    margin:1vh;    
+    margin-top:1vh;    
+    margin-bottom:1vh;  
 }
 #menu-inferior {
     display:flex;
