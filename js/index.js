@@ -62,11 +62,11 @@ function empty() {
 }
 
 function onBackKeyDown() {
-  navigator.notification.confirm("Vols sortir de l'App?", sortir, "EDUMET", ["Cancel·lar","Sortir"]);
+  navigator.notification.confirm("Vols sortir de l'App?", sortir, "EDUMET", ["Sortir","Cancel·lar"]);
 }
 
 function sortir(buttonIndex) {
-  if(buttonIndex == 2) {
+  if(buttonIndex == 1) {
     navigator.app.exitApp();
   }
 }
@@ -300,26 +300,24 @@ function enviaObservacio(i) {
                 descripcio: observacions[i]["Descripcio_observacio"],
                 fitxer: getFileContentAsBase64(path,callback) // observacions[i]["Fotografia_observacio"]
               }
-  //var JSONenvio = JSON.stringify(envio);
-  //console.log("JSON:" + JSONenvio);
-  fetch(url_servidor,{
+  var JSONenvio = JSON.stringify(envio);
+  console.log("JSON:" + JSONenvio);
+  fetch('dades_recarregar.php',{
     method:'POST',
     headers:{
       'Content-Type': 'application/json; charset=UTF-8'
       },
-    body: envio
+    body: JSONenvio
     })
     .then(response => response.text())
     .then(response => {    
-      console.log(response);
-    });
-
-    navigator.notification.alert(
-      "S'ha penjat l'observació al servidor Edumet.",
-      empty,
-      'Enviar',
-      "D'acord"
-    );
+      navigator.notification.alert(
+        "S'ha penjat l'observació al servidor Edumet.",
+        empty,
+        'Penjar observació',
+        "D'acord"
+      );
+    });            
 }
 
 function activa(fragment) {
@@ -377,9 +375,18 @@ function observa() {
   activa('observacions');
   llistaObservacions();
 }
-function fitxa() {
+function fitxa(i) {
   activa('fitxa');
-  mapaFitxa.setView(new L.LatLng(latitudActual, longitudActual), 15);
+  var nomFenomen = document.getElementById('nomFenomen');
+  nomFenomen.innerHTML = fenomens[observacions[i]["Id_feno"]]["Titol_feno"];
+  var dataHora = document.getElementById('dataHora');
+  dataHora.innerHTML = observacions[i]["Data_observacio"] + '  -  ' + observacions[i]["Hora_observacio"];
+  var fotoFitxa = document.getElementById('fotoFitxa');
+  fotoFitxa.src = observacions[i]["Local_path"];
+  var descripcioFitxaFitxa = document.getElementById('descripcioFitxa');
+  descripcioFitxaFitxa.innerHTML = observacions[i]["Descripcio_observacio"];
+  fotoFitxa.src = observacions[i]["Local_path"];
+  mapaFitxa.setView(new L.LatLng(observacions[i]["Latitud"], observacions[i]["Longitud"]), 15);
 }
 
 function valida() {
@@ -562,8 +569,8 @@ function getMesures() {
 
 function llistaObservacions() {
   var llista='';
-  for(i=0;i<observacions.length;i++){
-    llista+= '<div style="display:flex; align-items:center;" onClick="fitxa();">';
+  for(i=observacions.length-1;i>0;i--){
+    llista+= '<div style="display:flex; align-items:center;" onClick="fitxa(' + i +')">';
     //llista+= '<div style="width:25%"><img src="' + 'https://edumet.cat/edumet/meteo_proves/imatges/fenologia/' + observacions[i]["Fotografia_observacio"] + '" style="width:10vh; height:10vh" onClick="fitxa();" /></div>';
     llista+= '<div style="width:25%"><img src="' + observacions[i]["Local_path"] + '" style="width:10vh; height:10vh" /></div>';
     llista+= '<label style="width:25%">' + observacions[i]["Data_observacio"] + '<br>' + observacions[i]["Hora_observacio"] +'</label>';

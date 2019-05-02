@@ -159,8 +159,14 @@ body {
     height:80vh;
 }
 #mapaFitxa {
-    width:100vw;
-    height:40vh;
+    width:100%;
+    height:30vh;
+}
+#descripcioFitxa {
+    height:10vh;
+    width:100%;
+    margin-left:5px;
+    margin-right:5px;
 }
 #logoEstacio {
     height:10vh;
@@ -178,4 +184,19 @@ body {
     text-align:center;
     justify-content: space-evenly;
     height:10vh;
+}
+#nomFenomen {
+    display:flex;
+    height:3vh;
+    justify-content:center;
+    align-items:center;
+}
+#dataHora {
+    display:flex;
+    height:3vh;
+    justify-content:center;
+    align-items:center;
+}
+#fotoFitxa{
+    width:70%;
 }
