@@ -36,8 +36,8 @@ body {
     outline:none;
 }
 .boto-edit {
-    width:8vh;
-    height:8vh;
+    width:6vh;
+    height:6vh;
     background-repeat: no-repeat !important;
     background-position:center !important;
     background-size: 8vh !important; 
@@ -164,9 +164,8 @@ body {
 }
 #descripcioFitxa {
     height:10vh;
-    width:100%;
-    margin-left:5px;
-    margin-right:5px;
+    padding-left:15px;
+    padding-right:15px;
 }
 #logoEstacio {
     height:10vh;
