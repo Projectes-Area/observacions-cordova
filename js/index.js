@@ -44,7 +44,7 @@ var contrasenya;
 var estacioActual;
 var estacioPreferida;
 var estacions;
-var observacions;
+var numObs;
 var fenomens = [];
 var latitudActual;
 var longitudActual;
@@ -177,37 +177,27 @@ function baixaObsInicial() {
   .then(response => response.text())
   .then(response => JSON.parse(response))
   .then(response => {
-    console.log("OBSERVACIONS: Baixades");
-    observacions=response;
+    numObs  = response.length;
     db.transaction(function (tx) {
       tx.executeSql('CREATE TABLE Observacions (ID, Data_observacio, Hora_observacio, Latitud, Longitud, Id_feno, Descripcio_observacio, Fotografia_observacio, Local_path, Enviat)');   
-      for(i=0;i<observacions.length;i++){
-        observacions[i]["Enviat"] = "1";
+      for(i=0;i<numObs;i++){
         var query = 'INSERT INTO Observacions (ID, Data_observacio, Hora_observacio, Latitud, Longitud, Id_feno, Descripcio_observacio, Fotografia_observacio, Local_path, Enviat) VALUES ("';
-        query += observacions[i]["ID"] + '","';
-        query += observacions[i]["Data_observacio"] + '","';
-        query += observacions[i]["Hora_observacio"] + '","';
-        query += observacions[i]["Latitud"] + '","';
-        query += observacions[i]["Longitud"] + '","';
-        query += observacions[i]["Id_feno"] + '","';
-        query += observacions[i]["Descripcio_observacio"] + '","';
-        query += observacions[i]["Fotografia_observacio"] + '","';
+        query += response[i]["ID"] + '","';
+        query += response[i]["Data_observacio"] + '","';
+        query += response[i]["Hora_observacio"] + '","';
+        query += response[i]["Latitud"] + '","';
+        query += response[i]["Longitud"] + '","';
+        query += response[i]["Id_feno"] + '","';
+        query += response[i]["Descripcio_observacio"] + '","';
+        query += response[i]["Fotografia_observacio"] + '","';
         query += '0' + '","';
         query += '1' + '")';   
-        tx.i = i;   
-        tx.executeSql(query, [], function(tx, results){
-          registra(tx.i,results.insertId);
-        },
-        empty);
+        tx.executeSql(query);
+        console.log("Nova observació: " + response[i]["ID"]);
+        baixaFoto(response[i]["ID"],response[i]["Fotografia_observacio"]); 
       }
     });
-    fotoBaixada = 0;
-    baixaFoto(fotoBaixada);
   });  
-}
-
-function registra(i,id) {
-  observacions[i]["rowid"] = id;
 }
 
 // BAIXA OBSERVACIONS AFEGIDES
@@ -219,70 +209,53 @@ function baixaObsAfegides() {
   .then(response => {
     db.transaction(function (tx) { 
       for(i=0;i<response.length;i++){
-        var nova = true;
-        for(j=0;j<observacions.length;j++) {
-          if(response[i]["ID"] == observacions[j]["ID"]) {
-            nova = false;
-          }
-        }
-        if(nova) {
-          var numObs = observacions.length;
-          observacions[numObs] = response[i];
-          observacions[numObs]["Enviat"] = "1";
-          var query = 'INSERT INTO Observacions (ID, Data_observacio, Hora_observacio, Latitud, Longitud, Id_feno, Descripcio_observacio, Fotografia_observacio, Local_path, Enviat) VALUES ("';
-          query += observacions[numObs]["ID"] + '","';
-          query += observacions[numObs]["Data_observacio"] + '","';
-          query += observacions[numObs]["Hora_observacio"] + '","';
-          query += observacions[numObs]["Latitud"] + '","';
-          query += observacions[numObs]["Longitud"] + '","';
-          query += observacions[numObs]["Id_feno"] + '","';
-          query += observacions[numObs]["Descripcio_observacio"] + '","';
-          query += observacions[numObs]["Fotografia_observacio"] + '","';
-          query += '0' + '","';
-          query += '1' + '")';        
-        
-          tx.executeSql(query, [], function(tx, results){
-            //observacions[numObs]["rowid"] = results.insertId;
-            //console.log(observacions[numObs]["rowid"]);
-          },
-          empty);
+        var query = 'SELECT COUNT(ID) FROM Observacions WHERE ID="' + response[i]["ID"] +'"';
+        console.log(query);
+        var query2 = 'INSERT INTO Observacions (ID, Data_observacio, Hora_observacio, Latitud, Longitud, Id_feno, Descripcio_observacio, Fotografia_observacio, Local_path, Enviat) VALUES ("';
+        query2 += response[i]["ID"] + '","';
+        query2 += response[i]["Data_observacio"] + '","';
+        query2 += response[i]["Hora_observacio"] + '","';
+        query2 += response[i]["Latitud"] + '","';
+        query2 += response[i]["Longitud"] + '","';
+        query2 += response[i]["Id_feno"] + '","';
+        query2 += response[i]["Descripcio_observacio"] + '","';
+        query2 += response[i]["Fotografia_observacio"] + '","';
+        query2 += '0' + '","';
+        query2 += '1' + '")';
+        var foto = response[i]["Fotografia_observacio"];
+        var id = response[i]["ID"];
+        tx.executeSql(query, [], function(tx, results){
+          console.log(results.rows[0]["COUNT(ID)"]);
+          if(results.rows[0]["COUNT(ID)"] == "0") {      
+          
+            tx.executeSql(query2);
 
-          baixaFoto(numObs); 
-          console.log("Nova observació: " + observacions[numObs]["ID"]);
-        } 
+            baixaFoto(id,foto); 
+            console.log("Nova observació: " + id);
+          }
+        },
+        empty);
       }
     });
   });  
 }
 
-function baixaFoto(i) {
-  var nom = observacions[i]["Fotografia_observacio"];
-  fileSystem.root.getFile(nom, { create: true, exclusive: false }, function (fileEntry) {
-    var url = 'https://edumet.cat/edumet/meteo_proves/imatges/fenologia/' + nom;
+function baixaFoto(id,foto) {
+  fileSystem.root.getFile(foto, { create: true, exclusive: false }, function (fileEntry) {
+    var url = 'https://edumet.cat/edumet/meteo_proves/imatges/fenologia/' + foto;
     //console.log(url);
     fetch(url)
     .then(response => response.blob())
     .then(response => {
       var blob = new Blob([response], { type: 'image/jpeg' });
-      observacions[i]["Local_path"] = fileEntry.toURL();
       writeFile(fileEntry, blob);
       db.transaction(function (tx) {
         var query = 'UPDATE Observacions SET Local_path="';
-        query += observacions[i]["Local_path"];
+        query += fileEntry.toURL();;
         query += '" WHERE ID="';
-        query += observacions[i]["ID"];
+        query += id;
         query += '"';
         tx.executeSql(query);
-        /*tx.executeSql(query, [], function(tx, results){ 
-          query = 'SELECT rowid FROM Observacions WHERE ID="';
-          query += observacions[i]["ID"];
-          query += '"';
-          tx.executeSql(query, [], function(tx, results){ 
-            observacions[i]["rowid"] = results.rows[0]["rowid"];
-          },
-          empty);
-        },
-        empty);*/
       });
     });        
   }, empty);
@@ -291,11 +264,6 @@ function baixaFoto(i) {
 function writeFile(fileEntry, dataObj) {
   fileEntry.createWriter(function (fileWriter) {
     fileWriter.onwriteend = function() {
-      //console.log("Successful file write...");
-      fotoBaixada++;
-      if(fotoBaixada<observacions.length) {
-        baixaFoto(fotoBaixada);
-      }
     };
     fileWriter.onerror = function (e) {
       console.log("Failed file write: " + e.toString());
@@ -305,89 +273,93 @@ function writeFile(fileEntry, dataObj) {
 }
 
 function enviaObservacio() {
-  window.resolveLocalFileSystemURL(observacions[observacioActual]["Local_path"], gotFile, fail);          
-  function fail(e) {
-    alert('Cannot found requested file');
-  }
-  function gotFile(fileEntry) {
-    fileEntry.file(function(file) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var imatge64 = e.target.result.replace(/^data:image\/[a-z]+;base64,/, "");  
-        penjar(imatge64);
-      };
-      reader.readAsDataURL(file);
-    });
-  }
+  db.transaction(function (tx) {
+    var query = 'SELECT * FROM Observacions WHERE Local_path=\'' + observacioActual +'\'';
+    console.log(query);      
+    tx.executeSql(query, [], function(tx, rs){  
+      var fitxaObs = rs.rows.item(0);
+      if(fitxaObs["Enviat"] == "0") {
+        window.resolveLocalFileSystemURL(fitxaObs["Local_path"], gotFile, fail);          
+        function fail(e) {
+          alert('Cannot found requested file');
+        }
+        function gotFile(fileEntry) {
+          fileEntry.file(function(file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+              var imatge64 = e.target.result.replace(/^data:image\/[a-z]+;base64,/, "");                
+              var envio = { tab: "salvarFenoApp",
+                  usuari: usuari,
+                  dia: fitxaObs["Data_observacio"],
+                  hora: fitxaObs["Hora_observacio"],
+                  lat: fitxaObs["Latitud"],
+                  lon: fitxaObs["Longitud"],
+                  id_feno: fitxaObs["Id_feno"],
+                  descripcio: fitxaObs["Descripcio_observacio"],
+                  fitxer: imatge64
+              }
+              var JSONenvio = JSON.stringify(envio);
+              console.log("JSON:" + JSONenvio);
+              fetch(url_servidor + '/dades_recarregar.php',{
+                method:'POST',
+                headers:{
+                  'Content-Type': 'application/json; charset=UTF-8'
+                  },
+                body: JSONenvio
+                })
+                .then(response => response.text())
+                .then(response => {   
+                  db.transaction(function (tx) {
+                    var query = 'UPDATE Observacions SET ID=';
+                    query += response.trim();
+                    query += ', Enviat=1';
+                    query += ' WHERE Local_path="';
+                    query += fitxaObs["Local_path"];
+                    query += '"';
+                    console.log(query);
+                    tx.executeSql(query, [], function(tx, results){
+                      navigator.notification.alert(
+                        "S'ha penjat l'observació al servidor Edumet.",
+                        empty,
+                        'Penjar observació',
+                        "D'acord"
+                      );
+                    },
+                    empty);
+                  });       
+                });
+            };
+            reader.readAsDataURL(file);
+          });
+        }
+      }      
+    }, empty);    
+  });  
 }
 
 function eliminaObservacio() {
-  console.log("observacioActual:" + observacioActual);
-  console.log("ID:" + observacions[observacioActual]["ID"]);
-  console.log("rowid:" + observacions[observacioActual]["rowid"]);
-  if(observacions[observacioActual]["Enviat"] == "1") {
-    var url = url_servidor + "?usuari=" + usuari + "&id=" + observacions[observacioActual]["ID"] + "&tab=eliminarFenUsu";
-    fetch(url)
-    .then(response => response.text())
-    .then(response => console.log(response));
-  }
   db.transaction(function (tx) {
-    var query = 'DELETE FROM Observacions WHERE rowid=';
-    query += observacions[observacioActual]["rowid"];
-    console.log(query);
-    tx.executeSql(query, [], function(tx, results){
-      navigator.notification.alert(
-        "S'ha eliminat l'observació.",
-        empty,
-        'Eliminar observació',
-        "D'acord"
-      );
-    },
-    empty);
-  });
-}
+    var query = 'SELECT ID,Enviat,Local_path FROM Observacions WHERE Local_path=\'' + observacioActual +'\'';
+    console.log(query);      
+    tx.executeSql(query, [], function(tx, rs){  
+      var fitxaObs = rs.rows.item(0);
 
-function penjar(imatge64) {
-  var envio = { tab: "salvarFenoApp",
-                usuari: usuari,
-                dia: observacions[observacioActual]["Data_observacio"],
-                hora: observacions[observacioActual]["Hora_observacio"],
-                lat: observacions[observacioActual]["Latitud"],
-                lon: observacions[observacioActual]["Longitud"],
-                id_feno: observacions[observacioActual]["Id_feno"],
-                descripcio: observacions[observacioActual]["Descripcio_observacio"],
-                fitxer: imatge64
-              }
-  var JSONenvio = JSON.stringify(envio);
-  console.log("JSON:" + JSONenvio);
-  fetch(url_servidor + '/dades_recarregar.php',{
-    method:'POST',
-    headers:{
-      'Content-Type': 'application/json; charset=UTF-8'
-      },
-    body: JSONenvio
-    })
-    .then(response => response.text())
-    .then(response => {   
-      db.transaction(function (tx) {
-        var query = 'UPDATE Observacions SET ID=';
-        query += response.trim();
-        query += ', Enviat=1';
-        query += ' WHERE rowid="';
-        query += observacions[observacioActual]["rowid"];
-        query += '"';
-        console.log(query);
-        tx.executeSql(query, [], function(tx, results){
-          navigator.notification.alert(
-            "S'ha penjat l'observació al servidor Edumet.",
-            empty,
-            'Penjar observació',
-            "D'acord"
-          );
-        },
-        empty);
-      });       
-    });            
+      if(fitxaObs["Enviat"] == "1") {
+        var url = url_servidor + "?usuari=" + usuari + "&id=" + fitxaObs["ID"]+ "&tab=eliminarFenUsu";
+        fetch(url);
+      }
+      var query = 'DELETE FROM Observacions WHERE Local_path=\'' + fitxaObs["Local_path"] +'\'';
+
+      tx.executeSql(query, [], function(tx, results){
+        navigator.notification.alert(
+          "S'ha eliminat l'observació.",
+          empty,
+          'Eliminar observació',
+          "D'acord"
+        );
+      });
+    }, empty);    
+  });  
 }
 
 function activa(fragment) {
@@ -417,16 +389,7 @@ function fenologia() {
   if (!localitzat) {
     geolocalitza();
   }
-  observacions = [];
-  db.transaction(function (tx) {
-    var query = 'SELECT * FROM Observacions';
-    tx.executeSql(query, [], function(tx, rs){
-      for(var i=0; i<rs.rows.length; i++) {
-        observacions[i] = rs.rows.item(i);
-      }
-    }, empty) 
-  });
-  baixaObsAfegides();
+  //baixaObsAfegides();
 }
 
 function estacio() {
@@ -446,31 +409,38 @@ function observa() {
   activa('observacions');
   llistaObservacions();
 }
-function fitxa(i) {
-  observacioActual = i;
+function fitxa(id) {
+  observacioActual = id;
   activa('fitxa');
-  var nomFenomen = document.getElementById('nomFenomen');
-  nomFenomen.innerHTML = fenomens[observacions[i]["Id_feno"]]["Titol_feno"];
-  var dataHora = document.getElementById('dataHora');
-  dataHora.innerHTML = formatDate(observacions[i]["Data_observacio"]) + '  -  ' + observacions[i]["Hora_observacio"];
-  var fotoFitxa = document.getElementById('fotoFitxa');
-  fotoFitxa.src = observacions[i]["Local_path"];
-  var descripcioFitxaFitxa = document.getElementById('descripcioFitxa');
-  descripcioFitxaFitxa.innerHTML = observacions[i]["Descripcio_observacio"];
-  fotoFitxa.src = observacions[i]["Local_path"];
-  try {
-    mapaFitxa = L.map('mapaFitxa',{attributionControl:false}).setView(new L.LatLng(observacions[i]["Latitud"], observacions[i]["Longitud"]), 15);
-    L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png', {
-      minZoom: 1,
-      maxZoom: 19
-    }).addTo(mapaFitxa);
-  } catch {
-    mapaFitxa.setView(new L.LatLng(observacions[i]["Latitud"], observacions[i]["Longitud"]), 15);
-    mapaFitxa.removeLayer(marcadorFitxa);
-  }
-  marcadorFitxa = L.marker(new L.LatLng(observacions[i]["Latitud"], observacions[i]["Longitud"]));
-  marcadorFitxa.addTo(mapaFitxa);    
+  db.transaction(function (tx) {
+    var query = 'SELECT * FROM Observacions WHERE Local_path=\'' + observacioActual +'\'';
+    console.log(query);      
+    tx.executeSql(query, [], function(tx, rs){      
+      var fitxaObs = rs.rows.item(0);
+      var nomFenomen = document.getElementById('nomFenomen');
+      nomFenomen.innerHTML = fenomens[fitxaObs["Id_feno"]]["Titol_feno"];
+      var dataHora = document.getElementById('dataHora');
+      dataHora.innerHTML = formatDate(fitxaObs["Data_observacio"]) + '  -  ' + fitxaObs["Hora_observacio"];
+      var fotoFitxa = document.getElementById('fotoFitxa');
+      fotoFitxa.src = fitxaObs["Local_path"];
+      var descripcioFitxaFitxa = document.getElementById('descripcioFitxa');
+      descripcioFitxaFitxa.innerHTML = fitxaObs["Descripcio_observacio"];
+      try {
+        mapaFitxa = L.map('mapaFitxa',{attributionControl:false}).setView(new L.LatLng(fitxaObs["Latitud"], fitxaObs["Longitud"]), 15);
+        L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png', {
+          minZoom: 1,
+          maxZoom: 19
+        }).addTo(mapaFitxa);
+      } catch {
+        mapaFitxa.setView(new L.LatLng(fitxaObs["Latitud"],fitxaObs["Longitud"]), 15);
+        mapaFitxa.removeLayer(marcadorFitxa);
+      }
+      marcadorFitxa = L.marker(new L.LatLng(fitxaObs["Latitud"], fitxaObs["Longitud"]));
+      marcadorFitxa.addTo(mapaFitxa);
+    }, empty);    
+  });
 }
+
 
 function valida() {
   usuari = document.getElementById('usuari').value;
@@ -607,30 +577,33 @@ function fesFoto() {
 }
 
 function actualitzaObservacio() {
-  var Id_feno = document.getElementById('fenomen').value;
-  var Descripcio_observacio = document.getElementById('descripcio').value;
-  observacions[observacioActual]["Id_feno"] = Id_feno;
-  observacions[observacioActual]["Descripcio_observacio"] = Descripcio_observacio;
-
   db.transaction(function (tx) {
-    var query = 'UPDATE Observacions SET Id_feno="';
-    query += Id_feno;
-    query += '", Descripcio_observacio="';
-    query += Descripcio_observacio;
-    query += '" WHERE rowid="';
-    query += observacions[observacioActual]["rowid"];
-    query += '"';
-    console.log(query);
-    tx.executeSql(query, [], function(tx, results){
-      navigator.notification.alert(
-        "S'ha desat el tipus d'observació i la descripció del fenomen.",
-        empty,
-        'Desar',
-        "D'acord"
-      );
-    },
-    empty);
-  });
+    var Id_feno = document.getElementById('fenomen').value;
+    var Descripcio_observacio = document.getElementById('descripcio').value;
+    var query = 'SELECT * FROM Observacions WHERE Local_path=\'' + observacioActual +'\'';
+    console.log(query);  
+        
+    tx.executeSql(query, [], function(tx, rs){  
+      var fitxaObs = rs.rows.item(0);
+      query = 'UPDATE Observacions SET Id_feno="';
+      query += Id_feno;
+      query += '", Descripcio_observacio="';
+      query += Descripcio_observacio;
+      query += '" WHERE Local_path="';
+      query += fitxaObs["Local_path"];
+      query += '"';
+      console.log(query);
+      tx.executeSql(query, [], function(tx, results){
+        navigator.notification.alert(
+          "S'ha desat el tipus d'observació i la descripció del fenomen.",
+          empty,
+          'Desar',
+          "D'acord"
+        );
+      },
+      empty);           
+    }, empty);    
+  }); 
 }
 
 function getMesures() {
@@ -651,26 +624,32 @@ function getMesures() {
   });
 }
 
-function llistaObservacions() {
-  var llista='';
-  for(i=observacions.length-1;i>=0;i--){
-    llista+= '<div style="display:flex; align-items:center;" onClick="fitxa(' + i +')">';
-    llista+= '<div style="width:25%"><img src="' + observacions[i]["Local_path"] + '" style="width:10vh; height:10vh" /></div>';
-    llista+= '<label style="width:25%">' + formatDate(observacions[i]["Data_observacio"]) + '<br>' + observacions[i]["Hora_observacio"] +'</label>';
-    if(observacions[i]["Id_feno"]!="0") {
-      llista+= '<label style="width:25%">' + fenomens[observacions[i]["Id_feno"]]["Titol_feno"] + '</label>';
-    } else {
-      llista+= '<label style="width:25%">' + "Sense identificar" + '</label>';
-    }
-    llista+= '<div style="width:25%">';
-    if(observacions[i]["Enviat"] == "1") {
-      llista+= '<img src="img/check-verd.png" style="width:8vh; height:8vh" />';
-    } else {
-      llista+= '<img src="img/check-gris.png" style="width:8vh; height:8vh" />';
-    }
-    llista+= '</div></div>';
-  }
-  document.getElementById('llistat').innerHTML = llista;
+function llistaObservacions() {  
+  db.transaction(function (tx) {
+    var query = 'SELECT * FROM Observacions';
+    tx.executeSql(query, [], function(tx, rs){
+      var llista='';
+      for(var i=0; i<rs.rows.length; i++) {
+        var obsLlista = rs.rows.item(i);
+        llista+= '<div style="display:flex; align-items:center;" onClick="fitxa(\'' + obsLlista["Local_path"] +'\')">';
+        llista+= '<div style="width:25%"><img src="' + obsLlista["Local_path"] + '" style="width:10vh; height:10vh" /></div>';
+        llista+= '<label style="width:25%">' + formatDate(obsLlista["Data_observacio"]) + '<br>' + obsLlista["Hora_observacio"] +'</label>';
+        if(obsLlista["Id_feno"]!="0") {
+          llista+= '<label style="width:25%">' + fenomens[obsLlista["Id_feno"]]["Titol_feno"] + '</label>';
+        } else {
+          llista+= '<label style="width:25%">' + "Sense identificar" + '</label>';
+        }
+        llista+= '<div style="width:25%">';
+        if(obsLlista["Enviat"] == "1") {
+          llista+= '<img src="img/check-verd.png" style="width:8vh; height:8vh" />';
+        } else {
+          llista+= '<img src="img/check-gris.png" style="width:8vh; height:8vh" />';
+        }
+        llista+= '</div></div>';        
+      }
+      document.getElementById('llistat').innerHTML = llista;
+    }, empty) 
+  });
 }
 
 function desaObservacio(entry){  
@@ -685,20 +664,10 @@ function desaObservacio(entry){
   var Data_observacio = any + '-' + mes + '-' + dia;
   var Hora_observacio = hora + ':' + minut + ':' + segon;
 
-  observacioActual = observacions.length;
-  console.log("numObs: " + observacioActual);
-
-  observacions[observacioActual] = [];
-  observacions[observacioActual]["ID"] = "0";
-  observacions[observacioActual]["Data_observacio"] = Data_observacio;
-  observacions[observacioActual]["Hora_observacio"] = Hora_observacio;
-  observacions[observacioActual]["Latitud"] = latitudActual;
-  observacions[observacioActual]["Longitud"] = longitudActual;
-  observacions[observacioActual]["Id_feno"] = "0";
-  observacions[observacioActual]["Descripcio_observacio"] = "0";
-  observacions[observacioActual]["Fotografia_observacio"] = "0";
-  observacions[observacioActual]["Local_path"] = entry.toURL();
-  observacions[observacioActual]["Enviat"] = "0";
+  numObs++;
+  observacioActual = entry.toURL();
+  console.log("numObs: " + numObs);
+  console.log("observacioActual: " + observacioActual);
 
   var query = 'INSERT INTO Observacions (ID, Data_observacio, Hora_observacio, Latitud, Longitud, Id_feno, Descripcio_observacio, Fotografia_observacio, Local_path, Enviat) VALUES ("';
   query += '0' + '","';
@@ -709,14 +678,11 @@ function desaObservacio(entry){
   query += '0' + '","';
   query += '0' + '","';
   query += '0' + '","';
-  query += entry.toURL() + '","';
+  query += observacioActual + '","';
   query += '0' + '")';
   console.log(query);
   db.transaction(function (tx) {
-    tx.executeSql(query, [], function(tx, results){
-      observacions[observacioActual]["rowid"] = results.insertId;
-    },
-    empty);         
+    tx.executeSql(query);
   });
 }
 
