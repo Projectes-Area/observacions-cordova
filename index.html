@@ -26,7 +26,7 @@
           <h4>Contrasenya:</h4>
           <input class="bigFont" id="password" type="password" name="contrasenya"><br>
         </div>
-        <button style="padding:12px" class="bigFont" id="valida" onClick="valida();" style="margin-top:6px">ENTRA</button>
+        <button id="valida" class="bigFont" onClick="valida();">ENTRA</button>
       </div>
       <div id="fenologia">
         <div id="menu-botons">
@@ -57,11 +57,14 @@
         </div>
       </div>
       <div id="estacions">
-        <div style="display:flex; align-items:center;"><img id= "star" src="img/star-yellow.png" style="height:6vh;" onClick="desaPreferida();"><select id="est_nom" style="height:4vh; width:100%; margin-right:5px;" onchange="selectEstacio()"></select></div>
+        <div id="id_estacio">
+          <img id= "star" src="img/star-yellow.png" style="height:6vh;" onClick="desaPreferida();">
+          <select id="est_nom" onchange="selectEstacio()"></select>
+        </div>
         <div id="header">
-          <div id="nom_estacio" style="margin:6px; width:100%; height:4vh;">
-            <div id="est_poblacio" style="margin-left: 5vh;"></div>
-            <div id="est_altitud" style="margin-left: 5vh;"></div>
+          <div id="nom_estacio">
+            <div id="est_poblacio"></div>
+            <div id="est_altitud"></div>
           </div>
           <div id="logoEstacio">
             <img id=est_logo src=""></img>        
@@ -85,12 +88,12 @@
       <div id="fitxa">
         <div id="nomFenomen"></div>
         <div id="dataHora"></div>
-        <div style="display:flex; height:34vh; justify-content: space-around;">
+        <div id="edicio_fitxa">
           <img id="fotoFitxa" src="">
-          <div style="display:flex; flex-direction:column; justify-content:space-around;">
+          <div id="botons_edicio">
             <button class="boto-edit" style="background: url(img/upload-edumet.png);"></button>
             <button class="boto-edit" style="background: url(img/edit-edumet.png);"></button>
-            <button class="boto-edit" style="background: url(img/trash-edumet.png);"></button>
+            <button class="boto-edit" style="background: url(img/trash-edumet.png);" onClick="eliminaObservacio();"></button>
           </div>
         </div>
         <div id="descripcioFitxa"></div>

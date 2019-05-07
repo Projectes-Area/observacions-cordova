@@ -40,7 +40,7 @@ body {
     height:6vh;
     background-repeat: no-repeat !important;
     background-position:center !important;
-    background-size: 8vh !important; 
+    background-size: 4vh !important; 
 }
 .bigFont {
     font-size:16px;
@@ -138,6 +138,11 @@ body {
 #menu-inferior {
     display:flex;
     height:10vh;
+    border: solid 1px;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    border-color: #f0f0f0;
 }
 #logo-edumet {
     align-self: center;
@@ -177,6 +182,17 @@ body {
     height:6vh;
     margin-right:5px;
 }
+#est_nom {
+    height:4vh;
+    width:100%;
+    margin-right:5px;
+}
+#nom_estacio {
+    margin:6px;
+    width:100%;
+    height:4vh;
+    margin-left:5vh;
+}
 #mesurat {
     display:flex;
     flex-direction:column;
@@ -198,4 +214,22 @@ body {
 }
 #fotoFitxa{
     width:70%;
+}
+#valida {
+    padding:12px;
+    margin-top:6px;
+}
+#id_estacio {
+    display:flex;
+    align-items:center;
+}
+#edicio_fitxa{
+    display:flex;
+    height:34vh;
+    justify-content: space-around;
+}
+#botons_edicio{
+    display:flex;
+    flex-direction:column; 
+    justify-content:space-around;
 }
