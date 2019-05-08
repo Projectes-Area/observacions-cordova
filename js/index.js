@@ -193,57 +193,62 @@ function baixaObsInicial() {
         query += '0' + '","';
         query += '1' + '")';   
         tx.executeSql(query);
-        console.log("Nova observació: " + response[i]["ID"]);
+        console.log("Observació inicial: " + response[i]["ID"]);
         baixaFoto(response[i]["ID"],response[i]["Fotografia_observacio"]); 
       }
     });
   });  
 }
 
+
 // BAIXA OBSERVACIONS AFEGIDES
 function baixaObsAfegides() {
-  var url = url_servidor + "?usuari=" + usuari + "&tab=visuFenoApp";
-  fetch(url)
-  .then(response => response.text())
-  .then(response => JSON.parse(response))
-  .then(response => {
-    db.transaction(function (tx) { 
-      for(i=0;i<response.length;i++){
-        var query = 'SELECT COUNT(ID) FROM Observacions WHERE ID="' + response[i]["ID"] +'"';
-        console.log(query);
-        var query2 = 'INSERT INTO Observacions (ID, Data_observacio, Hora_observacio, Latitud, Longitud, Id_feno, Descripcio_observacio, Fotografia_observacio, Local_path, Enviat) VALUES ("';
-        query2 += response[i]["ID"] + '","';
-        query2 += response[i]["Data_observacio"] + '","';
-        query2 += response[i]["Hora_observacio"] + '","';
-        query2 += response[i]["Latitud"] + '","';
-        query2 += response[i]["Longitud"] + '","';
-        query2 += response[i]["Id_feno"] + '","';
-        query2 += response[i]["Descripcio_observacio"] + '","';
-        query2 += response[i]["Fotografia_observacio"] + '","';
-        query2 += '0' + '","';
-        query2 += '1' + '")';
-        var foto = response[i]["Fotografia_observacio"];
-        var id = response[i]["ID"];
-        tx.executeSql(query, [], function(tx, results){
-          console.log(results.rows[0]["COUNT(ID)"]);
-          if(results.rows[0]["COUNT(ID)"] == "0") {      
-          
-            tx.executeSql(query2);
-
-            baixaFoto(id,foto); 
-            console.log("Nova observació: " + id);
-          }
-        },
-        empty);
-      }
-    });
-  });  
+  db.transaction(function (tx) {
+    var query = 'SELECT ID FROM Observacions';
+    tx.executeSql(query, [], function(tx, results){
+      var url = url_servidor + "?usuari=" + usuari + "&tab=visuFenoApp";
+      fetch(url)
+      .then(response => response.text())
+      .then(response => JSON.parse(response))
+      .then(response => compara(results.rows,response));  
+    },
+    empty);
+  });
 }
+
+function compara(local,remote){
+  for(var i=0;i<remote.length;i++){
+    var nova = true;
+    for(var j=0;j<local.length;j++){
+      if(local[j]["ID"] == remote[i]["ID"]){
+        nova = false;
+      }
+    }
+    if(nova){
+      var query = 'INSERT INTO Observacions (ID, Data_observacio, Hora_observacio, Latitud, Longitud, Id_feno, Descripcio_observacio, Fotografia_observacio, Local_path, Enviat) VALUES ("';
+      query += remote[i]["ID"] + '","';
+      query += remote[i]["Data_observacio"] + '","';
+      query += remote[i]["Hora_observacio"] + '","';
+      query += remote[i]["Latitud"] + '","';
+      query += remote[i]["Longitud"] + '","';
+      query += remote[i]["Id_feno"] + '","';
+      query += remote[i]["Descripcio_observacio"] + '","';
+      query += remote[i]["Fotografia_observacio"] + '","';
+      query += '0' + '","';
+      query += '1' + '")';   
+      console.log("Nova observació: " + remote[i]["ID"]);
+      baixaFoto(remote[i]["ID"],remote[i]["Fotografia_observacio"]);
+      db.transaction(function (tx) {          
+        tx.executeSql(query);
+      });
+    }
+  }
+}
+
 
 function baixaFoto(id,foto) {
   fileSystem.root.getFile(foto, { create: true, exclusive: false }, function (fileEntry) {
     var url = 'https://edumet.cat/edumet/meteo_proves/imatges/fenologia/' + foto;
-    //console.log(url);
     fetch(url)
     .then(response => response.blob())
     .then(response => {
@@ -389,7 +394,7 @@ function fenologia() {
   if (!localitzat) {
     geolocalitza();
   }
-  //baixaObsAfegides();
+  baixaObsAfegides();
 }
 
 function estacio() {
