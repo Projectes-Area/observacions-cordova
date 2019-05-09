@@ -193,6 +193,9 @@ body {
     height:4vh;
     margin-left:5vh;
 }
+#data_mesura {
+    color:red;
+}
 #mesurat {
     display:flex;
     flex-direction:column;

@@ -6,6 +6,7 @@
     </description>
     <author>Àrea de Cultura Digital</author>
     <preference name="windows-identity-name" value="Observacions" />
+    <preference name="Orientation" value="portrait" />
     <content src="index.html" />
     <preference name="iosExtraFilesystems" value="library,library-nosync,documents,documents-nosync,cache,bundle,root" />
     <preference name="AndroidExtraFilesystems" value="files,files-external,documents,sdcard,cache,cache-external,assets,root" />
