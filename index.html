@@ -32,7 +32,7 @@
         <div id="menu-botons">
           <button class="boto-sup" style="background: url(img/foto-edumet.png);" onClick="fesFoto();">Captura</button>
           <button class="boto-sup" style="background: url(img/save-edumet.png);" onClick="actualitzaObservacio();">Desa</button>
-          <button class="boto-sup" style="background: url(img/upload-edumet.png);" onClick="enviaObservacio();">Penja</button>
+          <button class="boto-sup" style="background: url(img/upload-edumet.png);" onClick="enviaActual();">Penja</button>
           <button class="boto-sup" style="background: url(img/llibreta-edumet.png);" onClick="observa();">Quadern</button>
         </div>
         <img id="foto" src="img/estacions.png">
@@ -91,8 +91,8 @@
         <div id="edicio_fitxa">
           <img id="fotoFitxa" src="">
           <div id="botons_edicio">
-            <button class="boto-edit" style="background: url(img/upload-edumet.png);"></button>
-            <button class="boto-edit" style="background: url(img/edit-edumet.png);"></button>
+            <button class="boto-edit" style="background: url(img/upload-edumet.png);" onClick="enviaFitxa()"></button>
+            <button class="boto-edit" style="background: url(img/edit-edumet.png);" onClick="editaObservacio();"></button>
             <button class="boto-edit" style="background: url(img/trash-edumet.png);" onClick="eliminaObservacio();"></button>
           </div>
         </div>

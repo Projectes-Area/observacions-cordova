@@ -55,6 +55,7 @@ var localitzat;
 var fotoBaixada;
 var fileSystem;
 var observacioActual;
+var observacioFitxa;
 var mapaFitxa;
 var marcadorFitxa;
 
@@ -85,8 +86,6 @@ L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png', {
 	minZoom: 1,
 	maxZoom: 19
 }).addTo(map);
-
-
 
 // BAIXA FENOMENS FENOLOGICS
 function baixaFenomens() {
@@ -127,9 +126,6 @@ function baixaEstacions() {
     console.log("ESTACIONS: Baixades");
     estacions=response;
     var x = document.getElementById("est_nom");
-    var distanciaPropera = 1000;
-    var distanciaProva;
-    var estacioPropera = 0;  
     for(i=0;i<estacions.length;i++){
       L.marker(new L.LatLng(estacions[i]["Latitud"], estacions[i]["Longitud"])).addTo(map);    
       var option = document.createElement("option");
@@ -277,9 +273,17 @@ function writeFile(fileEntry, dataObj) {
   });
 }
 
-function enviaObservacio() {
+function enviaActual() {
+  enviaObservacio(observacioActual);
+}
+function enviaFitxa() {
+  enviaObservacio(observacioFitxa);
+}
+
+
+function enviaObservacio(path_observacio) {
   db.transaction(function (tx) {
-    var query = 'SELECT * FROM Observacions WHERE Local_path=\'' + observacioActual +'\'';
+    var query = 'SELECT * FROM Observacions WHERE Local_path=\'' + path_observacio +'\'';
     console.log(query);      
     tx.executeSql(query, [], function(tx, rs){  
       var fitxaObs = rs.rows.item(0);
@@ -342,27 +346,52 @@ function enviaObservacio() {
   });  
 }
 
-function eliminaObservacio() {
+function editaObservacio() {
+  observacioActual = observacioFitxa;
   db.transaction(function (tx) {
-    var query = 'SELECT ID,Enviat,Local_path FROM Observacions WHERE Local_path=\'' + observacioActual +'\'';
+    var query = 'SELECT Local_path,Id_feno,Descripcio_observacio FROM Observacions WHERE Local_path=\'' + observacioActual +'\'';
+    console.log(query);
+    tx.executeSql(query, [], function(tx, rs){
+      var fitxaObs = rs.rows.item(0);
+      var obs = document.getElementById('foto');
+      obs.src = fitxaObs["Local_path"];
+      var Id_feno = document.getElementById('fenomen');
+      Id_feno.value = fitxaObs["Id_feno"];
+      var Descripcio_observacio = document.getElementById('descripcio');
+      Descripcio_observacio.value = fitxaObs["Descripcio_observacio"];
+      activa('fenologia');
+    });
+  });
+}
+
+function eliminaObservacio() {
+  db.transaction(function (tx) {    
+    var query = 'SELECT ID,Enviat,Local_path FROM Observacions WHERE Local_path=\'' + observacioFitxa +'\'';
     console.log(query);      
     tx.executeSql(query, [], function(tx, rs){  
       var fitxaObs = rs.rows.item(0);
-
       if(fitxaObs["Enviat"] == "1") {
-        var url = url_servidor + "?usuari=" + usuari + "&id=" + fitxaObs["ID"]+ "&tab=eliminarFenUsu";
+        var url = url_servidor + "?usuari=" + usuari + "&id=" + fitxaObs["ID"] + "&tab=eliminarFenUsu";
         fetch(url);
       }
-      var query = 'DELETE FROM Observacions WHERE Local_path=\'' + fitxaObs["Local_path"] +'\'';
 
-      tx.executeSql(query, [], function(tx, results){
-        navigator.notification.alert(
-          "S'ha eliminat l'observació.",
-          empty,
-          'Eliminar observació',
-          "D'acord"
-        );
-      });
+      var query = 'DELETE FROM Observacions WHERE Local_path=\'' + observacioFitxa +'\'';
+      tx.executeSql(query);
+
+      window.resolveLocalFileSystemURL(fitxaObs["Local_path"], function success(fileEntry) {   
+        fileEntry.remove(function(file){
+          navigator.notification.alert(
+            "S'ha eliminat l'observació.",
+            empty,
+            'Eliminar',
+            "D'acord"
+          );
+      },function(error){
+        console.log("error deleting the file " + error.code);
+          });
+      },function(){
+        console.log("file does not exist");
+      });           
     }, empty);    
   });  
 }
@@ -415,10 +444,10 @@ function observa() {
   llistaObservacions();
 }
 function fitxa(id) {
-  observacioActual = id;
+  observacioFitxa = id;
   activa('fitxa');
   db.transaction(function (tx) {
-    var query = 'SELECT * FROM Observacions WHERE Local_path=\'' + observacioActual +'\'';
+    var query = 'SELECT * FROM Observacions WHERE Local_path=\'' + observacioFitxa +'\'';
     console.log(query);      
     tx.executeSql(query, [], function(tx, rs){      
       var fitxaObs = rs.rows.item(0);
@@ -469,7 +498,6 @@ function valida() {
       storage.setItem("user", usuari);
       baixaObsInicial();
       activa('fenologia');
-      //fenologia();
     }
   });
 }
