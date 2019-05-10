@@ -67,6 +67,7 @@ var mapaFitxa;
 var marcadorFitxa;
 var vistaActual;
 var obsActualitzades = false;
+var marcador = [];
 
 app.initialize();
 
@@ -203,29 +204,42 @@ function assignaFenomens(response) {
 
 function mostraEstacions() {
   var x = document.getElementById("est_nom");
+  for(i=0;i<estacions.length;i++){
+    marcador[i] = L.marker(new L.LatLng(estacions[i]["Latitud"], estacions[i]["Longitud"])).addTo(map);   
+    marcador[i].i = i
+    marcador[i].Id_estacio = estacions[i]["Id_estacio"];
+    marcador[i].on('click',function(e) {
+      var x = document.getElementById("est_nom");
+      x.value = this.Id_estacio;
+      mostra(this.i);
+    });   
+    var option = document.createElement("option");
+    option.text = estacions[i]["Nom_centre"];
+    option.value = estacions[i]["Id_estacio"];
+    x.add(option);      
+  }
+  preferida = storage.getItem("Id_estacio");
+  if (preferida == null) {
+    estacioActual = 0;
+    estacioPreferida = 0;
+  } else {
     for(i=0;i<estacions.length;i++){
-      L.marker(new L.LatLng(estacions[i]["Latitud"], estacions[i]["Longitud"])).addTo(map);    
-      var option = document.createElement("option");
-      option.text = estacions[i]["Nom_centre"];
-      option.value = estacions[i]["Id_estacio"];
-      x.add(option);      
-    }
-    preferida = storage.getItem("Id_estacio");
-    if (preferida == null) {
-      estacioActual = 0;
-      estacioPreferida = 0;
-    } else {
-      for(i=0;i<estacions.length;i++){
-        if(preferida == estacions[i]["Id_estacio"]) {
-          estacioActual = i;
-          estacioPreferida = i;
-          document.getElementById("est_nom").value = estacions[estacioPreferida]["Id_estacio"];
-        }
+      if(preferida == estacions[i]["Id_estacio"]) {
+        estacioActual = i;
+        estacioPreferida = i;
+        document.getElementById("est_nom").value = estacions[estacioPreferida]["Id_estacio"];
       }
     }
-    console.log("Preferida: " + estacioPreferida + ":" + estacions[estacioPreferida]["Nom_centre"]);
-    mostraEstacio();
+  }
+  console.log("Preferida: " + estacioPreferida + ":" + estacions[estacioPreferida]["Nom_centre"]);
+  mostraEstacio();
 }
+function mostra(i) {
+  estacioActual = i;
+  mostraEstacio();
+  selectEstacio();
+}
+
 
 // BAIXA OBSERVACIONS INICIAL
 function baixaObsInicial() {
@@ -754,7 +768,7 @@ function getMesures() {
 
 function llistaObservacions() {  
   db.transaction(function (tx) {
-    var query = 'SELECT * FROM Observacions';
+    var query = 'SELECT * FROM Observacions ORDER BY Data_observacio DESC, Hora_observacio DESC';
     tx.executeSql(query, [], function(tx, rs){
       var llista='';
       for(var i=0; i<rs.rows.length; i++) {
