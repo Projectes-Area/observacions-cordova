@@ -113,7 +113,7 @@ function baixaFenomens() {
   .then(response => response.text())
   .then(response =>  JSON.parse(response))
   .then(response => {
-    console.log("FENOMENS: Baixats");
+    console.log("Fenomens: Baixats");
     var x = document.getElementById("fenomen");
     for(i=0;i<response.length;i++){
       fenomens[i+1] = response[i];
@@ -164,13 +164,12 @@ function baixaEstacions() {
   .then(response => response.text())
   .then(response => JSON.parse(response))
   .then(response => {
-    console.log("ESTACIONS: Baixades");
-    mostraEstacions();
+    console.log("Estacions: Baixades");  
     db.transaction(function (tx) {
       tx.executeSql('DROP TABLE IF EXISTS Estacions'); 
-      tx.executeSql('CREATE TABLE Estacions (Id_estacio, Codi_estacio, Nom_centre, Poblacio, Latitud, Longitud, Altitud)');   
+      tx.executeSql('CREATE TABLE Estacions (Id_estacio, Codi_estacio, Nom_centre, Poblacio, Latitud, Longitud, Altitud)');  
       for(i=0;i<response.length;i++){
-        var query = 'INSERT INTO response (Id_estacio, Codi_estacio, Nom_centre, Poblacio, Latitud, Longitud, Altitud) VALUES ("';
+        var query = 'INSERT INTO Estacions (Id_estacio, Codi_estacio, Nom_centre, Poblacio, Latitud, Longitud, Altitud) VALUES ("';
         query += response[i]["Id_estacio"] + '","';
         query += response[i]["Codi_estacio"] + '","';
         query += response[i]["Nom_centre"] + '","';
@@ -178,10 +177,13 @@ function baixaEstacions() {
         query += response[i]["Latitud"] + '","';
         query += response[i]["Longitud"] + '","';
         query += response[i]["Altitud"] + '")';
-        tx.executeSql(query);    
+        tx.executeSql(query); //, [], function(tx, rs){
+        //  mostraEstacions();
+        //}, empty);          
       }
     });
     storage.setItem("estacions", new Date());  
+    mostraEstacions();
   });
 }
 
@@ -193,28 +195,28 @@ function mostraEstacions() {
       for(i=0;i<results.rows.length;i++){
         marcador[i] = L.marker(new L.LatLng(results.rows[i]["Latitud"], results.rows[i]["Longitud"])).addTo(map);   
         marcador[i].i = i
-        marcador[i].Id_estacio = results.rows[i]["Id_estacio"];
+        marcador[i].Codi_estacio = results.rows[i]["Codi_estacio"];
         marcador[i].on('click',function(e) {
           var x = document.getElementById("est_nom");
-          x.value = this.Id_estacio;
-          mostra(this.Id_estacio);
+          x.value = this.Codi_estacio;
+          mostra(this.Codi_estacio);
         });   
         var option = document.createElement("option");
         option.text = results.rows[i]["Nom_centre"];
-        option.value = results.rows[i]["Id_estacio"];
+        option.value = results.rows[i]["Codi_estacio"];
         x.add(option);      
       }
-      preferida = storage.getItem("Id_estacio");
+      preferida = storage.getItem("Codi_estacio");
       if (preferida == null) {
-        estacioActual = 1;
-        estacioPreferida = 1;
+        estacioActual = "08903085";
+        estacioPreferida = "08903085";
       } else {
         estacioActual = preferida;
         estacioPreferida = preferida;
 
-        var query = 'SELECT * FROM Estacions WHERE Id_estacio=' + estacioPreferida;
+        var query = 'SELECT * FROM Estacions WHERE Codi_estacio="' + estacioPreferida + '"';
         tx.executeSql(query, [], function(tx, results){
-          document.getElementById("est_nom").value = results.rows[0]["Id_estacio"];
+          document.getElementById("est_nom").value = results.rows[0]["Codi_estacio"];
         },
         empty);
       }
@@ -224,8 +226,8 @@ function mostraEstacions() {
     empty);          
   });
 }
-function mostra(Id_estacio) {
-  estacioActual = Id_estacio;
+function mostra(Codi_estacio) {
+  estacioActual = Codi_estacio;
   mostraEstacio();
   selectEstacio();
 }
@@ -242,8 +244,7 @@ function selectEstacio() {
 
 function mostraEstacio() {
   db.transaction(function (tx) {
-    var query = 'SELECT * FROM Estacions WHERE Id_estacio="' + estacioActual + '"';
-    console.log(query);
+    var query = 'SELECT * FROM Estacions WHERE Codi_estacio="' + estacioActual + '"';
     tx.executeSql(query, [], function(tx, results){
       document.getElementById('est_poblacio').innerHTML = results.rows[0]["Poblacio"];
       document.getElementById('est_altitud').innerHTML = "Altitud: " + results.rows[0]["Altitud"] + " m";
@@ -258,18 +259,16 @@ function mostraEstacio() {
 
 function desaPreferida() {
   estacioPreferida = document.getElementById("est_nom").value;
-  storage.setItem("Id_estacio", estacioPreferida);  
+  storage.setItem("Codi_estacio", estacioPreferida);  
   document.getElementById('star').src = "img/star-yellow.png";
 }
 
 function getMesures() {
   db.transaction(function (tx) {  
-    var query = 'SELECT Codi_estacio FROM Estacions WHERE Id_estacio="' + estacioActual + '"';
-    console.log(query);
+    var query = 'SELECT Codi_estacio FROM Estacions WHERE Codi_estacio="' + estacioActual + '"';
     tx.executeSql(query, [], function(tx, results){
       var Codi_estacio = results.rows[0]["Codi_estacio"];
       var url = url_servidor + "?tab=mobilApp&codEst=" + Codi_estacio;
-      console.log(url);
       fetch(url)
       .then(response => response.text())
       .then(response => JSON.parse(response))
@@ -522,12 +521,14 @@ function elimina() {
             'Eliminar',
             "D'acord"
           );
-      },function(error){
-        console.log("error deleting the file " + error.code);
-        });
-      },function(){
-        console.log("file does not exist");
-      });           
+          activa('observacions');
+          llistaObservacions();
+        },function(error){
+          console.log("error deleting the file " + error.code);
+          });
+        },function(){
+          console.log("file does not exist");
+        });           
     }, empty);    
   });  
 }
@@ -755,7 +756,7 @@ function geoSuccess(position){
     iconAnchor: [12, 41]
   });
   L.marker(new L.LatLng(latitudActual, longitudActual),{icon: greenIcon}).addTo(map);
-  preferida = storage.getItem("Id_estacio");
+  preferida = storage.getItem("Codi_estacio");
   if (preferida == null) {
     var distanciaPropera = 1000;
     var distanciaProva;
@@ -771,10 +772,10 @@ function geoSuccess(position){
             estacioPropera = i;
           }
         }
-        console.log("Preferida: " + results.rows[estacioPropera]["Id_estacio"] + ":" + results.rows[estacioPropera]["Nom_centre"]);
-        estacioActual = results.rows[estacioPropera]["Id_estacio"];
-        estacioPreferida = estacioPropera;
-        storage.setItem("Id_estacio", estacioPreferida);
+        console.log("Preferida: " + results.rows[estacioPropera]["Codi_estacio"] + " : " + results.rows[estacioPropera]["Nom_centre"]);
+        estacioActual = results.rows[estacioPropera]["Codi_estacio"];
+        estacioPreferida = estacioActual;
+        storage.setItem("Codi_estacio", estacioPreferida);
         document.getElementById("est_nom").value = estacioPreferida;
         mostraEstacio();      
     },
