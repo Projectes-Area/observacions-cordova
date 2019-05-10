@@ -5,6 +5,7 @@
         App per fer observacions fenològiques
     </description>
     <author>Àrea de Cultura Digital</author>
+    <preference name="phonegap-version" value="cli-8.1.1" />
     <preference name="windows-identity-name" value="Observacions" />
     <preference name="Orientation" value="portrait" />
     <content src="index.html" />
