@@ -6,12 +6,14 @@
       <meta name="msapplication-tap-highlight" content="no">
       <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
       <link rel="stylesheet" type="text/css" href="css/index.css">
-      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+      <!--<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
         integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
-        crossorigin=""/>
-      <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+        crossorigin=""/>-->
+      <link href="assets/leaflet/leaflet.css" rel="stylesheet">
+      <script src="assets/leaflet/leaflet.js"></script>
+      <!--<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
         integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
-        crossorigin=""></script>
+        crossorigin=""></script>-->
       <title>Observacions</title>
     </head>
     <body >
@@ -35,7 +37,7 @@
           <button class="boto-sup" style="background: url(img/upload-edumet.png);" onClick="enviaActual();">Penja</button>
           <button class="boto-sup" style="background: url(img/llibreta-edumet.png);" onClick="observa();">Quadern</button>
         </div>
-        <img id="foto" src="img/estacions.png">
+        <img id="foto" src="img/logo.png">
         <div class="obs-div">
           <img src="img/eye-edumet.png" class="obs-icon"><select id="fenomen"></select> 
         </div>

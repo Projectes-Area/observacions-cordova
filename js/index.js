@@ -99,11 +99,36 @@ input.addEventListener("keyup", function(event) {
   }
 });
 
-var map = L.map('map',{attributionControl:false}).setView([41.7292826, 1.8225154], 8);
-L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png', {
-	minZoom: 1,
-	maxZoom: 19
-}).addTo(map);
+//var map = L.map('map',{attributionControl:false}).setView([41.7292826, 1.8225154], 15);
+var map = L.map('map',{attributionControl:false}).setView([41.7292826, 1.8225154], 10);
+//L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png', {
+//	minZoom: 1,
+//	maxZoom: 19
+
+
+const xhr = new XMLHttpRequest();
+xhr.open('GET', 'json/municipis.geojson');
+xhr.setRequestHeader('Content-Type', 'application/json');
+xhr.responseType = 'json';
+xhr.onload = function() {
+    return L.geoJSON(xhr.response,{style:{"color": "#0000FF","weight": 1,"opacity": 0.5}}).addTo(map);
+};
+xhr.send();
+
+
+/*fetch('municipis.geojson')
+  .then(
+    res => res.json()
+  ).then(
+    data => { var myStyle = {
+                "color": "#0000FF",
+                "weight": 
+                "opacity": 0.1,5
+              };
+            L.geoJSON(data, {style: myStyle}).addTo(map);
+            }
+  );*/
+//}).addTo(map);
 
 // FENOMENS FENOLOGICS
 
@@ -250,7 +275,7 @@ function mostraEstacio() {
       document.getElementById('est_altitud').innerHTML = "Altitud: " + results.rows[0]["Altitud"] + " m";
       var URLlogo = "https://edumet.cat/edumet-data/" + results.rows[0]["Codi_estacio"] + "/estacio/profile1/imatges/fotocentre.jpg";
       document.getElementById('est_logo').src = URLlogo;
-      map.setView(new L.LatLng(results.rows[0]["Latitud"], results.rows[0]["Longitud"]), 15);
+      map.setView(new L.LatLng(results.rows[0]["Latitud"], results.rows[0]["Longitud"]));
       getMesures();
     },
     empty);
@@ -753,7 +778,8 @@ function geoSuccess(position){
   localitzat = true; 
   var greenIcon = L.icon({
     iconUrl: 'img/marker-icon-green.png',
-    iconAnchor: [12, 41]
+    iconAnchor: [12, 41],
+    shadowUrl: 'assets/leaflet/images/marker-shadow.png',
   });
   L.marker(new L.LatLng(latitudActual, longitudActual),{icon: greenIcon}).addTo(map);
   preferida = storage.getItem("Codi_estacio");
