@@ -51,6 +51,7 @@ body {
 }
 .obs-icon {
     height:5vh;
+    margin-right:3px;
 }
 #capsalera {
     height:10vh;
@@ -125,12 +126,12 @@ body {
     margin:1vh;
 }
 #fenomen {
-    width:88vw;
+    width:85vw;
     height:10vh;
     font-size: 16px;
 }
 #descripcio {
-    width:88vw;
+    width:85vw;
     height:20vh;
     margin-top:1vh;    
     margin-bottom:1vh;  
@@ -235,4 +236,13 @@ body {
     display:flex;
     flex-direction:column; 
     justify-content:space-around;
+}
+#frameRadar{
+    height: 100%;
+    width: 100%;
+    margin: 0 auto;
+}
+#frame{
+    height: 100%;
+    width: 100%;
 }

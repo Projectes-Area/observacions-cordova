@@ -12,12 +12,7 @@ var app = {
     });
     geolocalitza();
     if (checkConnection() == 'No network connection') {   
-      navigator.notification.alert(
-          "No es pot connectar a Internet. Algunes característiques de l'App no estaran disponibles",
-          empty,
-          'Sense connexió',
-          "D'acord"
-      );
+      navigator.notification.alert("No es pot connectar a Internet. Algunes característiques de l'App no estaran disponibles", empty, 'Sense connexió', "D'acord");
       online = false;
     } else {
       online = true;
@@ -55,12 +50,15 @@ var fenomens = [];
 var latitudActual;
 var longitudActual;
 var url_servidor = "https://edumet.cat/edumet/meteo_proves/dades_recarregar.php";
-var INEactual = "081234";
+var INEinicial = "081234";
+var codiInicial = "08903085";
 var online;
 var localitzat;
 var fotoBaixada;
+var radarIniciat = false;
+var previsioIniciat = false;
 var fileSystem;
-var observacioActual;
+var observacioActual = "";
 var observacioFitxa;
 var mapaFitxa;
 var marcadorFitxa;
@@ -115,21 +113,6 @@ xhr.onload = function() {
 };
 xhr.send();
 
-
-/*fetch('municipis.geojson')
-  .then(
-    res => res.json()
-  ).then(
-    data => { var myStyle = {
-                "color": "#0000FF",
-                "weight": 
-                "opacity": 0.1,5
-              };
-            L.geoJSON(data, {style: myStyle}).addTo(map);
-            }
-  );*/
-//}).addTo(map);
-
 // FENOMENS FENOLOGICS
 
 function baixaFenomens() {
@@ -140,9 +123,13 @@ function baixaFenomens() {
   .then(response => {
     console.log("Fenomens: Baixats");
     var x = document.getElementById("fenomen");
+    var option = document.createElement("option");
+    option.text = "Sense identificar";
+    option.value = "0";    
+    x.add(option);
     for(i=0;i<response.length;i++){
       fenomens[i+1] = response[i];
-      var option = document.createElement("option");
+      option = document.createElement("option");
       option.text = response[i]["Titol_feno"];
       option.value = response[i]["Id_feno"];
       x.add(option);
@@ -172,9 +159,13 @@ function getFenomens() {
 function assignaFenomens(response) {
   fenomens = [];
   var x = document.getElementById("fenomen");
+  var option = document.createElement("option");
+  option.text = "Sense identificar";
+  option.value = "0";
+  x.add(option);  
   for(i=0;i<response.length;i++){
     fenomens[i+1] = response[i];
-    var option = document.createElement("option");
+    option = document.createElement("option");
     option.text = response[i]["Titol_feno"];
     option.value = response[i]["Id_feno"];
     x.add(option);
@@ -202,9 +193,7 @@ function baixaEstacions() {
         query += response[i]["Latitud"] + '","';
         query += response[i]["Longitud"] + '","';
         query += response[i]["Altitud"] + '")';
-        tx.executeSql(query); //, [], function(tx, rs){
-        //  mostraEstacions();
-        //}, empty);          
+        tx.executeSql(query);
       }
     });
     storage.setItem("estacions", new Date());  
@@ -233,8 +222,8 @@ function mostraEstacions() {
       }
       preferida = storage.getItem("Codi_estacio");
       if (preferida == null) {
-        estacioActual = "08903085";
-        estacioPreferida = "08903085";
+        estacioActual = codiInicial;
+        estacioPreferida = codiInicial;
       } else {
         estacioActual = preferida;
         estacioPreferida = preferida;
@@ -305,7 +294,7 @@ function getMesures() {
         document.getElementById('sunset').innerHTML = response[0]["Posta_sol"].slice(0,5);
         document.getElementById('pluja').innerHTML = response[0]["Precip_acum_avui"] + " mm";
         document.getElementById('vent').innerHTML = response[0]["Vent_vel_actual"] + " Km/h";    
-        INEactual = response[0]["codi_INE"];
+        INEinicial = response[0]["codi_INE"];
         var stringDataFoto = response[0]["Data_UTC"] + 'T' + response[0]["Hora_UTC"];
         var interval = (new Date() - new Date(stringDataFoto)) / 3600000;
         var textDataMesura = document.getElementById('data_mesura');
@@ -477,12 +466,7 @@ function enviaObservacio(path_observacio) {
                     query += fitxaObs["Local_path"];
                     query += '"';
                     tx.executeSql(query, [], function(tx, results){
-                      navigator.notification.alert(
-                        "S'ha penjat l'observació al servidor Edumet.",
-                        empty,
-                        'Penjar observació',
-                        "D'acord"
-                      );
+                      navigator.notification.alert("S'ha penjat l'observació al servidor Edumet.", empty, 'Penjar observació', "D'acord");
                       if(vistaActual == 'fitxa') {
                         document.getElementById('edita_obs').disabled = true;
                         document.getElementById('envia_obs').disabled = true;
@@ -513,7 +497,11 @@ function editaObservacio() {
       var Id_feno = document.getElementById('fenomen');
       Id_feno.value = fitxaObs["Id_feno"];
       var Descripcio_observacio = document.getElementById('descripcio');
-      Descripcio_observacio.value = fitxaObs["Descripcio_observacio"];
+      if(Descripcio_observacio == "0"){
+        Descripcio_observacio.value = "";
+      } else {
+        Descripcio_observacio.value = fitxaObs["Descripcio_observacio"];
+      }
       activa('fenologia');
     });
   });
@@ -540,12 +528,13 @@ function elimina() {
       tx.executeSql(query);
       window.resolveLocalFileSystemURL(fitxaObs["Local_path"], function success(fileEntry) {   
         fileEntry.remove(function(file){
-          navigator.notification.alert(
-            "S'ha eliminat l'observació.",
-            empty,
-            'Eliminar',
-            "D'acord"
-          );
+          navigator.notification.alert("S'ha eliminat l'observació.", empty, 'Eliminar', "D'acord");
+          if(observacioActual == observacioFitxa) {
+            document.getElementById("foto").src = "img/logo.png";
+            document.getElementById("descripcio").value = "";
+            document.getElementById("fenomen").value = "0";
+            observacioActual == "";
+          }
           activa('observacions');
           llistaObservacions();
         },function(error){
@@ -574,12 +563,7 @@ function actualitzaObservacio() {
       query += '"';
       console.log(query);
       tx.executeSql(query, [], function(tx, results){
-        navigator.notification.alert(
-          "S'ha desat el tipus d'observació i la descripció del fenomen.",
-          empty,
-          'Desar',
-          "D'acord"
-        );
+        navigator.notification.alert("S'ha desat el tipus d'observació i la descripció del fenomen.", empty, 'Desar', "D'acord");
       },
       empty);           
     }, empty);    
@@ -633,7 +617,7 @@ function desaObservacio(entry){
   query += latitudActual + '","';
   query += longitudActual + '","';
   query += '0' + '","';
-  query += '0' + '","';
+  query += 'Sense descriure' + '","';
   query += '0' + '","';
   query += observacioActual + '","';
   query += '0' + '")';
@@ -681,11 +665,18 @@ function estacio() {
 }
 function radar() {
   activa('radar');
+  if(!radarIniciat) {
+    document.getElementById('frameRadar').src = "https://edumet.cat/edumet/meteo_proves/00_radar_app.php";
+    radarIniciat = true;
+  }
 }
 function previsio() {
   activa('previsio');
-  document.getElementById('frame').src = "http://m.meteo.cat/?codi=" + INEactual;
-  if (!localitzat) {
+  if(!previsioIniciat) {
+    document.getElementById('frame').src = "http://m.meteo.cat/?codi=" + INEinicial;
+    previsioIniciat = true;
+  }
+  if(!localitzat) {
     geolocalitza();
   }
 }
@@ -712,11 +703,7 @@ function fitxa(id) {
       var fotoFitxa = document.getElementById('fotoFitxa');
       fotoFitxa.src = fitxaObs["Local_path"];
       var descripcioFitxaFitxa = document.getElementById('descripcioFitxa');
-      if(fitxaObs["Descripcio_observacio"] != "0") {
-        descripcioFitxaFitxa.innerHTML = fitxaObs["Descripcio_observacio"];
-      } else {
-        descripcioFitxaFitxa.innerHTML = "Sense descripció";
-      }
+      descripcioFitxaFitxa.innerHTML = fitxaObs["Descripcio_observacio"];
       if(fitxaObs["Enviat"] == "1") {
         document.getElementById('edita_obs').disabled = true;
         document.getElementById('envia_obs').disabled = true;
@@ -751,12 +738,7 @@ function valida() {
     if (response == "") {
       console.log("No Auth");
       usuari = "";
-      navigator.notification.alert(
-        "Usuari i/o contrasenya incorrectes. Si us plau, torna-ho a provar.",
-        empty,
-        "Identificació",
-        "D'acord"
-      );
+      navigator.notification.alert("Usuari i/o contrasenya incorrectes. Si us plau, torna-ho a provar.", empty, "Identificació", "D'acord");
     } else {
       console.log("Auth OK " + usuari);
       storage.setItem("user", usuari);
@@ -830,17 +812,14 @@ function fesFoto() {
   function onSuccess(imageURI) {
     var obs = document.getElementById('foto');
     obs.src = imageURI;
+    document.getElementById("fenomen").value = "0";
+    document.getElementById("descripcio").value = "";
     window.resolveLocalFileSystemURL(imageURI, function success(fileEntry) {   
       fileEntry.copyTo(fileSystem.root,"", desaObservacio, empty);       
     }, empty);    
   }  
   function onFail(message) {
-    navigator.notification.alert(
-      "No s'ha pogut fer la foto",
-      empty,
-      "Càmera",
-      "D'acord"
-    );
+    navigator.notification.alert("No s'ha pogut fer la foto", empty, "Càmera", "D'acord");
   }
 }
 
@@ -879,7 +858,7 @@ function deg2rad(deg) {
 function getFileContentAsBase64(path,callback){
   window.resolveLocalFileSystemURL(path, gotFile, fail);          
   function fail(e) {
-    alert('Cannot found requested file');
+    console.log('Could not found requested file');
   }
   function gotFile(fileEntry) {
     fileEntry.file(function(file) {
@@ -907,4 +886,3 @@ function formatDate(dia) {
   if (day.length < 2) day = '0' + day;
   return [day, month, year].join('-');
 }
-

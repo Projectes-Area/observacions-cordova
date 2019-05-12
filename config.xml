@@ -9,6 +9,7 @@
     <preference name="windows-identity-name" value="Observacions" />
     <preference name="Orientation" value="portrait" />
     <content src="index.html" />
+    <preference name="phonegap-version" value="cli-8.1.1" />
     <preference name="iosExtraFilesystems" value="library,library-nosync,documents,documents-nosync,cache,bundle,root" />
     <preference name="AndroidExtraFilesystems" value="files,files-external,documents,sdcard,cache,cache-external,assets,root" />
     <plugin name="cordova-plugin-camera" spec="2.4.1" />
