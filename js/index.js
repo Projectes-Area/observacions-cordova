@@ -1,25 +1,24 @@
 var app = {
   initialize: function() {
-      document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+    document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
   },
   onDeviceReady: function() {
     this.receivedEvent('deviceready');
-    document.addEventListener("backbutton", onBackKeyDown, false);
+    geolocalitza();
+    if (checkConnection() == 'No network connection') {   
+      navigator.notification.alert("No es pot connectar a Internet. Algunes característiques de l'App no estaran disponibles", empty, "Sense connexió", "D'acord");
+      online = false;
+    } else {
+      online = true;
+    };
     db = window.openDatabase('Edumet', '', 'Base de dades Edumet', 10000);
     window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
       console.log('File system open: ' + fs.name);
       fileSystem = fs;
-    });
-    geolocalitza();
-    if (checkConnection() == 'No network connection') {   
-      navigator.notification.alert("No es pot connectar a Internet. Algunes característiques de l'App no estaran disponibles", empty, 'Sense connexió', "D'acord");
-      online = false;
-    } else {
-      online = true;
-    }; 
+    }); 
     var stringEstacions = storage.getItem("estacions");
     var ara = new Date();
-    var dies = (ara - new Date(stringEstacions))/ 36000000;
+    var dies = (ara - new Date(stringEstacions)) / 36000000;
     if(stringEstacions == null || dies > 30) {
       baixaEstacions();
       baixaFenomens(); 
@@ -27,6 +26,7 @@ var app = {
       mostraEstacions();
       getFenomens();
     }
+    document.addEventListener("backbutton", onBackKeyDown, false);
   },
   receivedEvent: function(id) {
     var parentElement = document.getElementById(id);
@@ -97,21 +97,21 @@ input.addEventListener("keyup", function(event) {
   }
 });
 
-//var map = L.map('map',{attributionControl:false}).setView([41.7292826, 1.8225154], 15);
-var map = L.map('map',{attributionControl:false}).setView([41.7292826, 1.8225154], 10);
-//L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png', {
-//	minZoom: 1,
-//	maxZoom: 19
+var map = L.map('map',{attributionControl:false}).setView([41.7292826, 1.8225154], 15);
+//var map = L.map('map',{attributionControl:false}).setView([41.7292826, 1.8225154], 10);
+L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png', {
+	minZoom: 1,
+	maxZoom: 19
+}).addTo(map);
 
-
-const xhr = new XMLHttpRequest();
+/*const xhr = new XMLHttpRequest();
 xhr.open('GET', 'json/municipis.geojson');
 xhr.setRequestHeader('Content-Type', 'application/json');
 xhr.responseType = 'json';
 xhr.onload = function() {
     return L.geoJSON(xhr.response,{style:{"color": "#0000FF","weight": 1,"opacity": 0.5}}).addTo(map);
 };
-xhr.send();
+xhr.send();*/
 
 // FENOMENS FENOLOGICS
 
@@ -425,63 +425,73 @@ function enviaFitxa() {
 
 function enviaObservacio(path_observacio) {
   db.transaction(function (tx) {
-    var query = 'SELECT * FROM Observacions WHERE Local_path=\'' + path_observacio +'\'';     
-    tx.executeSql(query, [], function(tx, rs){  
-      var fitxaObs = rs.rows.item(0);
-      if(fitxaObs["Enviat"] == "0") {
-        window.resolveLocalFileSystemURL(fitxaObs["Local_path"], gotFile, fail);          
-        function fail(e) {
-          alert('Cannot found requested file');
+    var query = 'SELECT * FROM Observacions WHERE Local_path=\'' + path_observacio +'\'';   
+    tx.executeSql(query, [], function(tx, rs){
+      if(rs.rows.length == 0) {
+        navigator.notification.alert("Si us plau, fes primer la foto corresponent a l'observació.", empty, "Penjar", "D'acord");
+      } else {   
+        var fitxaObs = rs.rows.item(0);
+        var Id_feno = fitxaObs["Id_feno"];
+        var Descripcio_observacio = fitxaObs["Descripcio_observacio"];
+        if(Id_feno == "0" || Descripcio_observacio == "") {
+          navigator.notification.alert("Si us plau, desa primer l'observació indicant el tipus de fenomen i escrivint una breu descripció.", empty, "Penjar", "D'acord");
+        } else {
+          if(fitxaObs["Enviat"] == "0") {
+            window.resolveLocalFileSystemURL(fitxaObs["Local_path"], gotFile, fail);          
+            function fail(e) {
+              alert('Cannot found requested file');
+            }
+            function gotFile(fileEntry) {
+              fileEntry.file(function(file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                  var imatge64 = e.target.result.replace(/^data:image\/[a-z]+;base64,/, "");                
+                  var envio = { tab: "salvarFenoApp",
+                      usuari: usuari,
+                      dia: fitxaObs["Data_observacio"],
+                      hora: fitxaObs["Hora_observacio"],
+                      lat: fitxaObs["Latitud"],
+                      lon: fitxaObs["Longitud"],
+                      id_feno: fitxaObs["Id_feno"],
+                      descripcio: fitxaObs["Descripcio_observacio"],
+                      fitxer: imatge64
+                  }
+                  var JSONenvio = JSON.stringify(envio);
+                  fetch(url_servidor + '/dades_recarregar.php',{
+                    method:'POST',
+                    headers:{
+                      'Content-Type': 'application/json; charset=UTF-8'
+                      },
+                    body: JSONenvio
+                    })
+                    .then(response => response.text())
+                    .then(response => {   
+                      db.transaction(function (tx) {
+                        var query = 'UPDATE Observacions SET ID=';
+                        query += response.trim();
+                        query += ', Enviat=1';
+                        query += ' WHERE Local_path="';
+                        query += fitxaObs["Local_path"];
+                        query += '"';
+                        tx.executeSql(query, [], function(tx, results){
+                          navigator.notification.alert("S'ha penjat l'observació al servidor Edumet.", empty, 'Penjar observació', "D'acord");
+                          if(vistaActual == 'fitxa') {
+                            document.getElementById('edita_obs').disabled = true;
+                            document.getElementById('envia_obs').disabled = true;
+                            var checkVerd = document.getElementById(fitxaObs["Local_path"]);
+                            checkVerd.src = "img/check-verd.png";
+                          }
+                        },
+                        empty);
+                      });       
+                    });
+                };
+                reader.readAsDataURL(file);
+              });
+            }
+          } 
         }
-        function gotFile(fileEntry) {
-          fileEntry.file(function(file) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-              var imatge64 = e.target.result.replace(/^data:image\/[a-z]+;base64,/, "");                
-              var envio = { tab: "salvarFenoApp",
-                  usuari: usuari,
-                  dia: fitxaObs["Data_observacio"],
-                  hora: fitxaObs["Hora_observacio"],
-                  lat: fitxaObs["Latitud"],
-                  lon: fitxaObs["Longitud"],
-                  id_feno: fitxaObs["Id_feno"],
-                  descripcio: fitxaObs["Descripcio_observacio"],
-                  fitxer: imatge64
-              }
-              var JSONenvio = JSON.stringify(envio);
-              fetch(url_servidor + '/dades_recarregar.php',{
-                method:'POST',
-                headers:{
-                  'Content-Type': 'application/json; charset=UTF-8'
-                  },
-                body: JSONenvio
-                })
-                .then(response => response.text())
-                .then(response => {   
-                  db.transaction(function (tx) {
-                    var query = 'UPDATE Observacions SET ID=';
-                    query += response.trim();
-                    query += ', Enviat=1';
-                    query += ' WHERE Local_path="';
-                    query += fitxaObs["Local_path"];
-                    query += '"';
-                    tx.executeSql(query, [], function(tx, results){
-                      navigator.notification.alert("S'ha penjat l'observació al servidor Edumet.", empty, 'Penjar observació', "D'acord");
-                      if(vistaActual == 'fitxa') {
-                        document.getElementById('edita_obs').disabled = true;
-                        document.getElementById('envia_obs').disabled = true;
-                        var checkVerd = document.getElementById(fitxaObs["Local_path"]);
-                        checkVerd.src = "img/check-verd.png";
-                      }
-                    },
-                    empty);
-                  });       
-                });
-            };
-            reader.readAsDataURL(file);
-          });
-        }
-      }      
+      }     
     }, empty);    
   });  
 }
@@ -497,7 +507,7 @@ function editaObservacio() {
       var Id_feno = document.getElementById('fenomen');
       Id_feno.value = fitxaObs["Id_feno"];
       var Descripcio_observacio = document.getElementById('descripcio');
-      if(Descripcio_observacio == "0"){
+      if(fitxaObs["Descripcio_observacio"] == "Sense descriure"){
         Descripcio_observacio.value = "";
       } else {
         Descripcio_observacio.value = fitxaObs["Descripcio_observacio"];
@@ -543,31 +553,39 @@ function elimina() {
         },function(){
           console.log("file does not exist");
         });           
-    }, empty);    
+    }, empty);      
   });  
 }
 
 function actualitzaObservacio() {
-  db.transaction(function (tx) {
+  if(observacioActual == ""){
+    navigator.notification.alert("Si us plau, fes primer la foto corresponent a l'observació.", empty, "Desar", "D'acord");
+  } else {
     var Id_feno = document.getElementById('fenomen').value;
     var Descripcio_observacio = document.getElementById('descripcio').value;
-    var query = 'SELECT * FROM Observacions WHERE Local_path=\'' + observacioActual +'\'';
-    tx.executeSql(query, [], function(tx, rs){  
-      var fitxaObs = rs.rows.item(0);
-      query = 'UPDATE Observacions SET Id_feno="';
-      query += Id_feno;
-      query += '", Descripcio_observacio="';
-      query += Descripcio_observacio;
-      query += '" WHERE Local_path="';
-      query += fitxaObs["Local_path"];
-      query += '"';
-      console.log(query);
-      tx.executeSql(query, [], function(tx, results){
-        navigator.notification.alert("S'ha desat el tipus d'observació i la descripció del fenomen.", empty, 'Desar', "D'acord");
-      },
-      empty);           
-    }, empty);    
-  }); 
+    if(Id_feno == "0" || Descripcio_observacio == "") {
+      navigator.notification.alert("Si us plau, tria primer el tipus de fenomen i escriu una breu descripció.", empty, 'Desar', "D'acord");
+    } else {
+      db.transaction(function (tx) {
+        var query = 'SELECT * FROM Observacions WHERE Local_path=\'' + observacioActual +'\'';
+        tx.executeSql(query, [], function(tx, rs){  
+          var fitxaObs = rs.rows.item(0);
+          query = 'UPDATE Observacions SET Id_feno="';
+          query += Id_feno;
+          query += '", Descripcio_observacio="';
+          query += Descripcio_observacio;
+          query += '" WHERE Local_path="';
+          query += fitxaObs["Local_path"];
+          query += '"';
+          console.log(query);
+          tx.executeSql(query, [], function(tx, results){
+            navigator.notification.alert("S'ha desat el tipus d'observació i la descripció del fenomen.", empty, 'Desar', "D'acord");
+          },
+          empty);           
+        }, empty);    
+      }); 
+    }
+  }
 }
 
 function llistaObservacions() {  
@@ -692,6 +710,19 @@ function fitxa(id) {
     var query = 'SELECT * FROM Observacions WHERE Local_path=\'' + observacioFitxa +'\'';    
     tx.executeSql(query, [], function(tx, rs){      
       var fitxaObs = rs.rows.item(0);
+      var boto_edicio = document.getElementById('edita_obs');
+      var boto_upload = document.getElementById('envia_obs');
+      if(fitxaObs["Enviat"] == "1") {
+        boto_edicio.style.background = "url(img/edit-gris.png)";
+        boto_upload.style.background = "url(img/upload-gris.png)";
+        boto_edicio.disabled = true;
+        boto_upload.disabled = true;
+      } else {
+        boto_edicio.style.background = "url(img/edit-edumet.png)";
+        boto_upload.style.background = "url(img/upload-edumet.png)";
+        boto_edicio.disabled = false;
+        boto_upload.disabled = false;
+      }
       var nomFenomen = document.getElementById('nomFenomen');
       if(fitxaObs["Id_feno"] != "0") {
         nomFenomen.innerHTML = fenomens[fitxaObs["Id_feno"]]["Titol_feno"];
@@ -704,13 +735,6 @@ function fitxa(id) {
       fotoFitxa.src = fitxaObs["Local_path"];
       var descripcioFitxaFitxa = document.getElementById('descripcioFitxa');
       descripcioFitxaFitxa.innerHTML = fitxaObs["Descripcio_observacio"];
-      if(fitxaObs["Enviat"] == "1") {
-        document.getElementById('edita_obs').disabled = true;
-        document.getElementById('envia_obs').disabled = true;
-      } else {
-        document.getElementById('edita_obs').disabled = false;
-        document.getElementById('envia_obs').disabled = false;
-      }
       try {
         mapaFitxa = L.map('mapaFitxa',{attributionControl:false}).setView(new L.LatLng(fitxaObs["Latitud"], fitxaObs["Longitud"]), 15);
         L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png', {
