@@ -16,14 +16,18 @@
           <img id="logo-edumet" src="img/edumet.png">
       </div>
       <div id="login">
-        <h3>INICIAR SESSIÓ</h3>
+        <div id="iniciar">
+          <h3>INICIAR SESSIÓ</h3>
+        </div>        
         <div>
-          <h4>Usuari:</h4>
-          <input class="bigFont" id="usuari" type="text" name="usuari">
-          <h4>Contrasenya:</h4>
-          <input class="bigFont" id="password" type="password" name="contrasenya"><br>
+          <input class="bigFont" id="usuari" placeholder= "usuari" type="text" name="usuari">
         </div>
-        <button id="valida" class="bigFont" onClick="valida();">ENTRA</button>
+        <div>
+          <input class="bigFont" id="password" placeholder= "contrasenya" type="password" name="contrasenya"><br>
+        </div>
+        <div>  
+          <button id="valida" class="bigFont" onClick="valida();">ENTRA</button>
+        </div>
       </div>
       <div id="fenologia">
         <div id="menu-botons">
@@ -37,7 +41,7 @@
           <img src="img/eye-edumet.png" class="obs-icon"><select id="fenomen"></select> 
         </div>
         <div class="obs-div">
-          <img src="img/llibreta-edumet.png" class="obs-icon"><textarea id="descripcio" placeholder="Escriu en aquest espai una breu descripció del fenomen observat."></textarea>
+          <img src="img/llibreta-edumet.png" class="obs-icon"><textarea id="descripcio" placeholder="Escriu en aquest espai una breu descripció del fenomen observat." onKeyUp="if(this.value.length>250) this.value = this.value.slice(0, -1);"></textarea>
         </div>
       </div>
       <div id="prediccio">

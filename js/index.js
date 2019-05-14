@@ -145,16 +145,17 @@ function baixaFenomens() {
     for(i=0;i<response.length;i++){
       fenomens[i+1] = response[i];
       option = document.createElement("option");
-      option.text = response[i]["Titol_feno"];
+      option.text = response[i]["Bloc_feno"] + ': ' + response[i]["Titol_feno"];
       option.value = response[i]["Id_feno"];
       x.add(option);
     }
     db.transaction(function (tx) {
       tx.executeSql('DROP TABLE IF EXISTS Fenomens'); 
-      tx.executeSql('CREATE TABLE Fenomens (Id_feno, Titol_feno)');   
+      tx.executeSql('CREATE TABLE Fenomens (Id_feno, Bloc_feno, Titol_feno)');   
       for(i=0;i<response.length;i++){
-        var query = 'INSERT INTO Fenomens (Id_feno, Titol_feno) VALUES ("';
+        var query = 'INSERT INTO Fenomens (Id_feno, Bloc_feno, Titol_feno) VALUES ("';
         query += response[i]["Id_feno"] + '","';
+        query += response[i]["Bloc_feno"] + '","';
         query += response[i]["Titol_feno"] + '")';
         tx.executeSql(query);    
       }
@@ -181,7 +182,7 @@ function assignaFenomens(response) {
   for(i=0;i<response.length;i++){
     fenomens[i+1] = response[i];
     option = document.createElement("option");
-    option.text = response[i]["Titol_feno"];
+    option.text = response[i]["Bloc_feno"] + ': ' + response[i]["Titol_feno"];;
     option.value = response[i]["Id_feno"];
     x.add(option);
   }
@@ -461,7 +462,7 @@ function enviaObservacio(path_observacio) {
         var Id_feno = fitxaObs["Id_feno"];
         var Descripcio_observacio = fitxaObs["Descripcio_observacio"];
         if(Id_feno == "0" || Descripcio_observacio == "") {
-          navigator.notification.alert("Si us plau, desa primer l'observació indicant el tipus de fenomen i escrivint una breu descripció.", empty, "Penjar", "D'acord");
+          navigator.notification.alert("Si us plau, desa primer l'observació indicant el tipus de fenomen i escrivint una breu descripció.", empty, "Penjar observació", "D'acord");
         } else {
           if(fitxaObs["Enviat"] == "0") {
             window.resolveLocalFileSystemURL(fitxaObs["Local_path"], gotFile, fail);          
@@ -545,7 +546,7 @@ function editaObservacio() {
 }
 
 function eliminaObservacio() {
-  navigator.notification.confirm("Vols eliminar aquesta observació?", eliminar, "Eliminar", ["Eliminar","Cancel·lar"]);
+  navigator.notification.confirm("Vols eliminar aquesta observació?", eliminar, "Eliminar observació", ["Eliminar","Cancel·lar"]);
 }
 function eliminar(buttonIndex) {
   if(buttonIndex == 1) {
@@ -565,7 +566,7 @@ function elimina() {
       tx.executeSql(query);
       window.resolveLocalFileSystemURL(fitxaObs["Local_path"], function success(fileEntry) {   
         fileEntry.remove(function(file){
-          navigator.notification.alert("S'ha eliminat l'observació.", empty, 'Eliminar', "D'acord");
+          navigator.notification.alert("S'ha eliminat l'observació.", empty, 'Eliminar observació', "D'acord");
           if(observacioActual == observacioFitxa) {
             document.getElementById("foto").src = "img/logo.png";
             document.getElementById("descripcio").value = "";
@@ -586,12 +587,12 @@ function elimina() {
 
 function actualitzaObservacio() {
   if(observacioActual == ""){
-    navigator.notification.alert("Si us plau, fes primer la foto corresponent a l'observació.", empty, "Desar", "D'acord");
+    navigator.notification.alert("Si us plau, fes primer la foto corresponent a l'observació.", empty, "Desar observació", "D'acord");
   } else {
     var Id_feno = document.getElementById('fenomen').value;
     var Descripcio_observacio = document.getElementById('descripcio').value;
     if(Id_feno == "0" || Descripcio_observacio == "") {
-      navigator.notification.alert("Si us plau, tria primer el tipus de fenomen i escriu una breu descripció.", empty, 'Desar', "D'acord");
+      navigator.notification.alert("Si us plau, tria primer el tipus de fenomen i escriu una breu descripció.", empty, 'Desar observació', "D'acord");
     } else {
       db.transaction(function (tx) {
         var query = 'SELECT * FROM Observacions WHERE Local_path=\'' + observacioActual +'\'';
@@ -606,7 +607,7 @@ function actualitzaObservacio() {
           query += '"';
           console.log(query);
           tx.executeSql(query, [], function(tx, results){
-            navigator.notification.alert("S'ha desat el tipus d'observació i la descripció del fenomen.", empty, 'Desar', "D'acord");
+            navigator.notification.alert("S'ha desat el tipus d'observació i la descripció del fenomen.", empty, 'Desar observació', "D'acord");
           },
           empty);           
         }, empty);    
@@ -758,7 +759,7 @@ function fitxa(id) {
       }
       var nomFenomen = document.getElementById('nomFenomen');
       if(fitxaObs["Id_feno"] != "0") {
-        nomFenomen.innerHTML = fenomens[fitxaObs["Id_feno"]]["Titol_feno"];
+        nomFenomen.innerHTML = fenomens[fitxaObs["Id_feno"]]["Bloc_feno"] + ': ' + fenomens[fitxaObs["Id_feno"]]["Titol_feno"];
       } else {
         nomFenomen.innerHTML = "Sense identificar";
       }
