@@ -47,11 +47,14 @@
       <div id="prediccio">
           <iframe id='frame' src='' hspace='0' marginheight='0' marginwidth='0' vspace='0' frameborder='0' scrolling='yes'></iframe>
       </div>
+      <div id="radar">
+        <iframe id='frameRadar' src='' hspace='0' marginheight='0' marginwidth='0' vspace='0' frameborder='0' scrolling='yes'></iframe>
+      </div>
       <div id="observacions">
         <div id="fila">
           <label style="width:25%"><b>FOTO</b></label>
           <label style="width:25%"><b>DATA</b></label>
-          <label style="width:25%"><b>OBSERVACIÓ</b></label>
+          <label style="width:25%"><b>TIPUS</b></label>
           <label style="width:25%"><b>PENJADA</b></label>          
         </div>
         <div id="llistat">
@@ -82,10 +85,6 @@
           </div>
         </div>  
       </div>
-      <div id="radar">
-        RADAR METEOROLÒGIC
-        <iframe id='frameRadar' src='' hspace='0' marginheight='0' marginwidth='0' vspace='0' frameborder='0' scrolling='yes'></iframe>
-      </div>
       <div id="fitxa">
         <div id="nomFenomen"></div>
         <div id="dataHora"></div>
@@ -102,9 +101,9 @@
       </div>
       <div id="menu-inferior">
         <button class="boto-inf" style="background: url(img/router-edumet.png);" onClick="estacio();">Estacions</button>
+        <button class="boto-inf" style="background: url(img/camera-edumet.png);" onClick="login();">Observa</button>
         <button class="boto-inf" style="background: url(img/cloud-edumet.png);" onClick="prediccio();">Predicció</button>
         <button class="boto-inf" style="background: url(img/rss-edumet.png);" onClick="radar();">Radar</button>
-        <button class="boto-inf" style="background: url(img/camera-edumet.png);" onClick="login();">Observa</button>
       </div>     
       <script type="text/javascript" src="cordova.js"></script>
       <script type="text/javascript" src="js/index.js"></script>

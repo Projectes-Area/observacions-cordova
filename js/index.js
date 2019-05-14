@@ -29,7 +29,8 @@ var app = {
       map.setView([41.7292826, 1.8225154], 15);
       L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png', {
         minZoom: 1,
-        maxZoom: 19
+        maxZoom: 19,
+        attribution: 'Wikimedia'
       }).addTo(map);
 
     };
@@ -77,7 +78,7 @@ var codiInicial = "08903085";
 var localitzat = false;
 var fotoBaixada;
 var radarIniciat = false;
-var prediccioIniciat = false;
+//var prediccioIniciat = false;
 var fileSystem;
 var observacioActual = "";
 var observacioFitxa;
@@ -126,7 +127,7 @@ input.addEventListener("keyup", function(event) {
 
 // MAPA
 
-var map = L.map('map',{attributionControl:false});
+var map = L.map('map'); //,{attributionControl:false});
 
 // FENOMENS FENOLOGICS
 
@@ -714,7 +715,8 @@ function radar() {
   if(checkConnection() != 'No network connection') {
     activa('radar');
     if(!radarIniciat) {
-      document.getElementById('frameRadar').src = "https://edumet.cat/edumet/meteo_proves/00_radar_app.php";
+      //document.getElementById('frameRadar').src = "https://edumet.cat/edumet/meteo_proves/00_radar_app.php";//
+      document.getElementById('frameRadar').src = "http://m.meteo.cat/temps-actual";
       radarIniciat = true;
     }
   } else {
@@ -724,10 +726,10 @@ function radar() {
 function prediccio() {
   if(checkConnection() != 'No network connection') {
     activa('prediccio');
-    if(!prediccioIniciat) {
+    //if(!prediccioIniciat) {
       document.getElementById('frame').src = "http://m.meteo.cat/?codi=" + INEinicial;
-      prediccioIniciat = true;
-    }
+    //  prediccioIniciat = true;
+    //}
   } else {
     navigator.notification.alert("Opció no disponible sense connexió a Internet.", empty, "Predicció meteorològica", "D'acord");
   }
@@ -775,12 +777,13 @@ function fitxa(id) {
         var online = false;
       }
       try {
-        mapaFitxa = L.map('mapaFitxa',{attributionControl:false});
+        mapaFitxa = L.map('mapaFitxa'); //,{attributionControl:false});
         if(online){
           mapaFitxa.setView(new L.LatLng(fitxaObs["Latitud"], fitxaObs["Longitud"]), 15);
           L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png', {
             minZoom: 1,
-            maxZoom: 19
+            maxZoom: 19,
+            attribution: 'Wikimedia'
           }).addTo(mapaFitxa);
         } else{
           mapaFitxa.setView([41.7292826, 1.8225154], 10);
