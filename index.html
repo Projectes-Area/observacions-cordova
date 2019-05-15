@@ -6,6 +6,7 @@
       <meta name="msapplication-tap-highlight" content="no">
       <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
       <link rel="stylesheet" type="text/css" href="css/index.css">
+      <link rel="stylesheet" type="text/css" href="css/weather-icons.min.css">
       <link href="assets/leaflet/leaflet.css" rel="stylesheet">
       <script src="assets/leaflet/leaflet.js"></script>
       <link rel="shortcut icon" href="img/favicon.ico">
@@ -20,10 +21,10 @@
           <h3>INICIAR SESSIÓ</h3>
         </div>        
         <div>
-          <input class="bigFont" id="usuari" placeholder= "usuari" type="text" name="usuari">
+          <input class="bigFont" id="usuari" placeholder="usuari" type="text" name="usuari">
         </div>
         <div>
-          <input class="bigFont" id="password" placeholder= "contrasenya" type="password" name="contrasenya"><br>
+          <input class="bigFont" id="password" placeholder="contrasenya" type="password" name="contrasenya"><br>
         </div>
         <div>  
           <button id="valida" class="bigFont" onClick="valida();">ENTRA</button>
@@ -31,10 +32,14 @@
       </div>
       <div id="fenologia">
         <div id="menu-botons">
-          <button class="boto-sup" style="background: url(img/foto-edumet.svg);" onClick="fesFoto();">Captura</button>
+          <button class="boto-sup"  onClick="fesFoto();"><i class="material-icons">add_a_photo</i></button>
+          <button class="boto-sup"  onClick="actualitzaObservacio();"><i class="material-icons">save</i></button>
+          <button class="boto-sup"  onClick="enviaActual();"><i class="material-icons">cloud_upload</i></button>
+          <button class="boto-sup"  onClick="observa();"><i class="material-icons">assignment</i></button>
+          <!--<button class="boto-sup" style="background: url(img/foto-edumet.svg);" onClick="fesFoto();">Captura</button>
           <button class="boto-sup" style="background: url(img/save-edumet.svg);" onClick="actualitzaObservacio();">Desa</button>
           <button class="boto-sup" style="background: url(img/upload-edumet.svg);" onClick="enviaActual();">Penja</button>
-          <button class="boto-sup" style="background: url(img/llibreta-edumet.svg);" onClick="observa();">Quadern</button>
+          <button class="boto-sup" style="background: url(img/llibreta-edumet.svg);" onClick="observa();">Quadern</button>-->
         </div>
         <img id="foto" src="img/logo.png">
         <div class="obs-fen">
@@ -57,12 +62,11 @@
           <label style="width:25%"><b>TIPUS</b></label>
           <label style="width:25%"><b>PENJADA</b></label>          
         </div>
-        <div id="llistat">
-        </div>
+        <div id="llistat"></div>
       </div>
       <div id="estacions">
         <div id="id_estacio">
-          <img id= "star" src="img/star-yellow.png" style="height:6vh;" onClick="desaPreferida();">
+          <img id= "star" src="img/star-yellow.png" onClick="desaPreferida();">
           <select id="est_nom" onchange="selectEstacio()"></select>
         </div>
         <div id="header">
@@ -78,13 +82,13 @@
         <div id="mesurat">
           <div id="data_mesura"></div>
           <div class="mesures">
-            <img class="icones" src="img/sunrise.png" /><label id="sunrise"></label><img class="icones" src="img/sunset.png" /><label id="sunset">
+            <i class="wi wi-sunrise"></i><label id="sunrise"></label><i class="wi wi-sunset"></i><label id="sunset"></label>
           </div>
           <div class="mesures">
-            <img class="icones" src="img/termometre.png" /><label id="temperatura"></label><img class="icones" src="img/barometre.png" /><label id="pressio"></label>
+            <i class="wi wi-thermometer"></i><label id="temperatura"></label><i class="wi wi-barometer"></i><label id="pressio"></label>
           </div>
           <div class="mesures">
-            <img class="icones" src="img/humitat.png" /><label id="humitat"></label><img class="icones" src="img/pluja.png" /><label id="pluja"></label><img class="icones" src="img/vent.png" /><label id="vent"></label>
+            <i class="wi wi-humidity"></i><label id="humitat"></label><i class="wi wi-umbrella"></i><label id="pluja"></label><i class="wi wi-strong-wind"></i><label id="vent"></label>
           </div>
         </div>  
       </div>
@@ -103,8 +107,8 @@
         <div id="mapaFitxa"></div>  
       </div>
       <div id="menu-inferior">
-        <button id="boto_estacions" class="boto-inf" style="color:#418ac8; background: url(img/router-edumet.svg);" onClick="estacio();">Estacions</button>
         <button id="boto_observacions" class="boto-inf" style="color:#858585; background: url(img/camera-gris.svg);" onClick="login();">Observa</button>
+        <button id="boto_estacions" class="boto-inf" style="color:#418ac8; background: url(img/router-edumet.svg);" onClick="estacio();">Estacions</button>
         <button id="boto_prediccio" class="boto-inf" style="color:#858585; background: url(img/cloud-gris.svg);" onClick="prediccio();">Predicció</button>
         <button id="boto_radar" class="boto-inf" style="color:#858585; background: url(img/rss-gris.svg);" onClick="radar();">Radar</button>
       </div>     
