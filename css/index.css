@@ -1,7 +1,10 @@
 body {
     font-size:12px;
-    font-family: Arial;
+    font-family: Roboto,"Open Sans",Arial,Serif,Times;
     margin: 0px;
+}
+button, select, input, textarea {
+    font-family: Roboto,"Open Sans",Arial,Serif,Times !important;
 }
 .mesures {
     display:flex; 
@@ -9,8 +12,19 @@ body {
 }
 .icones {
     height:16px;
-    margin-right:2px;
-    margin-left:2px;
+    margin-right:4px;
+    margin-left:4px;
+}
+.boto-inf {
+    width:25%;
+    background-repeat: no-repeat !important;
+    background-position-x: center !important;
+    background-position-y: 0.5vh !important;
+    background-size: 6vh !important;
+    padding-top: 6vh;
+    border:none;
+    outline:none;
+    font-size:12px;
 }
 .boto-sup {
     width:25%;
@@ -24,32 +38,24 @@ body {
     outline:none;
     font-size:12px;
 }
-.boto-inf {
-    width:25%;
-    background-repeat: no-repeat !important;
-    background-position-x: center !important;
-    background-position-y: 0.5vh !important;
-    background-size: 6vh !important;
-    padding-top: 6vh;
-    color: #418ac8;
-    border:0;
-    border:none;
-    outline:none;
-    font-size:12px;
-}
 .boto-edit {
-    width:6vh;
-    height:6vh;
+    width:8vh;
+    height:8vh;
     background-repeat: no-repeat !important;
     background-position:center !important;
-    background-size: 4vh !important; 
+    background-size: 6vh !important; 
 }
 .bigFont {
-    font-size:16px;
     margin: 1vh;
 }
-.obs-div {
+.obs-fen {
     display:flex;
+    height:10vh;
+    align-items:center;
+}
+.obs-desc {
+    display:flex;
+    height:40vh;
     align-items:center;
 }
 .obs-icon {
@@ -122,19 +128,17 @@ body {
 }
 #foto {
     width:auto;
-    height:36vh;
+    height:38vh;
     margin:1vh;
 }
 #fenomen {
     width:85vw;
-    height:10vh;
+    height:100%;
     font-size:12px;
 }
 #descripcio {
     width:85vw;
-    height:20vh;
-    margin-top:1vh;    
-    margin-bottom:1vh;  
+    height:90%;
     font-size:12px;
 }
 #menu-inferior {
@@ -149,54 +153,44 @@ body {
 #logo-edumet {
     align-self: center;
     height:10vh;
-    width:40vh;
+}
+#header {
+    display:flex;
+    height:15vh;
+}
+#map {
+    width:100%;
+    height:55vh;
+}
+#mapaFitxa {
+    width:100%;
+    height:20vh;
+}
+#descripcioFitxa {
+    height: 20vh;
+    padding: 5px;
+    margin-right: 5px;
+    margin-left: 5px;
+    overflow:scroll;
+}
+#logoEstacio {
+    height:100%;
+}
+#est_nom {
+    height:5vh;
+    width:100%;
+    margin-left:10px;
+    margin-right:10px;
+}
+#est_logo {
+    height:100%;
 }
 #nom_estacio {
     display:flex;
     flex-direction:column;
     justify-content:center;
-    margin:10px;
-}
-#header {
-    display:flex;
-    height:6vh;
-}
-#map {
-    width:100vw;
-    height:75vh;
-}
-#mapaFitxa {
+    margin-left:20px;
     width:100%;
-    height:30vh;
-}
-#descripcioFitxa {
-    display: flex;
-    height: 10vh;
-    justify-content: center;
-    align-items: center;
-    margin-right: 2vh;
-    margin-left: 2vh;
-}
-#logoEstacio {
-    height:10vh;
-    display:flex;
-    margin-left:auto;
-    margin-right:0
-}
-#est_logo {
-    height:6vh;
-    margin-right:5px;
-}
-#est_nom {
-    height:4vh;
-    width:100%;
-    margin-right:5px;
-}
-#nom_estacio {
-    margin:6px;
-    width:100%;
-    height:4vh;
-    margin-left:5vh;
 }
 #data_mesura {
     color:red;
@@ -206,17 +200,17 @@ body {
     flex-direction:column;
     text-align:center;
     justify-content: space-evenly;
-    height:15vh;
+    height:20vh;
 }
 #nomFenomen {
     display:flex;
-    height:3vh;
+    height:4vh;
     justify-content:center;
     align-items:center;
 }
 #dataHora {
     display:flex;
-    height:3vh;
+    height:4vh;
     justify-content:center;
     align-items:center;
 }
@@ -224,16 +218,21 @@ body {
     width:70%;
 }
 #valida {
-    padding:12px;
-    margin-top:6px;
+    padding-top:12px;
+    padding-bottom:12px;
+    padding-top:12px;
+    padding-left:48px;
+    padding-right:48px;
+    margin-top:24px;
 }
 #id_estacio {
     display:flex;
     align-items:center;
+    height:10vh;
 }
 #edicio_fitxa{
     display:flex;
-    height:34vh;
+    height:32vh;
     justify-content: space-around;
 }
 #botons_edicio{
@@ -252,27 +251,32 @@ body {
 #iniciar{
     margin-bottom:4vh;
 }
+#star{
+    height:6vh;
+    margin-left:5px;
+}
 
 @media (min-height: 600px) {
-    body {
+    body, h3, input, #valida, #est_nom, #fenomen, #descripcio, .boto-inf, .boto-sup, .icones {
         font-size:16px;
     }
-    #est_nom {
-        font-size:16px;
+    .icones{
+        height:16px;
     }
-    .boto-inf {
-        font-size:16px;
+}
+@media (min-height: 900px) {
+    body, h3, input, #valida, #est_nom, #fenomen, #descripcio, .boto-inf, .boto-sup, .icones {
+        font-size:18px;
     }
-    .boto-sup {
-        font-size:16px;
+    .icones{
+        height:18px;
     }
-    #fenomen {
-        font-size:16px;
+}
+@media (min-height: 1200px) {
+    body, h3, input, #valida, #est_nom, #fenomen, #descripcio, .boto-inf, .boto-sup, .icones {
+        font-size:24px;
     }
-    #descripcio {
-        font-size:16px;
-    }
-    .icones {
+    .icones{
         height:24px;
     }
 }

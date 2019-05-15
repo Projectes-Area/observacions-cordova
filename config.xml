@@ -7,9 +7,7 @@
     <author>Àrea de Cultura Digital</author>
     <preference name="phonegap-version" value="cli-8.1.1" />
     <preference name="windows-identity-name" value="Observacions" />
-    <preference name="Orientation" value="portrait" />
     <content src="index.html" />
-    <preference name="phonegap-version" value="cli-8.1.1" />
     <plugin name="cordova-plugin-camera" spec="4.0.3" />
     <plugin name="cordova-plugin-dialogs" spec="2.0.1" />
     <plugin name="cordova-plugin-file" spec="6.0.1" />
@@ -22,12 +20,12 @@
     <allow-intent href="geo:*" />
     <platform name="android">
         <allow-intent href="market:*" />
-        <icon src="img/logo.png" />
+        <icon src="www/img/logo.png" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
-        <icon src="img/logo.png" />
+        <icon src="www/img/logo.png" />
     </platform>
     <platform name="windows">
     </platform>

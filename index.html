@@ -31,17 +31,17 @@
       </div>
       <div id="fenologia">
         <div id="menu-botons">
-          <button class="boto-sup" style="background: url(img/foto-edumet.png);" onClick="fesFoto();">Captura</button>
-          <button class="boto-sup" style="background: url(img/save-edumet.png);" onClick="actualitzaObservacio();">Desa</button>
-          <button class="boto-sup" style="background: url(img/upload-edumet.png);" onClick="enviaActual();">Penja</button>
-          <button class="boto-sup" style="background: url(img/llibreta-edumet.png);" onClick="observa();">Quadern</button>
+          <button class="boto-sup" style="background: url(img/foto-edumet.svg);" onClick="fesFoto();">Captura</button>
+          <button class="boto-sup" style="background: url(img/save-edumet.svg);" onClick="actualitzaObservacio();">Desa</button>
+          <button class="boto-sup" style="background: url(img/upload-edumet.svg);" onClick="enviaActual();">Penja</button>
+          <button class="boto-sup" style="background: url(img/llibreta-edumet.svg);" onClick="observa();">Quadern</button>
         </div>
         <img id="foto" src="img/logo.png">
-        <div class="obs-div">
-          <img src="img/eye-edumet.png" class="obs-icon"><select id="fenomen"></select> 
+        <div class="obs-fen">
+          <img src="img/eye-edumet.svg" class="obs-icon"><select id="fenomen"></select> 
         </div>
-        <div class="obs-div">
-          <img src="img/llibreta-edumet.png" class="obs-icon"><textarea id="descripcio" placeholder="Escriu en aquest espai una breu descripció del fenomen observat." onKeyUp="if(this.value.length>250) this.value = this.value.slice(0, -1);"></textarea>
+        <div class="obs-desc">
+          <img src="img/llibreta-edumet.svg" class="obs-icon"><textarea id="descripcio" placeholder="Escriu en aquest espai una breu descripció del fenomen observat." onKeyUp="if(this.value.length>250) this.value = this.value.slice(0, -1);"></textarea>
         </div>
       </div>
       <div id="prediccio">
@@ -78,10 +78,13 @@
         <div id="mesurat">
           <div id="data_mesura"></div>
           <div class="mesures">
-            <img class="icones" src="img/termometre.png" /><label id="temperatura"></label><img class="icones" src="img/humitat.png" /><label id="humitat"></label><img class="icones" src="img/barometre.png" /><label id="pressio"></label>
+            <img class="icones" src="img/sunrise.png" /><label id="sunrise"></label><img class="icones" src="img/sunset.png" /><label id="sunset">
           </div>
           <div class="mesures">
-            <img class="icones" src="img/sunrise.png" /><label id="sunrise"></label><img class="icones" src="img/sunset.png" /><label id="sunset"></label><img class="icones" src="img/pluja.png" /><label id="pluja"></label><img class="icones" src="img/vent.png" /><label id="vent"></label>
+            <img class="icones" src="img/termometre.png" /><label id="temperatura"></label><img class="icones" src="img/barometre.png" /><label id="pressio"></label>
+          </div>
+          <div class="mesures">
+            <img class="icones" src="img/humitat.png" /><label id="humitat"></label><img class="icones" src="img/pluja.png" /><label id="pluja"></label><img class="icones" src="img/vent.png" /><label id="vent"></label>
           </div>
         </div>  
       </div>
@@ -91,19 +94,19 @@
         <div id="edicio_fitxa">
           <img id="fotoFitxa" src="">
           <div id="botons_edicio">
-            <button id="envia_obs" class="boto-edit" style="background: url(img/upload-edumet.png);" onClick="enviaFitxa()"></button>
-            <button id="edita_obs" class="boto-edit" style="background: url(img/edit-edumet.png);" onClick="editaObservacio();"></button>
-            <button id="elimina_obs" class="boto-edit" style="background: url(img/trash-edumet.png);" onClick="eliminaObservacio();"></button>
+            <button id="envia_obs" class="boto-edit" style="background: url(img/upload-edumet.svg);" onClick="enviaFitxa()"></button>
+            <button id="edita_obs" class="boto-edit" style="background: url(img/edit-edumet.svg);" onClick="editaObservacio();"></button>
+            <button id="elimina_obs" class="boto-edit" style="background: url(img/trash-edumet.svg);" onClick="eliminaObservacio();"></button>
           </div>
         </div>
         <div id="descripcioFitxa"></div>
         <div id="mapaFitxa"></div>  
       </div>
       <div id="menu-inferior">
-        <button class="boto-inf" style="background: url(img/router-edumet.png);" onClick="estacio();">Estacions</button>
-        <button class="boto-inf" style="background: url(img/camera-edumet.png);" onClick="login();">Observa</button>
-        <button class="boto-inf" style="background: url(img/cloud-edumet.png);" onClick="prediccio();">Predicció</button>
-        <button class="boto-inf" style="background: url(img/rss-edumet.png);" onClick="radar();">Radar</button>
+        <button id="boto_estacions" class="boto-inf" style="color:#418ac8; background: url(img/router-edumet.svg);" onClick="estacio();">Estacions</button>
+        <button id="boto_observacions" class="boto-inf" style="color:#858585; background: url(img/camera-gris.svg);" onClick="login();">Observa</button>
+        <button id="boto_prediccio" class="boto-inf" style="color:#858585; background: url(img/cloud-gris.svg);" onClick="prediccio();">Predicció</button>
+        <button id="boto_radar" class="boto-inf" style="color:#858585; background: url(img/rss-gris.svg);" onClick="radar();">Radar</button>
       </div>     
       <script type="text/javascript" src="cordova.js"></script>
       <script type="text/javascript" src="js/index.js"></script>

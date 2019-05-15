@@ -77,8 +77,6 @@ var INEinicial = "081234";
 var codiInicial = "08903085";
 var localitzat = false;
 var fotoBaixada;
-var radarIniciat = false;
-//var prediccioIniciat = false;
 var fileSystem;
 var observacioActual = "";
 var observacioFitxa;
@@ -127,7 +125,7 @@ input.addEventListener("keyup", function(event) {
 
 // MAPA
 
-var map = L.map('map'); //,{attributionControl:false});
+var map = L.map('map');
 
 // FENOMENS FENOLOGICS
 
@@ -140,7 +138,7 @@ function baixaFenomens() {
     console.log("Fenomens: Baixats");
     var x = document.getElementById("fenomen");
     var option = document.createElement("option");
-    option.text = "Sense identificar";
+    option.text = "Tria el tipus de fenomen";
     option.value = "0";    
     x.add(option);
     for(i=0;i<response.length;i++){
@@ -177,7 +175,7 @@ function assignaFenomens(response) {
   fenomens = [];
   var x = document.getElementById("fenomen");
   var option = document.createElement("option");
-  option.text = "Sense identificar";
+  option.text = "Tria el tipus de fenomen";
   option.value = "0";
   x.add(option);  
   for(i=0;i<response.length;i++){
@@ -319,12 +317,17 @@ function getMesures() {
         var stringDataFoto = response[0]["Data_UTC"] + 'T' + response[0]["Hora_UTC"];
         var interval = (new Date() - new Date(stringDataFoto)) / 3600000;
         var textDataMesura = document.getElementById('data_mesura');
-        textDataMesura.innerHTML = "Valors mesurats a " + response[0]["Hora_UTC"] + " " + formatDate(response[0]["Data_UTC"]);
+        textDataMesura.innerHTML = "Actualitzat a les " + response[0]["Hora_UTC"] + " del " + formatDate(response[0]["Data_UTC"]);
         if(interval < 2) {
           textDataMesura.style.color = "#006633";
         } else {
           textDataMesura.style.color = "#FF0000";
         }
+      })
+      .catch(reason => {
+        textDataMesura.style.color = "#FF0000";
+        textDataMesura.innerHTML = "L'estació no proporciona les dades ...";
+        console.log("error:" + reason);
       });
     },
     empty);          
@@ -508,7 +511,7 @@ function enviaObservacio(path_observacio) {
                             document.getElementById('edita_obs').disabled = true;
                             document.getElementById('envia_obs').disabled = true;
                             var checkVerd = document.getElementById(fitxaObs["Local_path"]);
-                            checkVerd.src = "img/check-verd.png";
+                            checkVerd.src = "img/check-verd.svg";
                           }
                         },
                         empty);
@@ -634,9 +637,9 @@ function llistaObservacions() {
         }
         llista+= '<div style="width:25%">';
         if(obsLlista["Enviat"] == "1") {
-          llista+= '<img id="' + obsLlista["Local_path"] + '" src="img/check-verd.png" style="width:8vh; height:8vh" />';
+          llista+= '<img id="' + obsLlista["Local_path"] + '" src="img/check-verd.svg" style="width:8vh; height:8vh" />';
         } else {
-          llista+= '<img id="' + obsLlista["Local_path"] + '" src="img/check-gris.png" style="width:8vh; height:8vh" />';
+          llista+= '<img id="' + obsLlista["Local_path"] + '" src="img/check-gris.svg" style="width:8vh; height:8vh" />';
         }
         llista+= '</div></div>';        
       }
@@ -683,6 +686,45 @@ function activa(fragment) {
   document.getElementById('fitxa').style.display='none';
   document.getElementById('login').style.display='none';
   document.getElementById(fragment).style.display='flex';
+    var boto = document.getElementById("boto_estacions");
+    boto.style.color = "#858585";
+    boto.style.background = "url(img/router-gris.svg)";
+    var boto = document.getElementById("boto_observacions");
+    boto.style.color = "#858585";
+    boto.style.background = "url(img/camera-gris.svg)";
+    var boto = document.getElementById("boto_prediccio");
+    boto.style.color = "#858585";
+    boto.style.background = "url(img/cloud-gris.svg)";
+    var boto = document.getElementById("boto_radar");
+    boto.style.color = "#858585";
+    boto.style.background = "url(img/rss-gris.svg)";
+    switch (fragment) {
+      case "estacions":
+        boto = document.getElementById("boto_estacions");
+        boto.style.color = "#418ac8";
+        boto.style.background = "url(img/router-edumet.svg)";
+        break;
+      case "login":
+      case "fenologia":
+      case "observacions":
+      case "fitxa":
+        boto = document.getElementById("boto_observacions");
+        boto.style.color = "#418ac8";
+        boto.style.background = "url(img/camera-edumet.svg)";
+        break;
+      case "prediccio":
+        boto = document.getElementById("boto_prediccio");
+        boto.style.color = "#418ac8";
+        boto.style.background = "url(img/cloud-edumet.svg)";
+        break;
+      case "radar":
+        boto = document.getElementById("boto_radar");
+        boto.style.color = "#418ac8";
+        boto.style.background = "url(img/rss-edumet.svg)";
+        break;
+      default:
+        break;
+    }
   vistaActual = fragment;
 }
 
@@ -714,11 +756,8 @@ function estacio() {
 function radar() {
   if(checkConnection() != 'No network connection') {
     activa('radar');
-    if(!radarIniciat) {
-      //document.getElementById('frameRadar').src = "https://edumet.cat/edumet/meteo_proves/00_radar_app.php";//
-      document.getElementById('frameRadar').src = "http://m.meteo.cat/temps-actual";
-      radarIniciat = true;
-    }
+    //document.getElementById('frameRadar').src = "https://edumet.cat/edumet/meteo_proves/00_radar_app.php";//
+    document.getElementById('frameRadar').src = "http://m.meteo.cat/temps-actual";
   } else {
     navigator.notification.alert("Opció no disponible sense connexió a Internet.", empty, "Radar meteorològic", "D'acord");
   }
@@ -726,10 +765,7 @@ function radar() {
 function prediccio() {
   if(checkConnection() != 'No network connection') {
     activa('prediccio');
-    //if(!prediccioIniciat) {
-      document.getElementById('frame').src = "http://m.meteo.cat/?codi=" + INEinicial;
-    //  prediccioIniciat = true;
-    //}
+    document.getElementById('frame').src = "http://m.meteo.cat/?codi=" + INEinicial;
   } else {
     navigator.notification.alert("Opció no disponible sense connexió a Internet.", empty, "Predicció meteorològica", "D'acord");
   }
@@ -749,13 +785,13 @@ function fitxa(id) {
       var boto_edicio = document.getElementById('edita_obs');
       var boto_upload = document.getElementById('envia_obs');
       if(fitxaObs["Enviat"] == "1") {
-        boto_edicio.style.background = "url(img/edit-gris.png)";
-        boto_upload.style.background = "url(img/upload-gris.png)";
+        boto_edicio.style.background = "url(img/edit-gris.svg)";
+        boto_upload.style.background = "url(img/upload-gris.svg)";
         boto_edicio.disabled = true;
         boto_upload.disabled = true;
       } else {
-        boto_edicio.style.background = "url(img/edit-edumet.png)";
-        boto_upload.style.background = "url(img/upload-edumet.png)";
+        boto_edicio.style.background = "url(img/edit-edumet.svg)";
+        boto_upload.style.background = "url(img/upload-edumet.svg)";
         boto_edicio.disabled = false;
         boto_upload.disabled = false;
       }
@@ -792,7 +828,7 @@ function fitxa(id) {
           xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.responseType = 'json';
           xhr.onload = function() {
-              return L.geoJSON(xhr.response,{style:{"color": "#0000FF","weight": 1,"opacity": 0.5}}).addTo(map);
+              return L.geoJSON(xhr.response,{style:{"color": "#0000FF","weight": 1,"opacity": 0.5}}).addTo(mapaFitxa);
           };
           xhr.send();
         }
