@@ -17,27 +17,22 @@ button, select, input, textarea {
 }
 .boto-inf {
     width:25%;
-    background-repeat: no-repeat !important;
-    background-position-x: center !important;
-    background-position-y: 0.5vh !important;
-    background-size: 6vh !important;
-    padding-top: 6vh;
+    background: none;
+    color: #418ac8;
     border:none;
     outline:none;
-    font-size:12px;
 }
 .boto-sup {
     width:25%;
-}
-.material-icons{
-    font-size:48px !important;
+    background: none;
+    color: #418ac8;
+    border:none;
+    outline:none;
 }
 .boto-edit {
     width:8vh;
     height:8vh;
-    background-repeat: no-repeat !important;
-    background-position:center !important;
-    background-size: 6vh !important; 
+    background:none;
 }
 .bigFont {
     margin: 1vh;
@@ -53,8 +48,12 @@ button, select, input, textarea {
     align-items:center;
 }
 .obs-icon {
-    height:5vh;
+    font-size:24px;
     margin-right:3px;
+    color:#418ac8;
+}
+.icona-inf {
+    font-size:24px; 
 }
 #capsalera {
     height:10vh;
@@ -138,11 +137,7 @@ button, select, input, textarea {
 #menu-inferior {
     display:flex;
     height:10vh;
-    border: solid 1px;
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
-    border-color: #f0f0f0;
+    border: none;
 }
 #logo-edumet {
     align-self: center;
@@ -169,11 +164,11 @@ button, select, input, textarea {
 }
 #logoEstacio {
     height:100%;
+    text-align: right;
 }
 #est_nom {
     height:5vh;
     width:100%;
-    margin-left:10px;
     margin-right:10px;
 }
 #est_logo {
@@ -246,23 +241,43 @@ button, select, input, textarea {
     margin-bottom:4vh;
 }
 #star{
-    height:6vh;
     margin-left:5px;
+}
+.icona-sup{
+    font-size:36px; 
 }
 
 @media (min-height: 600px) {
     body, h3, input, #valida, #est_nom, #fenomen, #descripcio, .boto-inf, .boto-sup {
         font-size:16px;
     }
+    .icona-sup {
+        font-size:48px;
+    }
+    .obs-icon, .icona-inf {
+        font-size:36px;
+    }
 }
 @media (min-height: 900px) {
     body, h3, input, #valida, #est_nom, #fenomen, #descripcio, .boto-inf, .boto-sup {
         font-size:18px;
     }
+    .icona-sup {
+        font-size:64px;
+    }
+    .obs-icon, .icona-inf {
+        font-size:48px;
+    }
 }
 @media (min-height: 1200px) {
     body, h3, input, #valida, #est_nom, #fenomen, #descripcio, .boto-inf, .boto-sup {
         font-size:24px;
+    }
+    .icona-sup {
+        font-size:96px;
+    }
+    .obs-icon, .icona-inf {
+        font-size:64px;
     }
 }
 
@@ -270,7 +285,6 @@ button, select, input, textarea {
     font-family: 'Material Icons';
     font-style: normal;
     font-weight: 400;
-    src: url(../font/MaterialIcons-Regular.eot); /* For IE6-8 */
     src: local('Material Icons'),
       local('MaterialIcons-Regular'),
         url(../font/MaterialIcons-Regular.woff2) format('woff2'),
@@ -278,27 +292,21 @@ button, select, input, textarea {
         url(../font/MaterialIcons-Regular.ttf) format('truetype');
   }
 
-  .material-icons {
+.material-icons {
     font-family: 'Material Icons';
     font-weight: normal;
     font-style: normal;
-    font-size: 24px;  /* Preferred icon size */
     display: inline-block;
     line-height: 1;
     text-transform: none;
     letter-spacing: normal;
     word-wrap: normal;
     white-space: nowrap;
-    direction: ltr;
-  
+    direction: ltr;  
     /* Support for all WebKit browsers. */
     -webkit-font-smoothing: antialiased;
     /* Support for Safari and Chrome. */
-    text-rendering: optimizeLegibility;
-  
+    text-rendering: optimizeLegibility;  
     /* Support for Firefox. */
     -moz-osx-font-smoothing: grayscale;
-  
-    /* Support for IE. */
-    font-feature-settings: 'liga';
-  }
+}

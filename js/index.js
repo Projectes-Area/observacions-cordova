@@ -264,10 +264,13 @@ function mostra(Codi_estacio) {
 
 function selectEstacio() {  
   estacioActual = document.getElementById("est_nom").value;
+  var estrella = document.getElementById('star');
   if(estacioActual == estacioPreferida) {
-    document.getElementById('star').src = "img/star-yellow.png";
+    estrella.innerHTML = "star";
+    estrella.style.color = "yellow";
   } else {
-    document.getElementById('star').src = "img/star-border.png";
+    estrella.innerHTML = "star_border";
+    estrella.style.color = "lightgray";
   }
   mostraEstacio();
 }
@@ -293,7 +296,9 @@ function desaPreferida() {
   estacioPreferida = document.getElementById("est_nom").value;
   console.log("Preferida (Triada): " + estacioPreferida);
   storage.setItem("Codi_estacio", estacioPreferida);  
-  document.getElementById('star').src = "img/star-yellow.png";
+  var estrella = document.getElementById('star');
+  estrella.innerHTML = "star";
+  estrella.style.color = "yellow";
 }
 
 function getMesures() {
@@ -511,7 +516,7 @@ function enviaObservacio(path_observacio) {
                             document.getElementById('edita_obs').disabled = true;
                             document.getElementById('envia_obs').disabled = true;
                             var checkVerd = document.getElementById(fitxaObs["Local_path"]);
-                            checkVerd.src = "img/check-verd.svg";
+                            checkVerd.style.color = "limegreen";
                           }
                         },
                         empty);
@@ -637,9 +642,9 @@ function llistaObservacions() {
         }
         llista+= '<div style="width:25%">';
         if(obsLlista["Enviat"] == "1") {
-          llista+= '<img id="' + obsLlista["Local_path"] + '" src="img/check-verd.svg" style="width:8vh; height:8vh" />';
+          llista+= '<i id="' + obsLlista["Local_path"] + '" class="material-icons icona-sup" style="color:limegreen">check</i>';
         } else {
-          llista+= '<img id="' + obsLlista["Local_path"] + '" src="img/check-gris.svg" style="width:8vh; height:8vh" />';
+          llista+= '<i id="' + obsLlista["Local_path"] + '" class="material-icons icona-sup" style="color:lightgray">check</i>';
         }
         llista+= '</div></div>';        
       }
@@ -687,22 +692,17 @@ function activa(fragment) {
   document.getElementById('login').style.display='none';
   document.getElementById(fragment).style.display='flex';
     var boto = document.getElementById("boto_estacions");
-    boto.style.color = "#858585";
-    boto.style.background = "url(img/router-gris.svg)";
+    boto.style.color = "lightgray";
     var boto = document.getElementById("boto_observacions");
-    boto.style.color = "#858585";
-    boto.style.background = "url(img/camera-gris.svg)";
+    boto.style.color = "lightgray";
     var boto = document.getElementById("boto_prediccio");
-    boto.style.color = "#858585";
-    boto.style.background = "url(img/cloud-gris.svg)";
+    boto.style.color = "lightgray";
     var boto = document.getElementById("boto_radar");
-    boto.style.color = "#858585";
-    boto.style.background = "url(img/rss-gris.svg)";
+    boto.style.color = "lightgray";
     switch (fragment) {
       case "estacions":
         boto = document.getElementById("boto_estacions");
         boto.style.color = "#418ac8";
-        boto.style.background = "url(img/router-edumet.svg)";
         break;
       case "login":
       case "fenologia":
@@ -710,17 +710,14 @@ function activa(fragment) {
       case "fitxa":
         boto = document.getElementById("boto_observacions");
         boto.style.color = "#418ac8";
-        boto.style.background = "url(img/camera-edumet.svg)";
         break;
       case "prediccio":
         boto = document.getElementById("boto_prediccio");
         boto.style.color = "#418ac8";
-        boto.style.background = "url(img/cloud-edumet.svg)";
         break;
       case "radar":
         boto = document.getElementById("boto_radar");
         boto.style.color = "#418ac8";
-        boto.style.background = "url(img/rss-edumet.svg)";
         break;
       default:
         break;
@@ -785,13 +782,11 @@ function fitxa(id) {
       var boto_edicio = document.getElementById('edita_obs');
       var boto_upload = document.getElementById('envia_obs');
       if(fitxaObs["Enviat"] == "1") {
-        boto_edicio.style.background = "url(img/edit-gris.svg)";
-        boto_upload.style.background = "url(img/upload-gris.svg)";
+        boto_edicio.style.color = "lightgray";
         boto_edicio.disabled = true;
         boto_upload.disabled = true;
       } else {
-        boto_edicio.style.background = "url(img/edit-edumet.svg)";
-        boto_upload.style.background = "url(img/upload-edumet.svg)";
+        boto_edicio.style.color = "#418ac8";
         boto_edicio.disabled = false;
         boto_upload.disabled = false;
       }
