@@ -87,6 +87,7 @@ var obsActualitzades = false;
 var marcador = [];
 var watchID;
 var estacioDesada = false;
+var colorEdumet = "#418ac8"
 
 app.initialize();
 
@@ -259,19 +260,10 @@ function mostraEstacions() {
 function mostra(Codi_estacio) {
   estacioActual = Codi_estacio;
   mostraEstacio();
-  selectEstacio();
 }
 
 function selectEstacio() {  
   estacioActual = document.getElementById("est_nom").value;
-  var estrella = document.getElementById('star');
-  if(estacioActual == estacioPreferida) {
-    estrella.innerHTML = "star";
-    estrella.style.color = "yellow";
-  } else {
-    estrella.innerHTML = "star_border";
-    estrella.style.color = "lightgray";
-  }
   mostraEstacio();
 }
 
@@ -290,6 +282,14 @@ function mostraEstacio() {
     },
     empty);
   });
+  var estrella = document.getElementById('star');
+  if(estacioActual == estacioPreferida) {
+    estrella.innerHTML = "star";
+    estrella.style.color = "yellow";
+  } else {
+    estrella.innerHTML = "star_border";
+    estrella.style.color = "lightgray";
+  }
 }
 
 function desaPreferida() {
@@ -691,38 +691,35 @@ function activa(fragment) {
   document.getElementById('fitxa').style.display='none';
   document.getElementById('login').style.display='none';
   document.getElementById(fragment).style.display='flex';
-    var boto = document.getElementById("boto_estacions");
-    boto.style.color = "lightgray";
-    var boto = document.getElementById("boto_observacions");
-    boto.style.color = "lightgray";
-    var boto = document.getElementById("boto_prediccio");
-    boto.style.color = "lightgray";
-    var boto = document.getElementById("boto_radar");
-    boto.style.color = "lightgray";
-    switch (fragment) {
-      case "estacions":
-        boto = document.getElementById("boto_estacions");
-        boto.style.color = "#418ac8";
-        break;
-      case "login":
-      case "fenologia":
-      case "observacions":
-      case "fitxa":
-        boto = document.getElementById("boto_observacions");
-        boto.style.color = "#418ac8";
-        break;
-      case "prediccio":
-        boto = document.getElementById("boto_prediccio");
-        boto.style.color = "#418ac8";
-        break;
-      case "radar":
-        boto = document.getElementById("boto_radar");
-        boto.style.color = "#418ac8";
-        break;
-      default:
-        break;
-    }
-  vistaActual = fragment;
+  var boto = document.getElementById("boto_estacions");
+  boto.style.color = "lightgray";
+  var boto = document.getElementById("boto_observacions");
+  boto.style.color = "lightgray";
+  var boto = document.getElementById("boto_prediccio");
+  boto.style.color = "lightgray";
+  var boto = document.getElementById("boto_radar");
+  boto.style.color = "lightgray";
+  switch (fragment) {
+    case "estacions":
+      boto = document.getElementById("boto_estacions");
+      break;
+    case "login":
+    case "fenologia":
+    case "observacions":
+    case "fitxa":
+      boto = document.getElementById("boto_observacions");
+      break;
+    case "prediccio":
+      boto = document.getElementById("boto_prediccio");
+      break;
+    case "radar":
+      boto = document.getElementById("boto_radar");
+      break;
+    default:
+      break;
+  }
+boto.style.color = colorEdumet;  
+vistaActual = fragment;
 }
 
 function login() {
@@ -786,7 +783,7 @@ function fitxa(id) {
         boto_edicio.disabled = true;
         boto_upload.disabled = true;
       } else {
-        boto_edicio.style.color = "#418ac8";
+        boto_edicio.style.color = colorEdumet;;
         boto_edicio.disabled = false;
         boto_upload.disabled = false;
       }

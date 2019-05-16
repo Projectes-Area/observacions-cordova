@@ -14,35 +14,35 @@
     </head>
     <body >
       <div id="capsalera">
-          <img id="logo-edumet" src="img/edumet.png">
+        <img id="logo-edumet" src="img/edumet.png">
       </div>
       <div id="login">
         <div id="iniciar">
           <h3>INICIAR SESSIÓ</h3>
         </div>        
         <div>
-          <input class="bigFont" id="usuari" placeholder="usuari" type="text" name="usuari">
+          <input class="marge" id="usuari" placeholder="usuari" type="text" name="usuari">
         </div>
         <div>
-          <input class="bigFont" id="password" placeholder="contrasenya" type="password" name="contrasenya"><br>
+          <input class="marge" id="password" placeholder="contrasenya" type="password" name="contrasenya"><br>
         </div>
         <div>  
-          <button id="valida" class="bigFont" onClick="valida();">ENTRA</button>
+          <button id="valida" class="marge" onClick="valida();">ENTRA</button>
         </div>
       </div>
       <div id="fenologia">
         <div id="menu-botons">
-          <button class="boto-sup" onClick="fesFoto();"><i class="material-icons icona-sup">add_a_photo</i></button>
-          <button class="boto-sup" onClick="actualitzaObservacio();"><i class="material-icons icona-sup">save</i></button>
-          <button class="boto-sup" onClick="enviaActual();"><i class="material-icons icona-sup">cloud_upload</i></button>
-          <button class="boto-sup" onClick="observa();"><i class="material-icons icona-sup">assignment</i></button>
+          <button class="boto-sup" onClick="fesFoto();"><i class="material-icons icona-36">add_a_photo</i></button>
+          <button class="boto-sup" onClick="actualitzaObservacio();"><i class="material-icons icona-36">save</i></button>
+          <button class="boto-sup" onClick="enviaActual();"><i class="material-icons icona-36">cloud_upload</i></button>
+          <button class="boto-sup" onClick="observa();"><i class="material-icons icona-36">assignment</i></button>
         </div>
         <img id="foto" src="img/logo.png">
         <div class="obs-fen">
-          <i class="material-icons obs-icon">visibility</i><select id="fenomen"></select> 
+          <i class="material-icons icon-24" style="margin-right:3px; color:#418ac8;">visibility</i><select id="fenomen"></select> 
         </div>
         <div class="obs-desc">
-          <i class="material-icons obs-icon">assignment</i><textarea id="descripcio" placeholder="Escriu en aquest espai una breu descripció del fenomen observat." onKeyUp="if(this.value.length>250) this.value = this.value.slice(0, -1);"></textarea>
+          <i class="material-icons icon-24" style="margin-right:3px; color:#418ac8;">assignment</i><textarea id="descripcio" placeholder="Escriu en aquest espai una breu descripció del fenomen observat." onKeyUp="if(this.value.length>250) this.value = this.value.slice(0, -1);"></textarea>
         </div>
       </div>
       <div id="prediccio">
@@ -62,7 +62,7 @@
       </div>
       <div id="estacions">
         <div id="id_estacio">
-          <i id="star" class="material-icons icona-sup" style="color:lightgray" onClick="desaPreferida();">star_border</i>
+          <i id="star" class="material-icons icona-36" style="color:lightgray" onClick="desaPreferida();">star_border</i>
           <select id="est_nom" onchange="selectEstacio()"></select>
         </div>
         <div id="header">
@@ -94,19 +94,19 @@
         <div id="edicio_fitxa">
           <img id="fotoFitxa" src="">
           <div id="botons_edicio">
-            <button id="envia_obs" class="boto-edit" style="color:lightgray" onClick="enviaFitxa()"><i class="material-icons icona-inf">cloud_upload</i></button>
-            <button id="edita_obs" class="boto-edit" style="color:lightgray" onClick="editaObservacio()"><i class="material-icons icona-inf">edit</i></button>
-            <button id="elimina_obs" class="boto-edit" style="color:#418ac8" onClick="eliminaObservacio()"><i class="material-icons icona-inf">delete_forever</i></button>
+            <button id="envia_obs" class="boto-edit" style="color:lightgray" onClick="enviaFitxa()"><i class="material-icons icona-24">cloud_upload</i></button>
+            <button id="edita_obs" class="boto-edit" style="color:lightgray" onClick="editaObservacio()"><i class="material-icons icona-24">edit</i></button>
+            <button id="elimina_obs" class="boto-edit" style="color:#418ac8" onClick="eliminaObservacio()"><i class="material-icons icona-24">delete_forever</i></button>
           </div>
         </div>
         <div id="descripcioFitxa"></div>
         <div id="mapaFitxa"></div>  
       </div>
       <div id="menu-inferior">
-        <button id="boto_observacions" class="boto-inf" style="color:#858585;" onClick="login();"><i class="material-icons icona-inf">camera_alt</i><br>Observa</button>
-        <button id="boto_estacions" class="boto-inf" style="color:#418ac8;" onClick="estacio();"><i class="material-icons icona-inf">router</i><br>Estacions</button>
-        <button id="boto_prediccio" class="boto-inf" style="color:#858585;" onClick="prediccio();"><i class="material-icons icona-inf">cloud</i><br>Predicció</button>
-        <button id="boto_radar" class="boto-inf" style="color:#858585;" onClick="radar();"><i class="material-icons icona-inf">rss_feed</i><br>Radar</button>
+        <button id="boto_observacions" class="boto-inf" style="color:lightgray" onClick="login();"><i class="material-icons icona-24">camera_alt</i><br>Observa</button>
+        <button id="boto_estacions" class="boto-inf" style="color:#418ac8;" onClick="estacio();"><i class="material-icons icona-24">router</i><br>Estacions</button>
+        <button id="boto_prediccio" class="boto-inf" style="color:lightgray" onClick="prediccio();"><i class="material-icons icona-24">cloud</i><br>Predicció</button>
+        <button id="boto_radar" class="boto-inf" style="color:lightgray" onClick="radar();"><i class="material-icons icona-24">rss_feed</i><br>Radar</button>
       </div>     
       <script type="text/javascript" src="cordova.js"></script>
       <script type="text/javascript" src="js/index.js"></script>
