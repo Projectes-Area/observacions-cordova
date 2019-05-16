@@ -4,7 +4,7 @@ var app = {
   },
   onDeviceReady: function() {
     this.receivedEvent('deviceready');
-    watchID = navigator.geolocation.watchPosition(geoSuccess, geoFail, {enableHighAccuracy: true});
+    watchID = navigator.geolocation.watchPosition(geoSuccess, geoFail, {});  //enableHighAccuracy: true});
     var online;
     var stringEstacions = storage.getItem("estacions");
     if (checkConnection() == 'No network connection') {
@@ -565,31 +565,40 @@ function eliminar(buttonIndex) {
 function elimina() {
   db.transaction(function (tx) {    
     var query = 'SELECT ID,Enviat,Local_path FROM Observacions WHERE Local_path=\'' + observacioFitxa +'\'';   
-    tx.executeSql(query, [], function(tx, rs){  
+    tx.executeSql(query, [], function(tx, rs){        
       var fitxaObs = rs.rows.item(0);
+      var eliminarLocal = true;
       if(fitxaObs["Enviat"] == "1") {
-        var url = url_servidor + "?usuari=" + usuari + "&id=" + fitxaObs["ID"] + "&tab=eliminarFenUsu";
-        fetch(url);
+        if (checkConnection() == 'No network connection') {
+          navigator.notification.alert("Les observacions que ja s'han penjat al servidor Edumet no es poden eliminar sense connexió a Internet", empty, 'Eliminar observació', "D'acord");
+          eliminarLocal = false;
+        } else {           
+          var url = url_servidor + "?usuari=" + usuari + "&id=" + fitxaObs["ID"] + "&tab=eliminarFenUsu";
+          fetch(url);
+        }
       }
-      var query = 'DELETE FROM Observacions WHERE Local_path=\'' + observacioFitxa +'\'';
-      tx.executeSql(query);
-      window.resolveLocalFileSystemURL(fitxaObs["Local_path"], function success(fileEntry) {   
-        fileEntry.remove(function(file){
-          navigator.notification.alert("S'ha eliminat l'observació.", empty, 'Eliminar observació', "D'acord");
-          if(observacioActual == observacioFitxa) {
-            document.getElementById("foto").src = "img/logo.png";
-            document.getElementById("descripcio").value = "";
-            document.getElementById("fenomen").value = "0";
-            observacioActual == "";
+      if(eliminarLocal) {
+        var query = 'DELETE FROM Observacions WHERE Local_path=\'' + observacioFitxa +'\'';
+        tx.executeSql(query);
+        window.resolveLocalFileSystemURL(fitxaObs["Local_path"], function success(fileEntry) {   
+          fileEntry.remove(function(file){
+            navigator.notification.alert("S'ha eliminat l'observació.", empty, 'Eliminar observació', "D'acord");
+            if(observacioActual == observacioFitxa) {
+              document.getElementById("foto").src = "img/logo.png";
+              document.getElementById("descripcio").value = "";
+              document.getElementById("fenomen").value = "0";
+              observacioActual == "";
+            }
+            activa('observacions');
+            llistaObservacions();
+          },function(error){
+            console.log("error deleting the file " + error.code);
+            });
+          },function(){
+            console.log("file does not exist");
           }
-          activa('observacions');
-          llistaObservacions();
-        },function(error){
-          console.log("error deleting the file " + error.code);
-          });
-        },function(){
-          console.log("file does not exist");
-        });           
+        );   
+      }        
     }, empty);      
   });  
 }
@@ -614,7 +623,6 @@ function actualitzaObservacio() {
           query += '" WHERE Local_path="';
           query += fitxaObs["Local_path"];
           query += '"';
-          console.log(query);
           tx.executeSql(query, [], function(tx, results){
             navigator.notification.alert("S'ha desat el tipus d'observació i la descripció del fenomen.", empty, 'Desar observació', "D'acord");
           },
@@ -642,9 +650,9 @@ function llistaObservacions() {
         }
         llista+= '<div style="width:25%">';
         if(obsLlista["Enviat"] == "1") {
-          llista+= '<i id="' + obsLlista["Local_path"] + '" class="material-icons icona-sup" style="color:limegreen">check</i>';
+          llista+= '<i id="' + obsLlista["Local_path"] + '" class="material-icons icona-36" style="color:limegreen">check</i>';
         } else {
-          llista+= '<i id="' + obsLlista["Local_path"] + '" class="material-icons icona-sup" style="color:lightgray">check</i>';
+          llista+= '<i id="' + obsLlista["Local_path"] + '" class="material-icons icona-36" style="color:lightgray">check</i>';
         }
         llista+= '</div></div>';        
       }
@@ -676,7 +684,6 @@ function desaObservacio(entry){
   query += '0' + '","';
   query += observacioActual + '","';
   query += '0' + '")';
-  console.log(query);
   db.transaction(function (tx) {
     tx.executeSql(query);
   });
@@ -774,16 +781,18 @@ function fitxa(id) {
   activa('fitxa');
   db.transaction(function (tx) {
     var query = 'SELECT * FROM Observacions WHERE Local_path=\'' + observacioFitxa +'\'';    
-    tx.executeSql(query, [], function(tx, rs){      
+    tx.executeSql(query, [], function(tx, rs){   
       var fitxaObs = rs.rows.item(0);
       var boto_edicio = document.getElementById('edita_obs');
       var boto_upload = document.getElementById('envia_obs');
       if(fitxaObs["Enviat"] == "1") {
         boto_edicio.style.color = "lightgray";
+        boto_upload.style.color = "lightgray";
         boto_edicio.disabled = true;
         boto_upload.disabled = true;
       } else {
-        boto_edicio.style.color = colorEdumet;;
+        boto_edicio.style.color = colorEdumet;
+        boto_upload.style.color = colorEdumet;
         boto_edicio.disabled = false;
         boto_upload.disabled = false;
       }
@@ -937,7 +946,7 @@ function fesFoto() {
     }
   }
   else {
-    navigator.notification.alert("No es coneix la ubicació. Si us plau, activa primer GPS", empty, "GPS", "D'acord");
+    navigator.notification.alert("No es coneix la ubicació. Si us plau, activa primer GPS.", empty, "GPS", "D'acord");
   }
 }
 
