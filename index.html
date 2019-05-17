@@ -37,13 +37,16 @@
           <button class="boto-sup" onClick="enviaActual();"><i class="material-icons icona-36">cloud_upload</i></button>
           <button class="boto-sup" onClick="observa();"><i class="material-icons icona-36">assignment</i></button>
         </div>
-        <img id="foto" src="img/logo.png">
+        <img id="foto" src= "img/add_photo.svg" onClick="fotografia();">
         <div class="obs-fen">
           <i class="material-icons icon-24" style="margin-right:3px; color:#418ac8;">visibility</i><select id="fenomen"></select> 
         </div>
         <div class="obs-desc">
           <i class="material-icons icon-24" style="margin-right:3px; color:#418ac8;">assignment</i><textarea id="descripcio" placeholder="Escriu en aquest espai una breu descripció del fenomen observat." onKeyUp="if(this.value.length>250) this.value = this.value.slice(0, -1);"></textarea>
         </div>
+      </div>
+      <div id="fotografia">
+        <img id="fotoGran" src="">
       </div>
       <div id="prediccio">
           <iframe id='frame' src='' hspace='0' marginheight='0' marginwidth='0' vspace='0' frameborder='0' scrolling='yes'></iframe>
@@ -71,7 +74,7 @@
             <div id="est_altitud"></div>
           </div>
           <div id="logoEstacio">
-            <img id=est_logo src=""></img>        
+            <img id=est_logo src="">
           </div>
         </div>
         <div id="map"></div>
@@ -92,10 +95,10 @@
         <div id="nomFenomen"></div>
         <div id="dataHora"></div>
         <div id="edicio_fitxa">
-          <img id="fotoFitxa" src="">
+          <img id="fotoFitxa" src="" onClick="fotografia();">
           <div id="botons_edicio">
-            <button id="envia_obs" class="boto-edit" style="color:lightgray" onClick="enviaFitxa()"><i class="material-icons icona-24">cloud_upload</i></button>
-            <button id="edita_obs" class="boto-edit" style="color:lightgray" onClick="editaObservacio()"><i class="material-icons icona-24">edit</i></button>
+            <button id="envia_obs" class="boto-edit" style="color:graytext" onClick="enviaFitxa()"><i class="material-icons icona-24">cloud_upload</i></button>
+            <button id="edita_obs" class="boto-edit" style="color:graytext" onClick="editaObservacio()"><i class="material-icons icona-24">edit</i></button>
             <button id="elimina_obs" class="boto-edit" style="color:#418ac8" onClick="eliminaObservacio()"><i class="material-icons icona-24">delete_forever</i></button>
           </div>
         </div>
@@ -103,10 +106,10 @@
         <div id="mapaFitxa"></div>  
       </div>
       <div id="menu-inferior">
-        <button id="boto_observacions" class="boto-inf" style="color:lightgray" onClick="login();"><i class="material-icons icona-24">camera_alt</i></button>
+        <button id="boto_observacions" class="boto-inf" style="color:graytext" onClick="login();"><i class="material-icons icona-24">camera_alt</i></button>
         <button id="boto_estacions" class="boto-inf" style="color:#418ac8;" onClick="estacio();"><i class="material-icons icona-24">router</i></button>
-        <button id="boto_prediccio" class="boto-inf" style="color:lightgray" onClick="prediccio();"><i class="material-icons icona-24">cloud</i></button>
-        <button id="boto_radar" class="boto-inf" style="color:lightgray" onClick="radar();"><i class="material-icons icona-24">rss_feed</i></button>
+        <button id="boto_prediccio" class="boto-inf" style="color:graytext" onClick="prediccio();"><i class="material-icons icona-24">cloud</i></button>
+        <button id="boto_radar" class="boto-inf" style="color:graytext" onClick="radar();"><i class="material-icons icona-24">rss_feed</i></button>
       </div>     
       <script type="text/javascript" src="cordova.js"></script>
       <script type="text/javascript" src="js/index.js"></script>

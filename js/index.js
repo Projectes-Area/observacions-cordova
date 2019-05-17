@@ -7,13 +7,13 @@ var app = {
     watchID = navigator.geolocation.watchPosition(geoSuccess, geoFail, {});  //enableHighAccuracy: true});
     var online;
     var stringEstacions = storage.getItem("estacions");
+    map = L.map('map');
     if (checkConnection() == 'No network connection') {
       online = false;
       if(stringEstacions == null) {
         navigator.notification.alert("La configuració inicial de l'App precisa una connexió a Internet. Si us plau, reinicia l'App quan en tinguis.", tancar, "Sense connexió", "Tancar");        
       } else {
         navigator.notification.alert("No es pot connectar a Internet. Algunes característiques de l'App no estaran disponibles.", empty, "Sense connexió", "D'acord");
-
         map.setView([41.7292826, 1.8225154], 10);
         const xhr = new XMLHttpRequest();
         xhr.open('GET', 'json/municipis.geojson');
@@ -98,12 +98,13 @@ var observacioFitxa;
 var mapaFitxa;
 var marcadorFitxa;
 var vistaActual;
+var vistaOrigen;
 var obsActualitzades = false;
 var marcador = [];
 var watchID;
 var estacioDesada = false;
 var colorEdumet = "#418ac8";
-var map = L.map('map');
+var map;
 
 app.initialize();
 
@@ -118,6 +119,9 @@ function onBackKeyDown() {
     case 'observacions':
       activa('fenologia');
       break
+    case 'fotografia':
+      activa(vistaOrigen);
+      break;
     default:
       navigator.notification.confirm("Vols sortir de l'App?", sortir, "Sortir", ["Sortir","Cancel·lar"]);
   }
@@ -604,10 +608,10 @@ function elimina() {
           fileEntry.remove(function(file){
             navigator.notification.alert("S'ha eliminat l'observació.", empty, 'Eliminar observació', "D'acord");
             if(observacioActual == observacioFitxa) {
-              document.getElementById("foto").src = "img/logo.png";
+              document.getElementById("foto").src = "img/add_photo.svg";
               document.getElementById("descripcio").value = "";
               document.getElementById("fenomen").value = "0";
-              observacioActual == "";
+              observacioActual = "";
             }
             activa('observacions');
             llistaObservacions();
@@ -717,15 +721,16 @@ function activa(fragment) {
   document.getElementById('observacions').style.display='none';
   document.getElementById('fitxa').style.display='none';
   document.getElementById('login').style.display='none';
+  document.getElementById('fotografia').style.display='none';
   document.getElementById(fragment).style.display='flex';
   var boto = document.getElementById("boto_estacions");
-  boto.style.color = "lightgray";
+  boto.style.color = "graytext";
   var boto = document.getElementById("boto_observacions");
-  boto.style.color = "lightgray";
+  boto.style.color = "graytext";
   var boto = document.getElementById("boto_prediccio");
-  boto.style.color = "lightgray";
+  boto.style.color = "graytext";
   var boto = document.getElementById("boto_radar");
-  boto.style.color = "lightgray";
+  boto.style.color = "graytext";
   switch (fragment) {
     case "estacions":
       boto = document.getElementById("boto_estacions");
@@ -734,6 +739,7 @@ function activa(fragment) {
     case "fenologia":
     case "observacions":
     case "fitxa":
+    case "fotografia":
       boto = document.getElementById("boto_observacions");
       break;
     case "prediccio":
@@ -795,6 +801,22 @@ function observa() {
   activa('observacions');
   llistaObservacions();
 }
+function fotografia() {
+  var veureFoto = true;
+  if((vistaActual == 'fenologia') && (observacioActual == "")) {
+    veureFoto = false;
+    fesFoto();
+  } 
+  if(veureFoto) {  
+    vistaOrigen = vistaActual;
+    activa('fotografia');
+    if(vistaOrigen == 'fenologia') {
+      document.getElementById('fotoGran').src = document.getElementById('foto').src;
+    } else {
+      document.getElementById('fotoGran').src = document.getElementById('fotoFitxa').src;
+    }
+  }
+}
 
 function fitxa(id) {
   observacioFitxa = id;
@@ -806,8 +828,8 @@ function fitxa(id) {
       var boto_edicio = document.getElementById('edita_obs');
       var boto_upload = document.getElementById('envia_obs');
       if(fitxaObs["Enviat"] == "1") {
-        boto_edicio.style.color = "lightgray";
-        boto_upload.style.color = "lightgray";
+        boto_edicio.style.color = "graytext";
+        boto_upload.style.color = "graytext";
         boto_edicio.disabled = true;
         boto_upload.disabled = true;
       } else {
@@ -843,7 +865,7 @@ function fitxa(id) {
             attribution: 'Wikimedia'
           }).addTo(mapaFitxa);
         } else{
-          mapaFitxa.setView([41.7292826, 1.8225154], 10);
+          mapaFitxa.setView(new L.LatLng(fitxaObs["Latitud"], fitxaObs["Longitud"]), 10);
           const xhr = new XMLHttpRequest();
           xhr.open('GET', 'json/municipis.geojson');
           xhr.setRequestHeader('Content-Type', 'application/json');
@@ -962,7 +984,7 @@ function fesFoto() {
       }, empty);    
     }  
     function onFail(message) {
-      navigator.notification.alert("No s'ha pogut fer la foto", empty, "Càmera", "D'acord");
+      navigator.notification.alert("No s'ha pogut fer la foto.", empty, "Càmera", "D'acord");
     }
   }
   else {
