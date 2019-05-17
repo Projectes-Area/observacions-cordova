@@ -29,6 +29,19 @@ button, select, input, textarea {
     /* Support for Firefox. */
     -moz-osx-font-smoothing: grayscale;
 }
+.loader {
+    align-self:center;
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #418ac8;
+    width: 60px;
+    height: 60px;
+    animation: 0;
+}  
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 .icona-24 {
     font-size:24px; 
 }
@@ -86,11 +99,18 @@ button, select, input, textarea {
     font-size:16px;
     height: 80vh;
 }
-#prediccio, #radar, #fotografia {
+#prediccio, #radar {
+    display:none;
+    justify-content: center;
+    height: 80vh;
+    width:100%;
+}
+#fotografia {
     display:none;
     height: 80vh;
     width:100%;
 }
+
 #fotoGran {
     width: 100%;
     height: 100%;
@@ -225,6 +245,7 @@ button, select, input, textarea {
     justify-content:space-around;
 }
 #frame, #frameRadar{
+    display:none;
     height: 100%;
     width: 100%;
 }

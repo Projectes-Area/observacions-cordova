@@ -792,7 +792,15 @@ function radar() {
 function prediccio() {
   if(checkConnection() != 'No network connection') {
     activa('prediccio');
-    document.getElementById('frame').src = "http://m.meteo.cat/?codi=" + INEinicial;
+    var frame = document.getElementById('frame');
+    var loader = document.getElementById('loaderPrediccio');
+    loader.style.animation = "spin 1s linear infinite";
+    frame.onload = function() {
+      loader.style.display= "none";
+      loader.style.animation = "0";
+      frame.style.display = "flex";
+    }
+    frame.src = "http://m.meteo.cat/?codi=" + INEinicial;
   } else {
     navigator.notification.alert("Opció no disponible sense connexió a Internet.", empty, "Predicció meteorològica", "D'acord");
   }
