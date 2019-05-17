@@ -50,6 +50,21 @@ var app = {
       getFenomens();
     }
     document.addEventListener("backbutton", onBackKeyDown, false);
+    window.addEventListener("orientationchange", function() {
+      console.log(screen.orientation.type);
+    });
+    var input = document.getElementById('password');
+    input.addEventListener("keyup", function(event) {
+      if (event.keyCode === 13) {
+        valida();
+      }
+    });
+    window.addEventListener("orientationchange", function() {
+      ajustaOrientacio(screen.orientation.angle);
+    });
+    if(window.innerHeight > window.innerWidth){
+      ajustaOrientacio(0);
+    }
   },
   receivedEvent: function(id) {
     var parentElement = document.getElementById(id);
@@ -87,7 +102,8 @@ var obsActualitzades = false;
 var marcador = [];
 var watchID;
 var estacioDesada = false;
-var colorEdumet = "#418ac8"
+var colorEdumet = "#418ac8";
+var map = L.map('map');
 
 app.initialize();
 
@@ -107,6 +123,21 @@ function onBackKeyDown() {
   }
 }
 
+function ajustaOrientacio(angle) {
+  var textBoto = '<i class="material-icons icona-24">';
+  if(angle == 90 || angle == 270) {
+    document.getElementById("boto_observacions").innerHTML = textBoto + 'camera_alt</i>';
+    document.getElementById("boto_estacions").innerHTML = textBoto + 'router</i>';
+    document.getElementById("boto_prediccio").innerHTML = textBoto + 'cloud</i>';
+    document.getElementById("boto_radar").innerHTML = textBoto + 'rss_feed</i>';
+  } else {
+    document.getElementById("boto_observacions").innerHTML = textBoto + 'camera_alt</i><br>Observa';
+    document.getElementById("boto_estacions").innerHTML = textBoto + 'router</i><br>Estacions';
+    document.getElementById("boto_prediccio").innerHTML = textBoto + 'cloud</i><br>Predicció';
+    document.getElementById("boto_radar").innerHTML = textBoto + 'rss_feed</i><br>Radar';
+  }
+}
+
 function sortir(buttonIndex) {
   if(buttonIndex == 1) {
     tancar();
@@ -116,17 +147,6 @@ function tancar() {
   navigator.geolocation.clearWatch(watchID);
   navigator.app.exitApp();
 }
-
-var input = document.getElementById('password');
-input.addEventListener("keyup", function(event) {
-  if (event.keyCode === 13) {
-    valida();
-  }
-});
-
-// MAPA
-
-var map = L.map('map');
 
 // FENOMENS FENOLOGICS
 
