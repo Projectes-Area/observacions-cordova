@@ -105,6 +105,8 @@ var watchID;
 var estacioDesada = false;
 var colorEdumet = "#418ac8";
 var map;
+var slideIndex;
+var flagRadar = false;
 
 app.initialize();
 
@@ -123,7 +125,7 @@ function onBackKeyDown() {
       activa(vistaOrigen);
       break;
     default:
-      navigator.notification.confirm("Vols sortir de l'App?", sortir, "Sortir", ["Sortir","Cancel·lar"]);
+      navigator.notification.confirm("Vols sortir de l'App eduMET?", sortir, "Sortir", ["Sortir","Cancel·lar"]);
   }
 }
 
@@ -134,11 +136,15 @@ function ajustaOrientacio(angle) {
     document.getElementById("boto_estacions").innerHTML = textBoto + 'router</i>';
     document.getElementById("boto_prediccio").innerHTML = textBoto + 'cloud</i>';
     document.getElementById("boto_radar").innerHTML = textBoto + 'rss_feed</i>';
+    document.getElementById("radar_titol").innerHTML = "";
+    document.getElementById('slideshow-container').style.width = "50%";
   } else {
     document.getElementById("boto_observacions").innerHTML = textBoto + 'camera_alt</i><br>Observa';
     document.getElementById("boto_estacions").innerHTML = textBoto + 'router</i><br>Estacions';
     document.getElementById("boto_prediccio").innerHTML = textBoto + 'cloud</i><br>Predicció';
     document.getElementById("boto_radar").innerHTML = textBoto + 'rss_feed</i><br>Radar';
+    document.getElementById("radar_titol").innerHTML = "RADAR METEOROLÒGIC";
+    document.getElementById('slideshow-container').style.width = "100%";
   }
 }
 
@@ -373,7 +379,7 @@ function baixaObsInicial() {
   .then(response => {
     var numObs  = response.length;
     db.transaction(function (tx) {
-      tx.executeSql('CREATE TABLE Observacions (ID, Data_observacio, Hora_observacio, Latitud, Longitud, Id_feno, Descripcio_observacio, Fotografia_observacio, Local_path, Enviat)');   
+      tx.executeSql('CREATE TABLE Observacions (ID, Data_observacio DATE, Hora_observacio TIME, Latitud, Longitud, Id_feno, Descripcio_observacio, Fotografia_observacio, Local_path, Enviat)');   
       for(i=0;i<numObs;i++){
         var query = 'INSERT INTO Observacions (ID, Data_observacio, Hora_observacio, Latitud, Longitud, Id_feno, Descripcio_observacio, Fotografia_observacio, Local_path, Enviat) VALUES ("';
         query += response[i]["ID"] + '","';
@@ -477,7 +483,7 @@ function enviaActual() {
   }
 }
 function enviaFitxa() {
-  if(checkConnection() == 'No network connection'){
+  if(checkConnection() != 'No network connection'){
     enviaObservacio(observacioFitxa);
   } else {
     navigator.notification.alert("Opció no disponible sense connexió a Internet.", empty, "Penjar observació", "D'acord");
@@ -518,7 +524,7 @@ function enviaObservacio(path_observacio) {
                       fitxer: imatge64
                   }
                   var JSONenvio = JSON.stringify(envio);
-                  fetch(url_servidor + '/dades_recarregar.php',{
+                  fetch(url_servidor,{
                     method:'POST',
                     headers:{
                       'Content-Type': 'application/json; charset=UTF-8'
@@ -535,7 +541,7 @@ function enviaObservacio(path_observacio) {
                         query += fitxaObs["Local_path"];
                         query += '"';
                         tx.executeSql(query, [], function(tx, results){
-                          navigator.notification.alert("S'ha penjat l'observació al servidor Edumet.", empty, 'Penjar observació', "D'acord");
+                          navigator.notification.alert("S'ha penjat l'observació al servidor eduMET.", empty, 'Penjar observació', "D'acord");
                           if(vistaActual == 'fitxa') {
                             document.getElementById('edita_obs').disabled = true;
                             document.getElementById('envia_obs').disabled = true;
@@ -594,7 +600,7 @@ function elimina() {
       var eliminarLocal = true;
       if(fitxaObs["Enviat"] == "1") {
         if (checkConnection() == 'No network connection') {
-          navigator.notification.alert("Les observacions que ja s'han penjat al servidor Edumet no es poden eliminar sense connexió a Internet", empty, 'Eliminar observació', "D'acord");
+          navigator.notification.alert("Les observacions que ja s'han penjat al servidor eduMET no es poden eliminar sense connexió a Internet.", empty, 'Eliminar observació', "D'acord");
           eliminarLocal = false;
         } else {           
           var url = url_servidor + "?usuari=" + usuari + "&id=" + fitxaObs["ID"] + "&tab=eliminarFenUsu";
@@ -688,11 +694,15 @@ function llistaObservacions() {
 function desaObservacio(entry){  
   var ara = new Date(Date.now());
   var any = ara.getFullYear();
-  var mes = ara.getMonth();
+  var mes = ara.getMonth() + 1;
   var dia = ara.getDate();
   var hora = ara.getHours();
   var minut = ara.getMinutes();
   var segon = ara.getSeconds();
+  mes = mes.toString();
+  dia = dia.toString();
+  if (mes.length < 2) mes = '0' + mes;
+  if (dia.length < 2) dia = '0' + dia;
   var Data_observacio = any + '-' + mes + '-' + dia;
   var Hora_observacio = hora + ':' + minut + ':' + segon;
 
@@ -714,6 +724,7 @@ function desaObservacio(entry){
 }
 
 function activa(fragment) {
+  flagRadar = false;
   document.getElementById('fenologia').style.display='none';
   document.getElementById('estacions').style.display='none';
   document.getElementById('radar').style.display='none';
@@ -763,7 +774,7 @@ function login() {
     if (checkConnection() != 'No network connection') {
       activa('login');
     } else {
-      navigator.notification.alert("Per iniciar sessió al servidor Edumet, veure les teves observacions o penjar-ne de noves, has d'estar connectat a Internet.", estacio, "Sense connexió", "D'acord");          
+      navigator.notification.alert("Per iniciar sessió al servidor eduMET, veure les teves observacions o penjar-ne de noves, has d'estar connectat a Internet.", estacio, "Sense connexió", "D'acord");          
     }
   }
   else {
@@ -784,20 +795,59 @@ function radar() {
   if(checkConnection() != 'No network connection') {
     activa('radar');
     //document.getElementById('frameRadar').src = "https://edumet.cat/edumet/meteo_proves/00_radar_app.php";//
-    document.getElementById('frameRadar').src = "http://m.meteo.cat/temps-actual";
+    //document.getElementById('frameRadar').src = "http://m.meteo.cat/temps-actual";
+    var url = url_servidor + "?tab=radar";
+    fetch(url)
+    .then(response => response.text())
+    .then(response =>  JSON.parse(response))
+    .then(response => {
+      var stringDiv ='';
+      for(i=0;i<response.length;i++) {
+        stringDiv+='<div class="mySlides"><img src="https://edumet.cat/edumet-data/meteocat/radar/';
+        stringDiv+= response[i];
+        stringDiv+='" style="width:100%"></div>';
+      }
+      document.getElementById('slideshow-container').innerHTML = stringDiv;
+      stringDiv ='';
+      for(i=0;i<response.length;i++) {
+        stringDiv+='<span class="dot"></span>';
+      }
+      document.getElementById('puntets').innerHTML = stringDiv;
+      slideIndex = 0;
+      flagRadar = true;
+      showSlides();    
+    });
   } else {
     navigator.notification.alert("Opció no disponible sense connexió a Internet.", empty, "Radar meteorològic", "D'acord");
   }
 }
+function showSlides() {
+  var slides = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("dot");
+  for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = "none";  
+  }
+  slideIndex++;
+  if (slideIndex > slides.length) {slideIndex = 1}    
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" active", "");
+  }
+  slides[slideIndex-1].style.display = "block";  
+  dots[slideIndex-1].className += " active";
+  if(flagRadar) {
+    setTimeout(showSlides, 1000); // Change image every second
+  }
+}
+
 function prediccio() {
   if(checkConnection() != 'No network connection') {
     activa('prediccio');
     var frame = document.getElementById('frame');
     var loader = document.getElementById('loaderPrediccio');
-    loader.style.animation = "spin 1s linear infinite";
+    loader.style.animationPlayState = "running";
     frame.onload = function() {
-      loader.style.display= "none";
-      loader.style.animation = "0";
+      loader.style.animationPlayState = "paused";
+      loader.style.display = "none";
       frame.style.display = "flex";
     }
     frame.src = "http://m.meteo.cat/?codi=" + INEinicial;

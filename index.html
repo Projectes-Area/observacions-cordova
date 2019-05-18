@@ -53,7 +53,9 @@
           <iframe id='frame' src='' hspace='0' marginheight='0' marginwidth='0' vspace='0' frameborder='0' scrolling='yes'></iframe>
       </div>
       <div id="radar">
-        <iframe id='frameRadar' src='' hspace='0' marginheight='0' marginwidth='0' vspace='0' frameborder='0' scrolling='yes'></iframe>
+        <div id="radar_titol"></div>
+        <div id="slideshow-container" class="slideshow-container"></div>         
+        <div id="puntets"></div>
       </div>
       <div id="observacions">
         <div id="fila">
@@ -106,12 +108,15 @@
         <div id="descripcioFitxa"></div>
         <div id="mapaFitxa"></div>  
       </div>
-      <div id="menu-inferior">
-        <button id="boto_observacions" class="boto-inf" style="color:graytext" onClick="login();"><i class="material-icons icona-24">camera_alt</i></button>
-        <button id="boto_estacions" class="boto-inf" style="color:#418ac8;" onClick="estacio();"><i class="material-icons icona-24">router</i></button>
-        <button id="boto_prediccio" class="boto-inf" style="color:graytext" onClick="prediccio();"><i class="material-icons icona-24">cloud</i></button>
-        <button id="boto_radar" class="boto-inf" style="color:graytext" onClick="radar();"><i class="material-icons icona-24">rss_feed</i></button>
-      </div>     
+      <div id="sector-inferior">
+        <div id="hr"></div>
+        <div id="menu-inferior">
+          <button id="boto_observacions" class="boto-inf" style="color:graytext" onClick="login();"><i class="material-icons icona-24">camera_alt</i></button>
+          <button id="boto_estacions" class="boto-inf" style="color:#418ac8;" onClick="estacio();"><i class="material-icons icona-24">router</i></button>
+          <button id="boto_prediccio" class="boto-inf" style="color:graytext" onClick="prediccio();"><i class="material-icons icona-24">cloud</i></button>
+          <button id="boto_radar" class="boto-inf" style="color:graytext" onClick="radar();"><i class="material-icons icona-24">rss_feed</i></button>
+        </div>  
+      </div>   
       <script type="text/javascript" src="cordova.js"></script>
       <script type="text/javascript" src="js/index.js"></script>
     </body>

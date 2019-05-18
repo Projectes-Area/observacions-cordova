@@ -36,7 +36,8 @@ button, select, input, textarea {
     border-top: 8px solid #418ac8;
     width: 60px;
     height: 60px;
-    animation: 0;
+    animation: spin 1s linear infinite;
+    animation-play-state: paused;
 }  
 @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -63,6 +64,7 @@ button, select, input, textarea {
     width:10vh;
     height:10vh;
     border-radius: 8px;
+    outline:none;
 }
 .marge {
     margin: 1vh;
@@ -99,18 +101,26 @@ button, select, input, textarea {
     font-size:16px;
     height: 80vh;
 }
-#prediccio, #radar {
-    display:none;
+#prediccio {
+    display: none;
     justify-content: center;
     height: 80vh;
-    width:100%;
+    width: 100%;
 }
+#radar {
+    display: none;
+    height: 80vh;
+    width: 100%;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
 #fotografia {
     display:none;
     height: 80vh;
-    width:100%;
+    width: 100%;
 }
-
 #fotoGran {
     width: 100%;
     height: 100%;
@@ -158,9 +168,16 @@ button, select, input, textarea {
     height:90%;
     font-size:12px;
 }
-#menu-inferior {
-    display:flex;
+#sector-inferior {
     height:10vh;
+}
+#hr {
+    height: 1px;
+    background-color: lightgray;
+}
+#menu-inferior {
+    height:9vh;
+    display:flex;
     border: none;
 }
 #logo-edumet {
@@ -245,7 +262,7 @@ button, select, input, textarea {
     justify-content:space-around;
 }
 #frame, #frameRadar{
-    display:none;
+    display: none;
     height: 100%;
     width: 100%;
 }
@@ -256,7 +273,7 @@ button, select, input, textarea {
     margin-left:5px;
 }
 
-@media (min-height: 600px) {
+@media (min-height: 800px) {
     body, h3, input, #valida, #est_nom, #fenomen, #descripcio, .boto-inf, .boto-sup {
         font-size:16px;
     }
@@ -267,7 +284,7 @@ button, select, input, textarea {
         font-size:36px;
     }
 }
-@media (min-height: 900px) {
+@media (min-height: 1000px) {
     body, h3, input, #valida, #est_nom, #fenomen, #descripcio, .boto-inf, .boto-sup {
         font-size:18px;
     }
@@ -299,4 +316,22 @@ button, select, input, textarea {
         url(../font/MaterialIcons-Regular.woff2) format('woff2'),
         url(../font/MaterialIcons-Regular.woff) format('woff'),
         url(../font/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+/* Slideshow container */
+.slideshow-container {
+    width:100%;
+}  
+/* The dots/bullets/indicators */
+.dot {
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+.active {
+    background-color: #717171;
 }
