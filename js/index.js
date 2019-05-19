@@ -3,7 +3,7 @@ var app = {
     document.addEventListener('deviceready', this.onDeviceReady, false);
   },
   onDeviceReady: function() {
-    watchID = navigator.geolocation.watchPosition(geoSuccess, geoFail, {});
+    watchID = navigator.geolocation.watchPosition(geoSuccess, geoFail);
     var online;
     var stringEstacions = storage.getItem("estacions");
     map = L.map('map');
@@ -49,21 +49,26 @@ var app = {
       getFenomens();
     }
     document.addEventListener("backbutton", onBackKeyDown, false);
-    window.addEventListener("orientationchange", function() {
-      console.log(screen.orientation.type);
-    });
     var input = document.getElementById('password');
     input.addEventListener("keyup", function(event) {
       if (event.keyCode === 13) {
         valida();
       }
     });
-    window.addEventListener("orientationchange", function() {
+    /*window.addEventListener("orientationchange", function() {
       ajustaOrientacio(screen.orientation.angle);
     });
     if(window.innerHeight > window.innerWidth){
       ajustaOrientacio(0);
-    }
+    } else {
+      ajustaOrientacio(90);
+    }*/
+    window.addEventListener("orientationchange", function(){
+      console.log(screen.orientation.type); // e.g. portrait
+      ajustaOrientacio(screen.orientation.type);
+    });
+    console.log(screen.orientation.type);
+    ajustaOrientacio(screen.orientation.type);
   }
 };
 
@@ -118,9 +123,9 @@ function onBackKeyDown() {
   }
 }
 
-function ajustaOrientacio(angle) {
+function ajustaOrientacio(orientacio) {
   var textBoto = '<i class="material-icons icona-24">';
-  if(angle == 90 || angle == 270) {
+  if(orientacio == "landscape" || orientacio == "landscape-primary" || orientacio == "landscape-secondary") {
     document.getElementById("boto_observacions").innerHTML = textBoto + 'camera_alt</i>';
     document.getElementById("boto_estacions").innerHTML = textBoto + 'router</i>';
     document.getElementById("boto_prediccio").innerHTML = textBoto + 'cloud</i>';
