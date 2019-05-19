@@ -104,9 +104,15 @@ button, select, input, textarea {
 #prediccio {
     display: none;
     justify-content: center;
+    align-items: center;
+    flex-direction:column;
     height: 80vh;
     width: 100%;
 }
+#carregant {
+    margin: 5vh;
+}
+
 #radar {
     display: none;
     height: 80vh;
@@ -261,7 +267,7 @@ button, select, input, textarea {
     flex-direction:column; 
     justify-content:space-around;
 }
-#frame, #frameRadar{
+#frame{
     display: none;
     height: 100%;
     width: 100%;

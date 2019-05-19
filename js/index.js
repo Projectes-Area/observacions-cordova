@@ -1,10 +1,9 @@
 var app = {
   initialize: function() {
-    document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+    document.addEventListener('deviceready', this.onDeviceReady, false);
   },
   onDeviceReady: function() {
-    this.receivedEvent('deviceready');
-    watchID = navigator.geolocation.watchPosition(geoSuccess, geoFail, {});  //enableHighAccuracy: true});
+    watchID = navigator.geolocation.watchPosition(geoSuccess, geoFail, {});
     var online;
     var stringEstacions = storage.getItem("estacions");
     map = L.map('map');
@@ -64,16 +63,6 @@ var app = {
     });
     if(window.innerHeight > window.innerWidth){
       ajustaOrientacio(0);
-    }
-  },
-  receivedEvent: function(id) {
-    var parentElement = document.getElementById(id);
-    if(parentElement!=undefined) {
-      var listeningElement = parentElement.querySelector('.listening');
-      var receivedElement = parentElement.querySelector('.received');
-      listeningElement.setAttribute('style', 'display:none;');
-      receivedElement.setAttribute('style', 'display:block;');
-      console.log('Received Event: ' + id);
     }
   }
 };
@@ -790,11 +779,12 @@ function fenologia() {
 }
 function estacio() {
   activa('estacions');
+  map.invalidateSize();
 }
 function radar() {
   if(checkConnection() != 'No network connection') {
     activa('radar');
-    //document.getElementById('frameRadar').src = "https://edumet.cat/edumet/meteo_proves/00_radar_app.php";//
+    //document.getElementById('frameRadar').src = "https://edumet.cat/edumet/meteo_proves/00_radar_app.php";
     //document.getElementById('frameRadar').src = "http://m.meteo.cat/temps-actual";
     var url = url_servidor + "?tab=radar";
     fetch(url)
@@ -844,10 +834,12 @@ function prediccio() {
     activa('prediccio');
     var frame = document.getElementById('frame');
     var loader = document.getElementById('loaderPrediccio');
+    var carregant = document.getElementById('carregant');
     loader.style.animationPlayState = "running";
     frame.onload = function() {
       loader.style.animationPlayState = "paused";
       loader.style.display = "none";
+      carregant.style.display = "none";
       frame.style.display = "flex";
     }
     frame.src = "http://m.meteo.cat/?codi=" + INEinicial;
@@ -914,7 +906,7 @@ function fitxa(id) {
         var online = false;
       }
       try {
-        mapaFitxa = L.map('mapaFitxa'); //,{attributionControl:false});
+        mapaFitxa = L.map('mapaFitxa');
         if(online){
           mapaFitxa.setView(new L.LatLng(fitxaObs["Latitud"], fitxaObs["Longitud"]), 15);
           L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png', {
@@ -939,6 +931,7 @@ function fitxa(id) {
         } else {
           var zoom = 10;
         }
+        mapaFitxa.invalidateSize();
         mapaFitxa.setView(new L.LatLng(fitxaObs["Latitud"],fitxaObs["Longitud"]), zoom);
         mapaFitxa.removeLayer(marcadorFitxa);
       }
