@@ -55,16 +55,8 @@ var app = {
         valida();
       }
     });
-    /*window.addEventListener("orientationchange", function() {
-      ajustaOrientacio(screen.orientation.angle);
-    });
-    if(window.innerHeight > window.innerWidth){
-      ajustaOrientacio(0);
-    } else {
-      ajustaOrientacio(90);
-    }*/
     window.addEventListener("orientationchange", function(){
-      console.log(screen.orientation.type); // e.g. portrait
+      console.log(screen.orientation.type);
       ajustaOrientacio(screen.orientation.type);
     });
     console.log(screen.orientation.type);
@@ -365,6 +357,37 @@ function getMesures() {
 
 // OBSERVACIONS
 
+function fesFoto() {
+  if(localitzat) {
+    var options = {
+      quality: 20, // Some common settings are 20, 50, and 100
+      destinationType: Camera.DestinationType.FILE_URI,
+      targetHeight:800,
+      targetWidth:800,
+      sourceType: Camera.PictureSourceType.CAMERA,
+      encodingType: Camera.EncodingType.JPEG,
+      mediaType: Camera.MediaType.PICTURE,
+      correctOrientation: true
+    }
+    navigator.camera.getPicture(onSuccess, onFail, options);  
+    function onSuccess(imageURI) {
+      var obs = document.getElementById('foto');
+      obs.src = imageURI;
+      document.getElementById("fenomen").value = "0";
+      document.getElementById("descripcio").value = "";
+      window.resolveLocalFileSystemURL(imageURI, function success(fileEntry) {   
+        fileEntry.copyTo(fileSystem.root,"", desaObservacio, empty);       
+      }, empty);    
+    }  
+    function onFail(message) {
+      navigator.notification.alert("No s'ha pogut fer la foto.", empty, "Càmera", "D'acord");
+    }
+  }
+  else {
+    navigator.notification.alert("No es coneix la ubicació. Si us plau, activa primer GPS.", empty, "GPS", "D'acord");
+  }
+}
+
 function baixaObsInicial() {
   var url = url_servidor + "?usuari=" + usuari + "&tab=visuFenoApp";
   fetch(url)
@@ -662,7 +685,7 @@ function llistaObservacions() {
     var query = 'SELECT * FROM Observacions ORDER BY Data_observacio DESC, Hora_observacio DESC';
     tx.executeSql(query, [], function(tx, rs){
       var llista='';
-      for(var i=0; i<rs.rows.length; i++) {
+      for(var i=0; i < rs.rows.length; i++) {
         var obsLlista = rs.rows.item(i);
         llista+= '<div style="display:flex; align-items:center;" onClick="fitxa(\'' + obsLlista["Local_path"] +'\')">';
         llista+= '<div style="width:25%"><img src="' + obsLlista["Local_path"] + '" style="width:10vh; height:10vh" /></div>';
@@ -672,13 +695,13 @@ function llistaObservacions() {
         } else {
           llista+= '<label style="width:25%">' + "Sense identificar" + '</label>';
         }
-        llista+= '<div style="width:25%">';
+        llista+= '<div style="width:25%"><i id="' + obsLlista["Local_path"] + '" class="material-icons icona-36" style="color:';
         if(obsLlista["Enviat"] == "1") {
-          llista+= '<i id="' + obsLlista["Local_path"] + '" class="material-icons icona-36" style="color:limegreen">check</i>';
+          llista+= 'limegreen';
         } else {
-          llista+= '<i id="' + obsLlista["Local_path"] + '" class="material-icons icona-36" style="color:lightgray">check</i>';
+          llista+= 'lightgray';
         }
-        llista+= '</div></div>';        
+        llista+= '">check</i></div></div>';        
       }
       document.getElementById('llistat').innerHTML = llista;
     }, empty) 
@@ -1017,37 +1040,6 @@ function geoSuccess(position){
   }
 } 
 
-function fesFoto() {
-  if(localitzat) {
-    var options = {
-      quality: 20, // Some common settings are 20, 50, and 100
-      destinationType: Camera.DestinationType.FILE_URI,
-      targetHeight:800,
-      targetWidth:800,
-      sourceType: Camera.PictureSourceType.CAMERA,
-      encodingType: Camera.EncodingType.JPEG,
-      mediaType: Camera.MediaType.PICTURE,
-      correctOrientation: true
-    }
-    navigator.camera.getPicture(onSuccess, onFail, options);  
-    function onSuccess(imageURI) {
-      var obs = document.getElementById('foto');
-      obs.src = imageURI;
-      document.getElementById("fenomen").value = "0";
-      document.getElementById("descripcio").value = "";
-      window.resolveLocalFileSystemURL(imageURI, function success(fileEntry) {   
-        fileEntry.copyTo(fileSystem.root,"", desaObservacio, empty);       
-      }, empty);    
-    }  
-    function onFail(message) {
-      navigator.notification.alert("No s'ha pogut fer la foto.", empty, "Càmera", "D'acord");
-    }
-  }
-  else {
-    navigator.notification.alert("No es coneix la ubicació. Si us plau, activa primer GPS.", empty, "GPS", "D'acord");
-  }
-}
-
 function checkConnection() {
   var networkState = navigator.connection.type;
   var states = {};
@@ -1059,7 +1051,6 @@ function checkConnection() {
   states[Connection.CELL_4G]  = 'Cell 4G connection';
   states[Connection.CELL]     = 'Cell generic connection';
   states[Connection.NONE]     = 'No network connection';
-  //console.log('Connection type: ' + states[networkState]);
   return states[networkState];
 }
 
@@ -1078,23 +1069,6 @@ function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
 }
 function deg2rad(deg) {
   return deg * (Math.PI/180)
-}
-
-function getFileContentAsBase64(path,callback){
-  window.resolveLocalFileSystemURL(path, gotFile, fail);          
-  function fail(e) {
-    console.log('Could not found requested file');
-  }
-  function gotFile(fileEntry) {
-    fileEntry.file(function(file) {
-      var reader = new FileReader();
-      reader.onloadend = function(e) {
-            var content = this.result;
-            callback(content);
-      };
-      reader.readAsDataURL(file);
-    });
-  }
 }
 
 function formatDate(dia) {
