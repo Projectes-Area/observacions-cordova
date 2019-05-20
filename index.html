@@ -39,10 +39,10 @@
         </div>
         <img id="foto" src= "img/add_photo.svg" onClick="fotografia();">
         <div class="obs-fen">
-          <i class="material-icons icon-24" style="margin-right:3px; color:#418ac8;">visibility</i><select id="fenomen"></select> 
+          <i class="material-icons icona-24" style="margin-right:3px; color:#418ac8;">visibility</i><select id="fenomen"></select> 
         </div>
         <div class="obs-desc">
-          <i class="material-icons icon-24" style="margin-right:3px; color:#418ac8;">assignment</i><textarea id="descripcio" placeholder="Escriu en aquest espai una breu descripció del fenomen observat." onKeyUp="if(this.value.length>250) this.value = this.value.slice(0, -1);"></textarea>
+          <i class="material-icons icona-24" style="margin-right:3px; color:#418ac8;">assignment</i><textarea id="descripcio" placeholder="Escriu en aquest espai una breu descripció del fenomen observat." onKeyUp="if(this.value.length>250) this.value = this.value.slice(0, -1);"></textarea>
         </div>
       </div>
       <div id="fotografia">
@@ -94,20 +94,26 @@
           </div>
         </div>  
       </div>
+
       <div id="fitxa">
         <div id="nomFenomen"></div>
         <div id="dataHora"></div>
-        <div id="edicio_fitxa">
-          <img id="fotoFitxa" src="" onClick="fotografia();">
-          <div id="botons_edicio">
-            <button id="envia_obs" class="boto-edit" style="color:graytext" onClick="enviaFitxa()"><i class="material-icons icona-24">cloud_upload</i></button>
-            <button id="edita_obs" class="boto-edit" style="color:graytext" onClick="editaObservacio()"><i class="material-icons icona-24">edit</i></button>
-            <button id="elimina_obs" class="boto-edit" style="color:#418ac8" onClick="eliminaObservacio()"><i class="material-icons icona-24">delete_forever</i></button>
+        <div id="contingutFitxa">
+          <div id="edicio_fitxa">
+            <img id="fotoFitxa" src="" onClick="fotografia();">
+            <div id="botons_edicio">
+              <button id="envia_obs" class="boto-edit" style="color:graytext" onClick="enviaFitxa()"><i class="material-icons icona-24">cloud_upload</i></button>
+              <button id="edita_obs" class="boto-edit" style="color:graytext" onClick="editaObservacio()"><i class="material-icons icona-24">edit</i></button>
+              <button id="elimina_obs" class="boto-edit" style="color:#418ac8" onClick="eliminaObservacio()"><i class="material-icons icona-24">delete_forever</i></button>
+            </div>
+          </div>
+          <div id="desc_map_fitxa">
+            <div id="descripcioFitxa"></div>
+            <div id="mapaFitxa"></div>  
           </div>
         </div>
-        <div id="descripcioFitxa"></div>
-        <div id="mapaFitxa"></div>  
       </div>
+
       <div id="sector-inferior">
         <div id="hr"></div>
         <div id="menu-inferior">

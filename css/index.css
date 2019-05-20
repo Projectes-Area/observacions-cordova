@@ -61,8 +61,8 @@ button, select, input, textarea {
     outline:none;
 }
 .boto-edit {
-    width:10vh;
-    height:10vh;
+    width: 75%;
+    height: 25%;
     border-radius: 8px;
     outline:none;
 }
@@ -200,13 +200,11 @@ button, select, input, textarea {
 }
 #mapaFitxa {
     width:100%;
-    height:20vh;
+    height:50%;
 }
 #descripcioFitxa {
-    height: 20vh;
-    padding: 5px;
-    margin-right: 5px;
-    margin-left: 5px;
+    height:50%;
+    margin: 10px;
     overflow:scroll;
 }
 #logoEstacio {
@@ -235,6 +233,10 @@ button, select, input, textarea {
     justify-content: space-evenly;
     height:20vh;
 }
+#contingutFitxa {
+    display: flex;
+    height:72vh;
+}
 #nomFenomen, #dataHora {
     display:flex;
     height:4vh;
@@ -257,15 +259,22 @@ button, select, input, textarea {
     align-items:center;
     height:10vh;
 }
-#edicio_fitxa{
+#edicio_fitxa {
     display:flex;
-    height:32vh;
+    height:50%;
     justify-content: space-around;
 }
-#botons_edicio{
+#desc_map_fitxa {
+    display:flex;
+    flex-direction:column;
+    height:50%;
+}
+#botons_edicio {
     display:flex;
     flex-direction:column; 
     justify-content:space-around;
+    align-items: center;
+    width: 20%;
 }
 #frame{
     display: none;

@@ -127,6 +127,11 @@ function ajustaOrientacio(orientacio) {
     document.getElementById("puntets").style.flexDirection = "column";
     document.getElementById('slideshow-container').style.height = "80vh"; 
     document.getElementById('slideshow-container').style.width = "auto"; 
+    document.getElementById('contingutFitxa').style.flexDirection = "row"; 
+    document.getElementById('edicio_fitxa').style.width = "50%"; 
+    document.getElementById('edicio_fitxa').style.height = "100%"; 
+    document.getElementById('desc_map_fitxa').style.width = "50%"; 
+    document.getElementById('desc_map_fitxa').style.height = "100%"; 
   } else {
     document.getElementById("boto_observacions").innerHTML = textBoto + 'camera_alt</i><br>Observa';
     document.getElementById("boto_estacions").innerHTML = textBoto + 'router</i><br>Estacions';
@@ -136,6 +141,11 @@ function ajustaOrientacio(orientacio) {
     document.getElementById("puntets").style.flexDirection = "row";
     document.getElementById('slideshow-container').style.width = "100%";
     document.getElementById('slideshow-container').style.height = "auto";    
+    document.getElementById('contingutFitxa').style.flexDirection = "column"; 
+    document.getElementById('edicio_fitxa').style.width = "100%"; 
+    document.getElementById('edicio_fitxa').style.height = "50%"; 
+    document.getElementById('desc_map_fitxa').style.width = "100%"; 
+    document.getElementById('desc_map_fitxa').style.height = "50%"; 
   }
   if (vistaActual == 'radar'){
     flagRadar= false;
