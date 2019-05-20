@@ -93,6 +93,7 @@ var colorEdumet = "#418ac8";
 var map;
 var slideIndex;
 var flagRadar = false;
+var timeOut;
 
 app.initialize();
 
@@ -122,15 +123,24 @@ function ajustaOrientacio(orientacio) {
     document.getElementById("boto_estacions").innerHTML = textBoto + 'router</i>';
     document.getElementById("boto_prediccio").innerHTML = textBoto + 'cloud</i>';
     document.getElementById("boto_radar").innerHTML = textBoto + 'rss_feed</i>';
-    document.getElementById("radar_titol").innerHTML = "";
-    document.getElementById('slideshow-container').style.width = "50%";
+    document.getElementById("radar").style.flexDirection = "row";
+    document.getElementById("puntets").style.flexDirection = "column";
+    document.getElementById('slideshow-container').style.height = "80vh"; 
+    document.getElementById('slideshow-container').style.width = "auto"; 
   } else {
     document.getElementById("boto_observacions").innerHTML = textBoto + 'camera_alt</i><br>Observa';
     document.getElementById("boto_estacions").innerHTML = textBoto + 'router</i><br>Estacions';
     document.getElementById("boto_prediccio").innerHTML = textBoto + 'cloud</i><br>Predicció';
     document.getElementById("boto_radar").innerHTML = textBoto + 'rss_feed</i><br>Radar';
-    document.getElementById("radar_titol").innerHTML = "RADAR METEOROLÒGIC";
+    document.getElementById("radar").style.flexDirection = "column";
+    document.getElementById("puntets").style.flexDirection = "row";
     document.getElementById('slideshow-container').style.width = "100%";
+    document.getElementById('slideshow-container').style.height = "auto";    
+  }
+  if (vistaActual == 'radar'){
+    flagRadar= false;
+    clearTimeout(timeOut);
+    radar();
   }
 }
 
@@ -573,7 +583,9 @@ function enviaObservacio(path_observacio) {
                 reader.readAsDataURL(file);
               });
             }
-          } 
+          } else {
+            navigator.notification.alert("Aquesta observació ja està penjada al servidor eduMET. Si us plau, fes una nova observació.", empty, 'Penjar observació', "D'acord");
+          }
         }
       }     
     }, empty);    
@@ -821,9 +833,13 @@ function radar() {
     .then(response => {
       var stringDiv ='';
       for(i=0;i<response.length;i++) {
-        stringDiv+='<div class="mySlides"><img src="https://edumet.cat/edumet-data/meteocat/radar/';
+        if(screen.orientation.type == "landscape" || screen.orientation.type == "landscape-primary" || screen.orientation.type == "landscape-secondary") {
+          stringDiv+='<div class="mySlidesLandscape"><img class="imgSlidesLandscape" src="https://edumet.cat/edumet-data/meteocat/radar/';
+        } else {
+          stringDiv+='<div class="mySlidesPortrait"><img class="imgSlidesPortrait" src="https://edumet.cat/edumet-data/meteocat/radar/';
+        }
         stringDiv+= response[i];
-        stringDiv+='" style="width:100%"></div>';
+        stringDiv+='"></div>';
       }
       document.getElementById('slideshow-container').innerHTML = stringDiv;
       stringDiv ='';
@@ -840,7 +856,11 @@ function radar() {
   }
 }
 function showSlides() {
-  var slides = document.getElementsByClassName("mySlides");
+  if(screen.orientation.type == "landscape" || screen.orientation.type == "landscape-primary" || screen.orientation.type == "landscape-secondary") {
+    var slides = document.getElementsByClassName("mySlidesLandscape");
+  } else {
+    var slides = document.getElementsByClassName("mySlidesPortrait");
+  }
   var dots = document.getElementsByClassName("dot");
   for (i = 0; i < slides.length; i++) {
     slides[i].style.display = "none";  
@@ -853,7 +873,7 @@ function showSlides() {
   slides[slideIndex-1].style.display = "block";  
   dots[slideIndex-1].className += " active";
   if(flagRadar) {
-    setTimeout(showSlides, 1000); // Change image every second
+    timeOut = setTimeout(showSlides, 1000); // Change image every second
   }
 }
 
