@@ -205,7 +205,7 @@ button, select, input, textarea {
 #descripcioFitxa {
     height:50%;
     margin: 10px;
-    overflow:scroll;
+    overflow-y:scroll;
 }
 #logoEstacio {
     height:100%;

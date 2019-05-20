@@ -5,6 +5,8 @@
       <meta name="format-detection" content="telephone=no">
       <meta name="msapplication-tap-highlight" content="no">
       <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+      <meta name="theme-color" content="#418ac8">
+      <link rel="manifest" href="manifest.json">
       <link rel="stylesheet" type="text/css" href="css/index.css">
       <link rel="stylesheet" type="text/css" href="css/weather-icons.min.css">
       <link rel="stylesheet" type="text/css" href="assets/leaflet/leaflet.css">
@@ -125,5 +127,12 @@
       </div>   
       <script type="text/javascript" src="cordova.js"></script>
       <script type="text/javascript" src="js/index.js"></script>
+      <script>
+          if('serviceWorker' in navigator) {
+            navigator.serviceWorker
+                     .register('sw.js')
+                     .then(function() { console.log("Service Worker Registered"); });
+          }
+          </script>
     </body>
 </html> 

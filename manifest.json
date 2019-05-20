@@ -1,0 +1,33 @@
+{
+  "background_color": "#418ac8",
+  "display": "standalone",
+  "name": "Observacions",
+  "short_name": "Observacions",
+  "version": "com.edumet.fenologia",
+  "theme_color": "#418ac8",
+  "description": "App per fer observacions fenològiques",
+  "author": "Àrea de Cultura Digital",
+  "icons": [
+    {
+      "src": "img/launcher-icon-1x.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "img/launcher-icon-2x.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "img/launcher-icon-4x.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+        "src": "img/launcher-icon-512.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+  ],
+  "start_url": "index.html"
+}
