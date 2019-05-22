@@ -48,13 +48,30 @@ var app = {
       mostraEstacions();
       getFenomens();
     }
-    document.addEventListener("backbutton", onBackKeyDown, false);
+
+    document.addEventListener("backbutton", function(e){
+      switch(vistaActual) {
+        case 'fitxa':
+          activa('observacions');
+          break;
+        case 'observacions':
+          activa('fenologia');
+          break
+        case 'fotografia':
+          activa(vistaOrigen);
+          break;
+        default:
+          navigator.notification.confirm("Vols sortir de l'App eduMET?", sortir, "Sortir", ["Sortir","Cancel·lar"]);
+      }
+   }, false);
+
     var input = document.getElementById('password');
     input.addEventListener("keyup", function(event) {
       if (event.keyCode === 13) {
         valida();
       }
     });
+    
     window.addEventListener("orientationchange", function(){
       console.log(screen.orientation.type);
       ajustaOrientacio(screen.orientation.type);
@@ -100,29 +117,13 @@ app.initialize();
 function empty() {  
 }
 
-function onBackKeyDown() {
-  switch(vistaActual) {
-    case 'fitxa':
-      activa('observacions');
-      break;
-    case 'observacions':
-      activa('fenologia');
-      break
-    case 'fotografia':
-      activa(vistaOrigen);
-      break;
-    default:
-      navigator.notification.confirm("Vols sortir de l'App eduMET?", sortir, "Sortir", ["Sortir","Cancel·lar"]);
-  }
-}
-
 function ajustaOrientacio(orientacio) {
   var textBoto = '<i class="material-icons icona-24">';
   if(orientacio == "landscape" || orientacio == "landscape-primary" || orientacio == "landscape-secondary") {
     document.getElementById("boto_observacions").innerHTML = textBoto + 'camera_alt</i>';
     document.getElementById("boto_estacions").innerHTML = textBoto + 'router</i>';
     document.getElementById("boto_prediccio").innerHTML = textBoto + 'cloud</i>';
-    document.getElementById("boto_radar").innerHTML = textBoto + 'rss_feed</i>';
+    document.getElementById("boto_radar").innerHTML = textBoto + 'wifi_tethering</i>';
     document.getElementById("radar").style.flexDirection = "row";
     document.getElementById("puntets").style.flexDirection = "column";
     document.getElementById('slideshow-container').style.height = "80vh"; 
@@ -136,7 +137,7 @@ function ajustaOrientacio(orientacio) {
     document.getElementById("boto_observacions").innerHTML = textBoto + 'camera_alt</i><br>Observa';
     document.getElementById("boto_estacions").innerHTML = textBoto + 'router</i><br>Estacions';
     document.getElementById("boto_prediccio").innerHTML = textBoto + 'cloud</i><br>Predicció';
-    document.getElementById("boto_radar").innerHTML = textBoto + 'rss_feed</i><br>Radar';
+    document.getElementById("boto_radar").innerHTML = textBoto + 'wifi_tethering</i><br>Radar';
     document.getElementById("radar").style.flexDirection = "column";
     document.getElementById("puntets").style.flexDirection = "row";
     document.getElementById('slideshow-container').style.width = "100%";
@@ -898,9 +899,10 @@ function prediccio() {
       loader.style.animationPlayState = "paused";
       loader.style.display = "none";
       carregant.style.display = "none";
-      frame.style.display = "flex";
+      frame.style.display = "flex";      
     }
-    frame.src = "http://m.meteo.cat/?codi=" + INEinicial;
+    frame.src = 'https://static-m.meteo.cat/ginys/municipal8d?language=ca&color=2c3e50&tempFormat=ºC&location=' + INEinicial;
+    console.log(frame.src);
   } else {
     navigator.notification.alert("Opció no disponible sense connexió a Internet.", empty, "Predicció meteorològica", "D'acord");
   }

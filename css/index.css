@@ -6,6 +6,9 @@ body {
 button, select, input, textarea {
     font-family: Roboto,"Open Sans",Arial,Serif,Times !important;
 }
+#textarea {
+    resize: none;
+}
 .wi {
     color:#418ac8;
     margin-right:7px;
@@ -108,6 +111,7 @@ button, select, input, textarea {
     flex-direction:column;
     height: 80vh;
     width: 100%;
+    background: transparent;
 }
 #carregant {
     margin: 5vh;
@@ -280,6 +284,7 @@ button, select, input, textarea {
     display: none;
     height: 100%;
     width: 100%;
+    z-index: -2;
 }
 #iniciar{
     margin-bottom:4vh;

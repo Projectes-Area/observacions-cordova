@@ -23,7 +23,7 @@
           <h3>INICIAR SESSIÓ</h3>
         </div>        
         <div>
-          <input class="marge" id="usuari" placeholder="usuari" type="text" name="usuari">
+          <input class="marge" id="usuari" placeholder="usuari" type="text" name="usuari" value="43900018">
         </div>
         <div>
           <input class="marge" id="password" placeholder="contrasenya" type="password" name="contrasenya"><br>
@@ -53,7 +53,7 @@
       <div id="prediccio">
           <div id="loaderPrediccio" class="loader"></div>
           <div id="carregant">Carregant ...</div> 
-          <iframe id='frame' src='' hspace='0' marginheight='0' marginwidth='0' vspace='0' frameborder='0' scrolling='yes'></iframe>
+          <iframe id='frame' sandbox="allow-scripts allow-same-origin" src='' hspace='0' marginheight='0' marginwidth='0' vspace='0' frameborder='0' scrolling='no'></iframe>
       </div>
       <div id="radar">
         <div id="slideshow-container" class="slideshow-container"></div>         
@@ -122,17 +122,10 @@
           <button id="boto_observacions" class="boto-inf" style="color:graytext" onClick="login();"><i class="material-icons icona-24">camera_alt</i></button>
           <button id="boto_estacions" class="boto-inf" style="color:#418ac8;" onClick="estacio();"><i class="material-icons icona-24">router</i></button>
           <button id="boto_prediccio" class="boto-inf" style="color:graytext" onClick="prediccio();"><i class="material-icons icona-24">cloud</i></button>
-          <button id="boto_radar" class="boto-inf" style="color:graytext" onClick="radar();"><i class="material-icons icona-24">rss_feed</i></button>
+          <button id="boto_radar" class="boto-inf" style="color:graytext" onClick="radar();"><i class="material-icons icona-24">wifi_tethering</i></button>
         </div>  
       </div>   
       <script type="text/javascript" src="cordova.js"></script>
       <script type="text/javascript" src="js/index.js"></script>
-      <script>
-          if('serviceWorker' in navigator) {
-            navigator.serviceWorker
-                     .register('sw.js')
-                     .then(function() { console.log("Service Worker Registered"); });
-          }
-          </script>
     </body>
 </html> 
