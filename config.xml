@@ -2,13 +2,12 @@
 <widget id="com.edumet.fenologia" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Observacions</name>
     <description>
-        App per fer observacions fenològiques
+        App del projecte eduMET desenvolupada amb Cordova. Permet fer observacions fenològiques i penjarles al servidor eduMET. Mostra les dades atmosfèriques proporcionades per les estacions meteorològiques de la xarxa eduMET. Mostra la predicció del temps i les imatges del radar meteorològic (informació oferta pel Servei Meteorològic de Catalunya).
     </description>
     <author>Àrea de Cultura Digital</author>
     <preference name="phonegap-version" value="cli-8.1.1" />
     <preference name="windows-identity-name" value="Observacions" />
     <content src="index.html" />
-    <plugin name="cordova-plugin-camera" spec="4.0.3" />
     <plugin name="cordova-plugin-dialogs" spec="2.0.1" />
     <plugin name="cordova-plugin-file" spec="6.0.1" />
     <plugin name="cordova-plugin-geolocation" spec="4.0.1" />
@@ -16,6 +15,7 @@
     <plugin name="cordova-plugin-whitelist" spec="1.3.3" />
     <plugin name="es6-promise-plugin" spec="4.2.2" />
     <plugin name="cordova-plugin-screen-orientation" spec="3.0.1" />
+    <plugin name="cordova-plugin-camera" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />

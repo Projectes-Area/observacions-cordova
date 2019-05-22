@@ -281,6 +281,7 @@ button, select, input, textarea {
     width: 20%;
 }
 #frame{
+    margin-top:10px;
     display: none;
     height: 100%;
     width: 100%;
