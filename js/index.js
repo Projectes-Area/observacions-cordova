@@ -4,6 +4,9 @@ var app = {
   },
   onDeviceReady: function() {
     watchID = navigator.geolocation.watchPosition(geoSuccess, geoFail);
+    if (usuari == "") {
+      usuari = storage.getItem("user");
+    }
     var online;
     var stringEstacions = storage.getItem("estacions");
     map = L.map('map');
@@ -378,6 +381,40 @@ function getMesures() {
 
 // OBSERVACIONS
 
+function usuaris() {
+  if (usuari == "" || usuari == null) {
+    login();
+  } else {
+    navigator.notification.confirm("Vols tancar la sessió ?", tancar_sessio, "Tancar sessió", ["Tancar","Cancel·lar"]);
+  }
+}
+function tancar_sessio(buttonIndex) {
+  if(buttonIndex == 1) {
+    db.transaction(function (tx) {
+    var query = 'SELECT Local_path FROM Observacions';
+    tx.executeSql(query, [], function(tx, rs){
+      for(i=0;i<rs.rows.length;i++) {
+        window.resolveLocalFileSystemURL(rs.rows.item(i)["Local_path"], function success(fileEntry) {   
+          fileEntry.remove(function(file){
+          },function(error){
+            console.log("error deleting the file " + error.code);
+            });
+          },function(){
+            console.log("file does not exist");
+          }
+        );
+      }  
+    localStorage.removeItem("user");
+    usuari = "";
+    estacio();
+    
+      tx.executeSql('DROP TABLE Observacions');   
+    });
+  });
+}
+}
+
+
 function fesFoto() {
   if(localitzat) {
     var options = {
@@ -551,7 +588,8 @@ function enviaObservacio(path_observacio) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
                   var imatge64 = e.target.result.replace(/^data:image\/[a-z]+;base64,/, "");                
-                  var envio = { tab: "salvarFenoApp",
+                  var envio = { 
+                      tab: "salvarFenoApp",
                       usuari: usuari,
                       dia: fitxaObs["Data_observacio"],
                       hora: fitxaObs["Hora_observacio"],
@@ -581,8 +619,8 @@ function enviaObservacio(path_observacio) {
                         tx.executeSql(query, [], function(tx, results){
                           navigator.notification.alert("S'ha penjat l'observació al servidor eduMET.", empty, 'Penjar observació', "D'acord");
                           if(vistaActual == 'fitxa') {
-                            document.getElementById('edita_obs').disabled = true;
-                            document.getElementById('envia_obs').disabled = true;
+                            //document.getElementById('edita_obs').disabled = true;
+                            //document.getElementById('envia_obs').disabled = true;
                             var checkVerd = document.getElementById(fitxaObs["Local_path"]);
                             checkVerd.style.color = "limegreen";
                           }
@@ -595,7 +633,15 @@ function enviaObservacio(path_observacio) {
               });
             }
           } else {
-            navigator.notification.alert("Aquesta observació ja està penjada al servidor eduMET. Si us plau, fes una nova observació.", empty, 'Penjar observació', "D'acord");
+            //navigator.notification.alert("Aquesta observació ja està penjada al servidor eduMET. Si us plau, fes una nova observació.", empty, 'Penjar observació', "D'acord");
+            var url = url_servidor + '?tab=modificarFenoApp&id=' + fitxaObs["ID"] + '&Id_feno=' + fitxaObs["Id_feno"] +'&descripcio="' + fitxaObs["Descripcio_observacio"] + '"';
+            console.log(url);
+            fetch(url)
+              .then(response => response.text())
+              .then(text => {
+                console.log(text);
+                navigator.notification.alert("S'ha actualitzat l'observació penjada al servidor eduMET.", empty, 'Actualitzar observació', "D'acord");
+              });
           }
         }
       }     
@@ -807,10 +853,9 @@ vistaActual = fragment;
 }
 
 function login() {
-  if (usuari == "") {
-    usuari = storage.getItem("user");
-  }
-  if (usuari == null) {
+  if (usuari == "" || usuari == null) {
+    document.getElementById("usuari").value = "";
+    document.getElementById("password").value = "";
     if (checkConnection() != 'No network connection') {
       activa('login');
     } else {
@@ -935,7 +980,7 @@ function fitxa(id) {
     var query = 'SELECT * FROM Observacions WHERE Local_path=\'' + observacioFitxa +'\'';    
     tx.executeSql(query, [], function(tx, rs){   
       var fitxaObs = rs.rows.item(0);
-      var boto_edicio = document.getElementById('edita_obs');
+      /*var boto_edicio = document.getElementById('edita_obs');
       var boto_upload = document.getElementById('envia_obs');
       if(fitxaObs["Enviat"] == "1") {
         boto_edicio.style.color = "graytext";
@@ -947,7 +992,7 @@ function fitxa(id) {
         boto_upload.style.color = colorEdumet;
         boto_edicio.disabled = false;
         boto_upload.disabled = false;
-      }
+      }*/
       var nomFenomen = document.getElementById('nomFenomen');
       if(fitxaObs["Id_feno"] != "0") {
         nomFenomen.innerHTML = fenomens[fitxaObs["Id_feno"]]["Bloc_feno"] + ': ' + fenomens[fitxaObs["Id_feno"]]["Titol_feno"];

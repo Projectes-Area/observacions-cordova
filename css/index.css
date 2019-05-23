@@ -46,6 +46,9 @@ button, select, input, textarea {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+.icona-16 {
+    font-size:16px; 
+}
 .icona-24 {
     font-size:24px; 
 }
@@ -204,10 +207,10 @@ button, select, input, textarea {
 }
 #mapaFitxa {
     width:100%;
-    height:50%;
+    height:40%;
 }
 #descripcioFitxa {
-    height:50%;
+    height:40%;
     margin: 10px;
     overflow-y:scroll;
 }
@@ -239,13 +242,13 @@ button, select, input, textarea {
 }
 #contingutFitxa {
     display: flex;
-    height:72vh;
+    height:80vh;
 }
 #nomFenomen, #dataHora {
-    display:flex;
-    height:4vh;
-    justify-content:center;
-    align-items:center;
+    display: flex;
+    height: 10%;
+    justify-content: center;
+    align-items: center;
 }
 #fotoFitxa{
     width:70%;
@@ -294,8 +297,20 @@ button, select, input, textarea {
     margin-left:5px;
 }
 
+#div-icona-login {
+    display: flex;
+    position: absolute;
+    align-items: center;
+    width: 100%;
+    height: 10vh;
+}
+#icona-login{
+    margin-left:auto;
+    color:white;
+}
+
 @media (min-height: 800px) {
-    body, h3, input, #valida, #est_nom, #fenomen, #descripcio, .boto-inf, .boto-sup {
+    body, input, #valida, #est_nom, #fenomen, #descripcio, .boto-inf, .boto-sup {
         font-size:16px;
     }
     .icona-36 {
@@ -304,9 +319,12 @@ button, select, input, textarea {
     .obs-icon, .icona-24 {
         font-size:36px;
     }
+    .icona-16 {
+        font-size:24px; 
+    }
 }
 @media (min-height: 1000px) {
-    body, h3, input, #valida, #est_nom, #fenomen, #descripcio, .boto-inf, .boto-sup {
+    body, input, #valida, #est_nom, #fenomen, #descripcio, .boto-inf, .boto-sup {
         font-size:18px;
     }
     .icona-36 {
@@ -315,9 +333,12 @@ button, select, input, textarea {
     .obs-icon, .icona-24 {
         font-size:48px;
     }
+    .icona-16 {
+        font-size:32px; 
+    }
 }
 @media (min-height: 1200px) {
-    body, h3, input, #valida, #est_nom, #fenomen, #descripcio, .boto-inf, .boto-sup {
+    body, input, #valida, #est_nom, #fenomen, #descripcio, .boto-inf, .boto-sup {
         font-size:24px;
     }
     .icona-36 {
@@ -325,6 +346,9 @@ button, select, input, textarea {
     }
     .obs-icon, .icona-24 {
         font-size:64px;
+    }
+    .icona-16 {
+        font-size:48px; 
     }
 }
 
