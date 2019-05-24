@@ -125,6 +125,7 @@ function ajustaOrientacio(orientacio) {
   if(orientacio == "landscape" || orientacio == "landscape-primary" || orientacio == "landscape-secondary") {
     document.getElementById("boto_observacions").innerHTML = textBoto + 'camera_alt</i>';
     document.getElementById("boto_estacions").innerHTML = textBoto + 'router</i>';
+    document.getElementById("boto_registra").innerHTML = textBoto + 'bookmark</i>';
     document.getElementById("boto_prediccio").innerHTML = textBoto + 'cloud</i>';
     document.getElementById("boto_radar").innerHTML = textBoto + 'wifi_tethering</i>';
     document.getElementById("radar").style.flexDirection = "row";
@@ -136,9 +137,15 @@ function ajustaOrientacio(orientacio) {
     document.getElementById('edicio_fitxa').style.height = "100%"; 
     document.getElementById('desc_map_fitxa').style.width = "50%"; 
     document.getElementById('desc_map_fitxa').style.height = "100%"; 
+    document.getElementById('registra').style.flexDirection = "row"; 
+    document.getElementById('nou_registre').style.width = "50%"; 
+    document.getElementById('nou_registre').style.height = "100%"; 
+    document.getElementById('entrada_dades').style.width = "50%"; 
+    document.getElementById('entrada_dades').style.height = "100%"; 
   } else {
     document.getElementById("boto_observacions").innerHTML = textBoto + 'camera_alt</i><br>Observa';
-    document.getElementById("boto_estacions").innerHTML = textBoto + 'router</i><br>Estacions';
+    document.getElementById("boto_estacions").innerHTML = textBoto + 'router</i><br>Estació';
+    document.getElementById("boto_registra").innerHTML = textBoto + 'bookmark</i><br>Registra';
     document.getElementById("boto_prediccio").innerHTML = textBoto + 'cloud</i><br>Predicció';
     document.getElementById("boto_radar").innerHTML = textBoto + 'wifi_tethering</i><br>Radar';
     document.getElementById("radar").style.flexDirection = "column";
@@ -150,6 +157,11 @@ function ajustaOrientacio(orientacio) {
     document.getElementById('edicio_fitxa').style.height = "50%"; 
     document.getElementById('desc_map_fitxa').style.width = "100%"; 
     document.getElementById('desc_map_fitxa').style.height = "50%"; 
+    document.getElementById('registra').style.flexDirection = "column"; 
+    document.getElementById('nou_registre').style.width = "100%"; 
+    document.getElementById('nou_registre').style.height = "50%"; 
+    document.getElementById('entrada_dades').style.width = "100%"; 
+    document.getElementById('entrada_dades').style.height = "50%"; 
   }
   if (vistaActual == 'radar'){
     flagRadar= false;
@@ -377,6 +389,20 @@ function getMesures() {
     },
     empty);          
   });
+}
+
+// REGISTRA
+
+function registra() {
+  activa('registra');
+}
+function registra_mesures() {
+}
+function registra_cel() {
+}
+function registra_nuvols() {
+}
+function registra_fenomens() {
 }
 
 // OBSERVACIONS
@@ -819,10 +845,13 @@ function activa(fragment) {
   document.getElementById('fitxa').style.display='none';
   document.getElementById('login').style.display='none';
   document.getElementById('fotografia').style.display='none';
+  document.getElementById('registra').style.display='none';
   document.getElementById(fragment).style.display='flex';
   var boto = document.getElementById("boto_estacions");
   boto.style.color = "graytext";
   var boto = document.getElementById("boto_observacions");
+  boto.style.color = "graytext";
+  var boto = document.getElementById("boto_registra");
   boto.style.color = "graytext";
   var boto = document.getElementById("boto_prediccio");
   boto.style.color = "graytext";
@@ -838,6 +867,9 @@ function activa(fragment) {
     case "fitxa":
     case "fotografia":
       boto = document.getElementById("boto_observacions");
+      break;
+    case "registra":
+      boto = document.getElementById("boto_registra");
       break;
     case "prediccio":
       boto = document.getElementById("boto_prediccio");

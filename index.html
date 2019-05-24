@@ -117,13 +117,36 @@
         </div>
       </div>
 
+      <div id="registra">
+        <div id="nou_registre" style="height:50%">
+          <div class="icona-16">Registre manual de dades</div>
+          <div>Nom de l'estació</div>
+          <div>Data i Hora</div>
+          <div style="width:80%;">
+            <input id="autor" style="width:100%;" placeholder="Escriu el nom dels autors del registre" type="text" name="autor">
+          </div>
+          <div>
+            <button id="enregistra">Enregistra les dades</button>
+          </div>
+        </div>
+        <div id="entrada_dades" style="height:50%">
+          <div id="menu-registra">
+            <button class="boto-sup" onClick="registra_mesures();"><i class="wi wi-thermometer icona-36"></i></button>
+            <button class="boto-sup" onClick="registra_cel();"><i class="wi wi-strong-wind icona-36"></i></button>
+            <button class="boto-sup" onClick="registra_nuvols();"><i class="material-icons icona-36">cloud</i></button>
+            <button class="boto-sup" onClick="registra_fenomens();"><i class="material-icons icona-36">check</i></button>
+          </div>
+        </div>
+      </div>
+
       <div id="sector-inferior">
         <div id="hr"></div>
         <div id="menu-inferior">
-          <button id="boto_observacions" class="boto-inf" style="color:graytext" onClick="login();"><i class="material-icons icona-24">camera_alt</i></button>
+          <button id="boto_observacions" class="boto-inf" style="color:graytext;" onClick="login();"><i class="material-icons icona-24">camera_alt</i></button>
           <button id="boto_estacions" class="boto-inf" style="color:#418ac8;" onClick="estacio();"><i class="material-icons icona-24">router</i></button>
-          <button id="boto_prediccio" class="boto-inf" style="color:graytext" onClick="prediccio();"><i class="material-icons icona-24">cloud</i></button>
-          <button id="boto_radar" class="boto-inf" style="color:graytext" onClick="radar();"><i class="material-icons icona-24">wifi_tethering</i></button>
+          <button id="boto_registra" class="boto-inf" style="color:graytext;" onClick="registra();"><i class="material-icons icona-24">bookmark</i></button>
+          <button id="boto_prediccio" class="boto-inf" style="color:graytext;" onClick="prediccio();"><i class="material-icons icona-24">cloud</i></button>
+          <button id="boto_radar" class="boto-inf" style="color:graytext;" onClick="radar();"><i class="material-icons icona-24">wifi_tethering</i></button>
         </div>  
       </div>   
       <script type="text/javascript" src="cordova.js"></script>

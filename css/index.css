@@ -59,7 +59,13 @@ button, select, input, textarea {
     display:flex; 
     justify-content: center;
 }
-.boto-inf, .boto-sup {
+.boto-inf {
+    width:20%;
+    background: none;
+    border:none;
+    outline:none;
+}
+.boto-sup {
     width:25%;
     background: none;
     color: #418ac8;
@@ -98,6 +104,19 @@ button, select, input, textarea {
     display:flex;
     width:100%;
     height:10vh;
+}
+#menu-registra {
+    display:flex;
+    width:100%;
+    height:15vh;
+}
+#nou_registre {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
 }
 #login {
     display:none;
@@ -145,7 +164,7 @@ button, select, input, textarea {
     align-items:center;
     height:80vh;
 }
-#observacions, #fitxa {
+#observacions, #fitxa, #registra {
     display:none;
     height:80vh;    
     flex-direction:column;
@@ -254,7 +273,7 @@ button, select, input, textarea {
     width:70%;
     object-fit: contain;
 }
-#valida {
+#valida, #enregistra {
     padding-bottom:12px;
     padding-top:12px;
     padding-left:48px;
